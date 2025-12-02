@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useUserStore } from "../../zustand/userStore";
-import SearchBar from "./SearchBar";
+import { useUserStore } from "../../../zustand/userStore";
+import SearchBar from "../search/SearchBar";
 import UserTable from "./UserTable";
 import Pagination from "./Pagination";
-import UserFormPanel from "./UserFormPanel";
+import UserFormPanel from "../form/UserFormPanel";
 
 export default function TableUser() {
   const {

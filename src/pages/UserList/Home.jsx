@@ -1,7 +1,7 @@
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import ComponentCard from "../../components/common/ComponentCard";
 import PageMeta from "../../components/common/PageMeta";
-import TableUser from "../../components/UserList/TableUser";
+import TableUser from "../../components/Users/tables/TableUser";
 
 export default function Home() {
   return (

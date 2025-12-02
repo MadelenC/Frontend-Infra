@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { useRoleStore } from "../../zustand/rolesStore";
+import { useRoleStore } from "../../../zustand/rolesStore";
 import { SlArrowDown } from "react-icons/sl";
 
 export default function SearchBar({ search, setSearch, roleFilter, setRoleFilter }) {
