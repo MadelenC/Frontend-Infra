@@ -1,8 +1,7 @@
 import { create } from "zustand";
-import { getUsers } from "../services/userService";
+import { getUsers, createUser, updateUser, deleteUser } from "../services/userService";
 
 export const useUserStore = create((set, get) => ({
-  // Estado
   users: [],
   loading: true,
   error: null,
@@ -12,44 +11,78 @@ export const useUserStore = create((set, get) => ({
   search: "",
   roleFilter: "",
 
-  // Acciones
   fetchUsers: async () => {
     set({ loading: true, error: null });
     try {
       const data = await getUsers();
-      const sortedUsers = data.sort((a, b) => a.id - b.id);
       set({ 
-        users: sortedUsers,
-        totalPages: Math.ceil(sortedUsers.length / get().limit)
+        users: data || [], 
+        totalPages: Math.ceil((data?.length || 0) / get().limit),
+        loading: false
       });
     } catch (err) {
-      set({ error: err.message || err });
-    } finally {
-      set({ loading: false });
+      set({ error: err.message || "Error al cargar usuarios", loading: false });
+    }
+  },
+
+  createUser: async (userData) => {
+    try {
+      const newUser = await createUser(userData);
+      set({ users: [...get().users, newUser] });
+      return { ok: true };
+    } catch (err) {
+      return { ok: false, error: err.message || err };
+    }
+  },
+
+  updateUser: async (id, updatedData) => {
+    try {
+      const updatedUser = await updateUser(id, updatedData);
+      set({
+        users: get().users.map(u => u.id === id ? updatedUser : u)
+      });
+      return { ok: true };
+    } catch (err) {
+      return { ok: false, error: err.message || err };
+    }
+  },
+
+  deleteUser: async (id) => {
+    try {
+      await deleteUser(id);
+      set({
+        users: get().users.filter(u => u.id !== id)
+      });
+      return { ok: true };
+    } catch (err) {
+      return { ok: false, error: err.message || err };
     }
   },
 
   setPage: (page) => set({ page }),
-  setSearch: (term) => set({ search: term, page: 1 }),
-  setRoleFilter: (role) => set({ roleFilter: role, page: 1 }),
+  setSearch: (term) => set({ search: term || "", page: 1 }),
+  setRoleFilter: (role) => set({ roleFilter: role || "", page: 1 }),
 
-  // Getter: usuarios filtrados y paginados
   get currentUsers() {
-    const { users, search, roleFilter, page, limit } = get();
-    return users
+    const { users, page, limit, search, roleFilter } = get();
+    const filtered = users
       .filter(u => {
-        const term = search.toLowerCase();
+        const term = (search || "").toLowerCase();
         const matchesSearch =
-          String(u.nombres ?? "").toLowerCase().includes(term) ||
-          String(u.apellidos ?? "").toLowerCase().includes(term) ||
-          String(u.cedula ?? "").toLowerCase().includes(term) ||
-          String(u.celular ?? "").toLowerCase().includes(term);
+          String(u.nombres || "").toLowerCase().includes(term) ||
+          String(u.apellidos || "").toLowerCase().includes(term) ||
+          String(u.cedula || "").toLowerCase().includes(term) ||
+          String(u.celular || "").toLowerCase().includes(term);
         const matchesRole = roleFilter ? u.tipo === roleFilter : true;
         return matchesSearch && matchesRole;
       })
-      
-      .slice((page - 1) * limit, page * limit);
-      
-  }
-  
+      .sort((a, b) => a.id - b.id);
+    return filtered.slice((page - 1) * limit, page * limit);
+  },
 }));
+
+
+
+
+
+

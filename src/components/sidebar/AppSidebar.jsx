@@ -12,22 +12,28 @@ import { MdSecurityUpdate } from "react-icons/md";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { GoChevronDown } from "react-icons/go"; 
 import { FaUsersLine } from "react-icons/fa6";
+import { MdDomainAdd } from "react-icons/md";
 const navItems = [
 
   {
     icon: <FaUsersLine />,
     name: "Usuarios",
-    subItems: [{ name: "Lista", path: "/", pro: false }],
+    subItems: [
+      { name: " Ver Lista de Usuarios", path: "/", pro: false },
+    ],
+  },
+ 
+  {
+    icon: <MdDomainAdd />,
+    name: "Entidades",
+    subItems:[
+      { name: " Lista de Entidades", path: "/entidades", pro: false },
+    ]
   },
   {
     icon: <BiCalendar />,
     name: "Calendar",
     path: "/calendar",
-  },
-  {
-    icon: <FaRegUserCircle />,
-    name: "User Profile",
-    path: "/profile",
   },
   {
     name: "Forms",

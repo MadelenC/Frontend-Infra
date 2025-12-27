@@ -7,7 +7,7 @@ import UserFormPanel from "../form/UserFormPanel";
 
 export default function TableUser() {
   const {
-    users,
+    users = [],
     loading,
     error,
     page,
@@ -15,17 +15,36 @@ export default function TableUser() {
     totalPages,
     fetchUsers,
     setPage,
-    search,
+    search = "",
     setSearch,
-    roleFilter,
+    roleFilter = "",
     setRoleFilter,
   } = useUserStore();
 
   const [openPanel, setOpenPanel] = useState(false);
+  const [formType, setFormType] = useState(null); // inicializamos null
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [fetchUsers]);
+
+  // Ordenar por ID ascendente
+  const sortedUsers = [...users].sort((a, b) => a.id - b.id);
+
+  // Filtrado y paginación
+  const currentUsers = sortedUsers
+    .filter((u) => {
+      const term = (search || "").toLowerCase();
+      const matchesSearch =
+        String(u.nombres || "").toLowerCase().includes(term) ||
+        String(u.apellidos || "").toLowerCase().includes(term) ||
+        String(u.cedula || "").toLowerCase().includes(term) ||
+        String(u.celular || "").toLowerCase().includes(term);
+
+      const matchesRole = roleFilter ? u.tipo === roleFilter : true;
+      return matchesSearch && matchesRole;
+    })
+    .slice((page - 1) * limit, page * limit);
 
   if (loading)
     return (
@@ -41,36 +60,19 @@ export default function TableUser() {
       </div>
     );
 
-  // Filtrado por búsqueda y rol
-  const currentUsers = users
-    .filter((u) => {
-      const term = search.toLowerCase();
-      const matchesSearch =
-        String(u.nombres ?? "").toLowerCase().includes(term) ||
-        String(u.apellidos ?? "").toLowerCase().includes(term) ||
-        String(u.cedula ?? "").toLowerCase().includes(term) ||
-        String(u.celular ?? "").toLowerCase().includes(term);
-
-      const matchesRole = roleFilter ? u.tipo === roleFilter : true;
-      return matchesSearch && matchesRole;
-    })
-    .slice((page - 1) * limit, page * limit);
-
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md transition-all p-4">
-      {/* Botón Agregar Usuario */}
+      {/* Botón principal */}
       <div className="flex justify-end mb-4">
         <button
-          onClick={() => setOpenPanel(true)}
-          className="flex items-center gap-2 border border-blue-500 text-blue-600 px-4 py-2 rounded-md 
-                     hover:bg-blue-50 transition-all duration-200 font-medium"
+          onClick={() => { setOpenPanel(true); setFormType(null); }}
+          className="flex items-center gap-2 border border-blue-500 text-blue-600 px-4 py-2 rounded-md hover:bg-blue-50 transition-all duration-200 font-medium"
         >
-          <span className="text-lg font-bold">＋</span>
-          <span>Agregar Usuario</span>
+          <span className="text-lg font-bold">＋</span> Agregar Usuario
         </button>
       </div>
 
-      {/* Buscador y filtro de roles */}
+      {/* Buscador */}
       <SearchBar
         search={search}
         setSearch={setSearch}
@@ -84,11 +86,27 @@ export default function TableUser() {
       {/* Paginación */}
       <Pagination page={page} totalPages={totalPages} setPage={setPage} />
 
-      {/* Panel lateral de formulario */}
-      <UserFormPanel open={openPanel} onClose={() => setOpenPanel(false)} />
+      {/* Panel lateral con formulario */}
+      <UserFormPanel
+        open={openPanel}
+        onClose={() => { setOpenPanel(false); setFormType(null); }}
+        formType={formType}
+        setFormType={setFormType} // pasamos setter para mostrar botones
+      />
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

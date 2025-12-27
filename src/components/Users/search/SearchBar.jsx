@@ -22,7 +22,7 @@ export default function SearchBar({ search, setSearch, roleFilter, setRoleFilter
     <div className="flex flex-col md:flex-row justify-start mb-4 gap-2 items-center">
       
    
-      <div className="relative w-full md:w-1/6" ref={dropdownRef}>
+      <div className="relative w-full md:w-1/5" ref={dropdownRef}>
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
