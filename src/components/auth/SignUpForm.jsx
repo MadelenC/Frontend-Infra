@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import { AiFillBug } from "react-icons/ai";
-import Label from "../form/Label";
-import Input from "../form/input/InputField";
-import Checkbox from "../form/input/Checkbox";
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);

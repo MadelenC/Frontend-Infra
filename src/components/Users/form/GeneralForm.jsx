@@ -7,7 +7,7 @@ export default function GeneralForm({ onSubmit }) {
     cedula: "",
     celular: "",
     tipo: "",
-    password: "",
+    password: "", 
     cargo: "",
     email: "",
   });

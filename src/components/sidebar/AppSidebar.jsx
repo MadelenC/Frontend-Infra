@@ -7,12 +7,19 @@ import { BiSpreadsheet } from "react-icons/bi";
 import { FaRegUserCircle } from "react-icons/fa";
 import { GrTable } from "react-icons/gr";
 import { SiWikibooks } from "react-icons/si"; //PAGES
-import { LuBuilding2 } from "react-icons/lu"; //UI ELEMENTS 
+import { LuBuilding2 } from "react-icons/lu";  
 import { MdSecurityUpdate } from "react-icons/md";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { GoChevronDown } from "react-icons/go"; 
 import { FaUsersLine } from "react-icons/fa6";
+import { FaUsersGear } from "react-icons/fa6";
 import { MdDomainAdd } from "react-icons/md";
+import { BsFillFuelPumpDieselFill } from "react-icons/bs";
+import { GiHorizonRoad } from "react-icons/gi";
+import { SiOrganicmaps } from "react-icons/si";
+import { BsCardHeading } from "react-icons/bs";
+import { MdTravelExplore } from "react-icons/md";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
 const navItems = [
 
   {
@@ -30,28 +37,57 @@ const navItems = [
       { name: " Lista de Entidades", path: "/entidades", pro: false },
     ]
   },
+    {
+    name: "Rol de Viajes",
+    icon: <FaUsersGear />,
+    subItems: [{ name: "Motrar", path: "/travel-rol", pro: false }],
+  },
+   {
+    name: "Vehiculos ",
+    icon: < BiSpreadsheet  />,
+    subItems: [{ name: "Mostrar", path: "/vehiculos", pro: false }],
+  },
+   {
+    name: "Combustible",
+    icon: <BsFillFuelPumpDieselFill />,
+    subItems: [{ name: "Mostrar", path: "/combustible", pro: false }],
+  },
+  
+  {
+    name: "Destinos",
+    icon: < GiHorizonRoad />,
+    subItems: [
+      { name: "Lista de Destinos", path: "/destinos", pro: false },
+    ],
+  },
+
+   {
+    name: "Mapas",
+    icon: <SiOrganicmaps />,
+    subItems: [{ name: "listar", path: "/mapas", pro: false }],
+  },
   {
     icon: <BiCalendar />,
     name: "Calendar",
     path: "/calendar",
   },
-  {
-    name: "Forms",
-    icon: < BiSpreadsheet  />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  },
-  {
-    name: "Tables",
-    icon: <GrTable />,
+ 
+ 
+   
+    {
+    name: "Reservas",
+    icon: <BsCardHeading  />,
     subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
   },
-  {
-    name: "Pages",
-    icon: < SiWikibooks />,
-    subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
-    ],
+    {
+    name: "Viajes",
+    icon: <MdTravelExplore />,
+    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
+  },
+    {
+    name: "Presupuestos de Viaje",
+    icon: <FaMoneyBillTrendUp/>,
+    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
   },
 ];
 
@@ -298,8 +334,11 @@ const AppSidebar = () => {
                 src="/images/logo/logo-dark.svg"
                 alt="Logo"
                 width={150}
-                height={40}
+                height={50}
+               
               />
+              <p>UATF</p>
+              <h1>DEPTO. DE INFRAESTRUCTURA</h1>
             </>
           ) : (
             <img

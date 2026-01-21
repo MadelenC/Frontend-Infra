@@ -68,7 +68,7 @@ export default function EncargadoForm({ onSubmit, onClose }) {
 
         <h1 className="text-lg font-bold mb-4 text-center">Registrar Encargado</h1>
 
-        {/* Campos principales */}
+        {/* Campos principalesssss */}
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col">
             <label className="text-xs font-semibold text-gray-700">Nombre</label>
@@ -153,7 +153,7 @@ export default function EncargadoForm({ onSubmit, onClose }) {
           </div>
         </div>
 
-        {/* MultiSelects para entidades */}
+        {/* MultiSelects para entidadesss */}
         <div className="grid grid-cols-2 gap-4 pt-4">
           <MultiSelect
             label="Facultad"
