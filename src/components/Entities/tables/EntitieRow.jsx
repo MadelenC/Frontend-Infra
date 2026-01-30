@@ -1,12 +1,8 @@
 import React from "react";
-import { TableRow, TableCell } from "../../ui/table";
 import { FaEdit } from "react-icons/fa";
+import { TableRow, TableCell } from "../../ui/table";
 
-export default function EntitieRow({ entitie }) {
-  const handleEdit = () => {
-    console.log("Editar entidad (sin acción por ahora):", entitie);
-  };
-
+export default function EntitieRow({ entitie, onEdit }) {
   return (
     <TableRow className="hover:bg-gray-50 transition-colors">
       <TableCell>{entitie.id}</TableCell>
@@ -16,20 +12,18 @@ export default function EntitieRow({ entitie }) {
       <TableCell>{entitie.sigla}</TableCell>
 
       <TableCell>
-        <div className="flex gap-2">
-          {/* Ícono Editar (NO abre el panel) */}
-          <button
-            className="p-2 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200"
-            title="Editar entidad"
-            onClick={handleEdit}
-          >
-            <FaEdit size={14} />
-          </button>
-        </div>
+        <button
+          className="p-2 rounded-full bg-indigo-100 text-indigo-600 hover:bg-indigo-200 transition"
+          title="Editar entidad"
+          onClick={() => onEdit(entitie)}
+        >
+          <FaEdit size={14} />
+        </button>
       </TableCell>
     </TableRow>
   );
 }
+
 
 
 

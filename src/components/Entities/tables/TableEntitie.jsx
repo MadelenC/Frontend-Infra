@@ -4,6 +4,7 @@ import EntitieRow from "./EntitieRow";
 import Pagination from "./pagination";
 import SearchBar from "../search/SearchBar";
 import EntitieFormPanel from "../form/EntitieFormPanel";
+import EditEntitiePanel from "../form/EditEntitiePanel";
 
 export default function TableEntitie() {
   const { entidades = [], loading, error, fetchEntidades } = useEntidadStore();
@@ -12,18 +13,22 @@ export default function TableEntitie() {
   const [page, setPage] = useState(1);
   const [limit] = useState(5);
 
-  const [openPanel, setOpenPanel] = useState(false);
+  // Estados separados para cada panel
+  const [openFormPanel, setOpenFormPanel] = useState(false);
+  const [openEditPanel, setOpenEditPanel] = useState(false);
   const [entitieToEdit, setEntitieToEdit] = useState(null);
 
   useEffect(() => {
     fetchEntidades();
   }, [fetchEntidades]);
 
+  // Abrir panel de edición
   const handleEdit = (entitie) => {
     setEntitieToEdit(entitie);
-    setOpenPanel(true);
+    setOpenEditPanel(true);
   };
 
+  // Filtrado de búsqueda
   const filteredEntidades = (entidades || []).filter((e) => {
     const term = search.toLowerCase();
     return (
@@ -34,6 +39,7 @@ export default function TableEntitie() {
     );
   });
 
+  // Paginación
   const totalPages = Math.ceil(filteredEntidades.length / limit);
   const currentEntidades = filteredEntidades.slice(
     (page - 1) * limit,
@@ -48,12 +54,12 @@ export default function TableEntitie() {
 
   return (
     <div className="overflow-hidden rounded-xl border bg-white shadow-md p-4">
-      {/* Botón crear */}
+      
       <div className="flex justify-end mb-4">
         <button
           onClick={() => {
             setEntitieToEdit(null);
-            setOpenPanel(true);
+            setOpenFormPanel(true); 
           }}
           className="border border-blue-500 text-blue-600 px-4 py-2 rounded-md hover:bg-blue-50"
         >
@@ -61,8 +67,10 @@ export default function TableEntitie() {
         </button>
       </div>
 
+      {/* Barra de búsqueda */}
       <SearchBar search={search} setSearch={setSearch} />
 
+      {/* Tabla de entidades */}
       <div className="overflow-x-auto">
         <table className="min-w-full text-sm">
           <thead className="bg-blue-50">
@@ -76,14 +84,13 @@ export default function TableEntitie() {
               )}
             </tr>
           </thead>
-
           <tbody>
             {currentEntidades.length > 0 ? (
               currentEntidades.map((entitie) => (
                 <EntitieRow
                   key={entitie.id}
                   entitie={entitie}
-                  onEdit={handleEdit}
+                  onEdit={handleEdit} 
                 />
               ))
             ) : (
@@ -97,19 +104,32 @@ export default function TableEntitie() {
         </table>
       </div>
 
+      {/* Paginación */}
       <Pagination page={page} totalPages={totalPages} setPage={setPage} />
 
+      {/* Panel para crear nueva entidad */}
       <EntitieFormPanel
-        open={openPanel}
+        open={openFormPanel}
         entitie={entitieToEdit}
         onClose={() => {
-          setOpenPanel(false);
+          setOpenFormPanel(false);
+          setEntitieToEdit(null);
+        }}
+      />
+
+      {/* Panel para editar entidad existente */}
+      <EditEntitiePanel
+        open={openEditPanel}
+        entitieId={entitieToEdit?.id || null}
+        onClose={() => {
+          setOpenEditPanel(false);
           setEntitieToEdit(null);
         }}
       />
     </div>
   );
 }
+
 
 
 

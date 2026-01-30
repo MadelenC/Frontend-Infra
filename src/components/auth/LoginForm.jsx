@@ -54,10 +54,10 @@ export default function LoginForm() {
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-6">
           <div>
-            <Label>
+            <label>
               Cédula de Identidad <span className="text-error-500">*</span>
-            </Label>
-            <Input
+            </label>
+            <input
               name="cedula"
               type="text"
               value={formData.cedula}
@@ -68,11 +68,11 @@ export default function LoginForm() {
           </div>
 
           <div>
-            <Label>
+            <label>
               Contraseña <span className="text-error-500">*</span>
-            </Label>
+            </label>
             <div className="relative">
-              <Input
+              <input
                 name="password"
                 type={showPassword ? "text" : "password"}
                 value={formData.password}
@@ -90,7 +90,7 @@ export default function LoginForm() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Checkbox checked={isChecked} onChange={setIsChecked} />
+            <checkbox checked={isChecked} onChange={setIsChecked} />
             <span className="text-sm text-gray-700">Mantener sesión activa</span>
           </div>
 
