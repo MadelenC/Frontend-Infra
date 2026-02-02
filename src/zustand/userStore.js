@@ -79,6 +79,12 @@ export const useUserStore = create((set, get) => ({
       .sort((a, b) => a.id - b.id);
     return filtered.slice((page - 1) * limit, page * limit);
   },
+
+    //SELECT: SOLO CHOFERES (para selects / formularios)
+  getDrivers: () => {
+    return get().users.filter(u => u.tipo === "chofer");
+  },
+
 }));
 
 
