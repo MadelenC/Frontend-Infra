@@ -1,8 +1,6 @@
-// src/components/travel/TableTravel.js
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useRolTravelStore } from "../../../zustand/useRolTravelStore";
 import { useUserStore } from "../../../zustand/userStore";
-import { useReactToPrint } from "react-to-print";
 import TravelRow from "./TravelRow";
 import Pagination from "./Pagination";
 import SearchBar from "../search/SearchBar";
@@ -34,16 +32,6 @@ export default function TableTravel() {
   const totalPages = Math.ceil(filteredTravels.length / limit);
   const currentTravels = filteredTravels.slice((page - 1) * limit, page * limit);
 
-  // Ref para react-to-print
-  const printRef = useRef();
-
-  // Función imprimir
-  const handlePrint = useReactToPrint({
-    content: () => printRef.current,
-    documentTitle: "Rol_de_Viajes",
-    onAfterPrint: () => console.log("Impresión finalizada"),
-  });
-
   useEffect(() => {
     fetchRolTravels();
     fetchUsers();
@@ -54,78 +42,110 @@ export default function TableTravel() {
 
   return (
     <div className="overflow-hidden rounded-xl bg-white shadow-md p-4">
-      {/* Botones */}
-      <div className="flex justify-end mb-4 gap-2">
-        <button
-          onClick={() => setOpenPanel(true)}
-          className="border border-blue-500 text-blue-600 px-4 py-2 rounded-md hover:bg-blue-50 flex items-center gap-2"
-        >
-          <FaPlus size={14} /> Agregar Chofer
-        </button>
 
-        <button
-          onClick={handlePrint}
-          className="border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100 flex items-center gap-2"
-        >
-          <FaPrint size={14} /> Imprimir
-        </button>
-      </div>
+      {/* ================= NO SE IMPRIME ================= */}
+      <div className="print:hidden">
 
-      {/* Buscador */}
-      <SearchBar search={search} setSearch={setSearch} />
+        {/* BOTONES */}
+        <div className="flex justify-end mb-4 gap-2">
+          <button
+            onClick={() => setOpenPanel(true)}
+            className="border border-blue-500 text-blue-600 px-4 py-2 rounded-md hover:bg-blue-50 flex items-center gap-2"
+          >
+            <FaPlus size={14} /> Agregar Chofer
+          </button>
 
-      {/* Tabla normal */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-sm">
-          <thead className="bg-blue-50">
-            <tr>
-              {["ID", "Chofer", "TipoA", "TipoB", "TipoC", "Cantidad", "Excepciones", "Fecha", "Operaciones"].map(
-                (head) => (
-                  <th key={head} className="px-4 py-3 text-left font-medium text-gray-700">{head}</th>
-                )
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {currentTravels.length > 0 ? (
-              currentTravels.map((travel) => <TravelRow key={travel.id} entitie={travel} />)
-            ) : (
-              <tr>
-                <td colSpan={9} className="text-center py-4 text-gray-500">No hay registros</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Paginación */}
-      <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-
-      {/* Modal */}
-      {openPanel && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setOpenPanel(false)} />
-          <div className="relative z-10 w-[420px] animate-fadeIn">
-            {loadingUsers ? (
-              <div className="p-4 text-center">Cargando choferes...</div>
-            ) : (
-              <AddDriverForm
-                choferes={drivers}
-                onSubmit={(data) => { console.log("Registrar chofer:", data); setOpenPanel(false); }}
-                onClose={() => setOpenPanel(false)}
-              />
-            )}
-          </div>
+          <button
+            onClick={() => window.print()}
+            className="border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100 flex items-center gap-2"
+          >
+            <FaPrint size={14} /> Imprimir
+          </button>
         </div>
-      )}
 
-      {/* Componente para imprimir, siempre en el DOM */}
-      <div style={{ position: "absolute", left: "-9999px", top: 0 }}>
-        <PrintTravel ref={printRef} travels={filteredTravels} />
+        {/* BUSCADOR */}
+        <SearchBar search={search} setSearch={setSearch} />
+
+        {/* TABLA NORMAL */}
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm">
+            <thead className="bg-blue-50">
+              <tr>
+                {[
+                  "ID",
+                  "Chofer",
+                  "TipoA",
+                  "TipoB",
+                  "TipoC",
+                  "Cantidad",
+                  "Excepciones",
+                  "Fecha",
+                  "Operaciones",
+                ].map((head) => (
+                  <th
+                    key={head}
+                    className="px-4 py-3 text-left font-medium text-gray-700"
+                  >
+                    {head}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {currentTravels.length > 0 ? (
+                currentTravels.map((travel) => (
+                  <TravelRow key={travel.id} entitie={travel} />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={9} className="text-center py-4 text-gray-500">
+                    No hay registros
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* PAGINACIÓN */}
+        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+
+        {/* MODAL */}
+        {openPanel && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              onClick={() => setOpenPanel(false)}
+            />
+            <div className="relative z-10 w-[420px] animate-fadeIn">
+              {loadingUsers ? (
+                <div className="p-4 text-center">Cargando choferes...</div>
+              ) : (
+                <AddDriverForm
+                  choferes={drivers}
+                  onSubmit={(data) => {
+                    console.log("Registrar chofer:", data);
+                    setOpenPanel(false);
+                  }}
+                  onClose={() => setOpenPanel(false)}
+                />
+              )}
+            </div>
+          </div>
+        )}
+
       </div>
+
+      {/* ================= SOLO IMPRESIÓN ================= */}
+      <div className="hidden print:block">
+        <PrintTravel travels={filteredTravels} />
+      </div>
+
     </div>
   );
 }
+
+
 
 
 
