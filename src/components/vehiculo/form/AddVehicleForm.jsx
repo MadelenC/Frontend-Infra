@@ -50,14 +50,21 @@ export default function AddVehicleForm({ onSubmit, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/20 pt-9">
-      <div className="bg-white rounded-lg shadow-md w-full max-w-2xl p-4 overflow-y-auto max-h-[75vh] relative">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4 pt-2 pl-10">Nuevo Vehículo</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center  bg-black/40 backdrop-blur-sm pt-9">
+      <div className="bg-white rounded-lg shadow-md w-full max-w-2xl p-4 overflow-y-auto max-h-[75vh] relative dark:bg-gray-800">
+          <button
+          onClick={onClose}
+          className="absolute top-3 right-3 text-gray-700 font-bold px-3 py-1 rounded hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700"
+          aria-label="Cerrar formulario"
+        >
+          X
+        </button>
+        <h2 className="text-lg font-semibold text-gray-800 mb-4 pt-2 pl-10 dark:text-gray-200 text-center">Nuevo Vehículo</h2>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-2 p-5">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-2 p-5 dark:text-gray-200">
           {[
-            { label: "Asignado a", name: "asignadoA" },
-            { label: "Placa", name: "placa" },
+            { label: "Asignado a", name: "asignadoA", className:"dark:text-gray-200" },
+            { label: "Placa", name: "placa", className:"dark:text-gray-200" },
             { label: "Color", name: "color" },
             { label: "Motor", name: "motor" },
             { label: "Chasis", name: "chasis" },
@@ -100,12 +107,7 @@ export default function AddVehicleForm({ onSubmit, onClose }) {
           </div>
         </form>
 
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-4 text-gray-600 hover:text-gray-900 text-[2.5rem] leading-none p-2"
-        >
-          ×
-        </button>
+        
       </div>
     </div>
   );

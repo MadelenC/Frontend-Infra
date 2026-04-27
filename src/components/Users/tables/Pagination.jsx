@@ -25,7 +25,7 @@ export default function Pagination({ page, totalPages, setPage }) {
   return (
     <div className="flex justify-center items-center gap-2 py-4">
       <button
-        className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-40 transition"
+        className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-40 transition dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-200"
         disabled={page === 1}
         onClick={() => setPage(page - 1)}
       >
@@ -38,7 +38,7 @@ export default function Pagination({ page, totalPages, setPage }) {
         ) : (
           <button
             key={`page-${p}-${idx}`}
-            className={`px-3 py-1.5 rounded-lg transition ${p === page ? "bg-blue-600 text-white shadow" : "bg-gray-100 hover:bg-gray-200"}`}
+            className={`px-3 py-1.5 rounded-lg transition ${p === page ? "bg-blue-600 text-white shadow" : "bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-200"}`}
             onClick={() => setPage(p)}
           >
             {p}
@@ -47,7 +47,7 @@ export default function Pagination({ page, totalPages, setPage }) {
       )}
 
       <button
-        className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-40 transition"
+        className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-40 transition dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-200"
         disabled={page === totalPages}
         onClick={() => setPage(page + 1)}
       >

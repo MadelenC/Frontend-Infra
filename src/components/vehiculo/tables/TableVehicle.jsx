@@ -5,9 +5,9 @@ export default function TableVehicle({ vehicles }) {
   return (
     <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
 
-      <table className="w-full border-collapse text-sm bg-white dark:bg-white/[0.03] table-fixed">
+      <table className="w-full border-collapse text-sm bg-white dark:bg-white/[0.03] table-fixed dark:border-gray-800">
 
-        <thead className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-900">
+        <thead className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-900 dark:border-gray-800">
 
           <tr>
             {[
@@ -22,7 +22,7 @@ export default function TableVehicle({ vehicles }) {
             ].map((head) => (
               <th
                 key={head}
-                className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-300"
+                className=" border-gray-200 dark:border-gray-700 px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-300 "
               >
                 {head}
               </th>

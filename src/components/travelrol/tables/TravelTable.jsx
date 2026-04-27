@@ -125,34 +125,48 @@ export default function TravelTable() {
     <div className="overflow-hidden rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-md p-4">
 
       <div className="print:hidden">
-
+         
         {/* BOTONES */}
-        <div className="flex justify-end mb-4 gap-2">
+       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
 
-          <button
-            onClick={() => setOpenPanel(true)}
-            className="flex items-center gap-3 bg-gradient-to-r from-blue-600 to-blue-500
-              hover:from-blue-700 hover:to-blue-600 text-white px-5 py-3 rounded-lg shadow-lg font-medium
-              focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-offset-2 transition-all duration-300
-              hover:scale-105 active:scale-95 mb-4"
-          >
-            <FaPlus size={14} /> Agregar Chofer
-          </button>
+  {/* SEARCH (izquierda) */}
+  <div className="w-full md:w-auto">
+    <SearchBar search={search} setSearch={setSearch} />
+  </div>
 
-          <button
-            onClick={() => window.print()}
-            className="flex items-center gap-3 bg-gradient-to-r from-orange-600 to-orange-500
-              hover:from-orange-700 hover:to-orange-600 text-white px-5 py-3 rounded-lg shadow-lg font-medium
-              focus:outline-none focus:ring-4 focus:ring-orange-400 focus:ring-offset-2 transition-all duration-300
-              hover:scale-105 active:scale-95 mb-4"
-          >
-            <FaPrint size={14} /> Imprimir
-          </button>
+  {/* BOTONES (derecha) */}
+  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:justify-end w-full md:w-auto">
 
-        </div>
+    <button
+      onClick={() => setOpenPanel(true)}
+      className="flex items-center justify-center gap-3
+        bg-gradient-to-r from-blue-600 to-blue-500
+        hover:from-blue-700 hover:to-blue-600
+        dark:bg-gray-600 dark:bg-none dark:hover:bg-gray-800
+        text-white px-5 py-3 rounded-lg shadow-lg font-medium
+        focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-offset-2
+        dark:focus:ring-gray-600 dark:focus:ring-offset-gray-900
+        transition-all duration-300
+        hover:scale-105 active:scale-95 w-full sm:w-auto">
+      <FaPlus size={14} /> Agregar Chofer
+    </button>
 
-        {/* BUSCADOR */}
-        <SearchBar search={search} setSearch={setSearch} />
+    <button
+      onClick={() => window.print()}
+      className="flex items-center justify-center
+        gap-3 bg-gradient-to-r from-orange-600 to-orange-500
+        hover:from-orange-700 hover:to-orange-600
+        text-white px-5 py-3 rounded-lg shadow-lg font-medium
+        focus:outline-none focus:ring-4 focus:ring-orange-400 focus:ring-offset-2
+        transition-all duration-300
+        hover:scale-105 active:scale-95 w-full sm:w-auto">
+      <FaPrint size={20} />
+    </button>
+
+  </div>
+</div>
+
+       
 
         {/* TABLA */}
         <div className="overflow-x-auto">
@@ -175,7 +189,7 @@ export default function TravelTable() {
                 ].map((head) => (
                   <th
                     key={head}
-                    className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300"
+                    className="px-4 py-3  border-white-200 text-left font-medium text-gray-700 dark:text-gray-300 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
                   >
                     {head}
                   </th>

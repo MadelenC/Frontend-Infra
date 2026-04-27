@@ -68,13 +68,14 @@ export default function TableUser() {
         <button
           onClick={() => { setOpenPanel(true); setFormType(null); }}
           className="flex items-center gap-3
-            bg-gradient-to-r from-blue-600 to-blue-500
-            hover:from-blue-700 hover:to-blue-600
-            text-white px-5 py-3 rounded-lg shadow-lg font-medium
-            focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-offset-2
-            transition-all duration-300
-            hover:scale-105 active:scale-95"
-        >
+              bg-gradient-to-r from-blue-600 to-blue-500
+              hover:from-blue-700 hover:to-blue-600
+              dark:bg-gray-600 dark:bg-none dark:hover:bg-gray-800
+              text-white px-5 py-3 rounded-lg shadow-lg font-medium
+              focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-offset-2
+              dark:focus:ring-gray-600 dark:focus:ring-offset-gray-900
+              transition-all duration-300
+              hover:scale-105 active:scale-95">
           <span className="text-lg font-bold">＋</span>
           Agregar Usuario
         </button>

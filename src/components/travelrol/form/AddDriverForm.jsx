@@ -5,7 +5,7 @@ export default function AddDriverForm({ choferes = [], choferesRegistrados = [],
   const [choferId, setChoferId] = useState("");
   const [error, setError] = useState("");
 
-  const inputBase = "p-2 border rounded text-sm w-full";
+  const inputBase = "p-2 border rounded text-sm w-full transition  dark:bg-gray-200/40 dark:border-gray-200";;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,22 +50,31 @@ export default function AddDriverForm({ choferes = [], choferesRegistrados = [],
   };
 
   return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+      <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6 relative dark:bg-gray-800 dark:text-gray-200">
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-4 w-full max-w-md mx-auto bg-white p-4 rounded-xl shadow"
+      className="flex flex-col gap-3"
     >
-      <h3 className="text-center font-bold text-gray-600">
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 text-gray-700 font-bold px-3 py-1 rounded hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700"
+          aria-label="Cerrar formulario"
+        >
+          X
+        </button>
+      <h3 className="text-center font-semibold text-gray-600 dark:text-gray-200">
         Registrar Chofer al Rol de Viajes
       </h3>
 
-      <div className="flex flex-col">
-        <label className="text-gray-600 text-xs">Chofer</label>
+      <div className="flex flex-col ">
+        <label className="text-gray-600 text-sm dark:text-gray-200">Chofer:</label>
         <select
           value={choferId}
           onChange={(e) => setChoferId(e.target.value)}
           className={inputBase}
         >
-          <option value="">Seleccione un chofer</option>
+          <option value="" >Seleccione un chofer</option>
 
           {choferes.map((chofer) => {
             const yaRegistrado = choferesRegistrados.some(
@@ -80,18 +89,19 @@ export default function AddDriverForm({ choferes = [], choferesRegistrados = [],
               >
                 {chofer.nombres} {chofer.apellidos}{" "}
                 {yaRegistrado ? "(Ya registrado)" : ""}
+                
               </option>
             );
           })}
         </select>
 
-        {error && <span className="text-red-500 text-xs">{error}</span>}
+      {error && <span className="text-red-500 text-xs d">{error}</span>}
       </div>
 
       <div className="flex justify-center gap-3 mt-2">
         <button
           type="submit"
-          className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-gray-700 dark:hover:bg-gray-900"
         >
           Registrar
         </button>
@@ -105,5 +115,7 @@ export default function AddDriverForm({ choferes = [], choferesRegistrados = [],
         </button>
       </div>
     </form>
+    </div>
+    </div>
   );
 }

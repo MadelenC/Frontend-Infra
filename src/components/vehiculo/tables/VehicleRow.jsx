@@ -13,14 +13,14 @@ export default function VehicleRow({ vehicle, onEdit, onUpdateKm, onView }) {
       : "danger";
 
   const cellClass =
-    "border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300";
+    "border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300 dark:text-gray-400";
 
   return (
     <tr className="border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
 
       <td className={cellClass}>{vehicle.id}</td>
 
-      <td className={`${cellClass} truncate`}>
+      <td className={`${cellClass} truncate `}>
         {vehicle.asignacion}
       </td>
 

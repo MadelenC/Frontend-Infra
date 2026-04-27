@@ -14,27 +14,27 @@ export default function UserRow({ user, onEdit }) {
   return (
     <TableRow className="border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
 
-      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 font-medium text-gray-700 dark:text-gray-300">
+      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 font-medium text-gray-700 dark:text-gray-400">
         {user.id}
       </TableCell>
 
-      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">
+      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-400">
         {user.nombres}
       </TableCell>
 
-      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">
+      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-400">
         {user.apellidos}
       </TableCell>
 
-      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">
+      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-400">
         {user.cedula}
       </TableCell>
 
-      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">
+      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-400">
         {user.celular}
       </TableCell>
 
-      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2">
+      <TableCell className="border border-gray-200 dark:border-gray-700 dark:text-gray-400 px-3 py-2">
         <Badge size="sm" color={badgeColor} className="px-2 py-1 text-xs">
           {user.tipo}
         </Badge>

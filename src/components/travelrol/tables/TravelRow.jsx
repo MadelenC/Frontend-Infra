@@ -40,12 +40,12 @@ export default function TravelRow({
     <>
       <tr className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
 
-        <td className={cellClass}>{entitie.displayId}</td>
-        <td className={cellClass}>{entitie.chofer}</td>
-        <td className={cellClass}>{entitie.tipoA}</td>
-        <td className={cellClass}>{entitie.tipoB}</td>
-        <td className={cellClass}>{entitie.tipoC}</td>
-        <td className={`${cellClass} text-center`}>{entitie.cantidad}</td>
+        <td className={cellClass} className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-400">{entitie.displayId}</td>
+        <td className={cellClass} className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-400">{entitie.chofer}</td>
+        <td className={cellClass} className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-400">{entitie.tipoA}</td>
+        <td className={cellClass} className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-400">{entitie.tipoB}</td>
+        <td className={cellClass} className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-400">{entitie.tipoC}</td>
+        <td className={`${cellClass} text-center`} className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-400">{entitie.cantidad}</td>
 
         {/* EXCEPCIONES */}
         <td className={`${cellClass} text-center relative`} ref={refExcepciones}>
@@ -86,7 +86,7 @@ export default function TravelRow({
           )}
         </td>
 
-        <td className={cellClass}>{entitie.fecha}</td>
+        <td className={cellClass} className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-400">{entitie.fecha}</td>
 
         {/* OPERACIONES */}
         <td className={`${cellClass} text-center relative`} ref={refOperaciones}>
