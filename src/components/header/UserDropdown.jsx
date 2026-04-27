@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../zustand/AuthUsers";
-import { SlLogin } from "react-icons/sl";
+import { SlLogin,SlUser } from "react-icons/sl";
 
 export default function UserDropdown() {
   const navigate = useNavigate();
@@ -48,6 +48,18 @@ export default function UserDropdown() {
             <SlLogin className="w-5 h-5" />
             Cerrar sesión
           </p>
+          <p
+            className="px-3 py-2 m-0 cursor-pointer text-red-600 dark:text-white hover:bg-gray-100 dark:hover:bg-[#151735] transition-colors flex items-center gap-2"
+            onClick={() => {
+              logout(); // limpiar sesión
+              setIsOpen(false); // cerrar dropdown
+              navigate("/signin"); // redirigir a signin
+            }}
+          >
+            <SlUser className="w-5 h-5" />
+            Ver Perfil
+          </p>
+          
         </div>
       )}
     </div>

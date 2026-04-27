@@ -19,14 +19,47 @@ export default function AddVehicleForm({ onSubmit, onClose }) {
 
   const [errors, setErrors] = useState({});
 
-  // Maneja cambios en inputs
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    const numericFields = ["chasis", "cilindrada", "pasajeros", "kilometraje"];
+    const textOnlyFields = ["color", "asignadoA"];
+
+    // SOLO NÚMEROS
+    if (numericFields.includes(name)) {
+      if (!/^\d*$/.test(value)) return;
+    }
+
+    // SOLO LETRAS
+    if (textOnlyFields.includes(name)) {
+      if (!/^[a-zA-ZÁÉÍÓÚñÑ\s]*$/.test(value)) return;
+    }
+
+    // PLACA (mayúsculas + control de caracteres)
+    if (name === "placa") {
+      const valueUpper = value.toUpperCase();
+      if (!/^[A-Z0-9-]*$/.test(valueUpper)) return;
+
+      setFormData((prev) => ({ ...prev, [name]: valueUpper }));
+      return;
+    }
+
+    // ASIGNADO A (forzar mayúscula inicial)
+    if (name === "asignadoA") {
+      const formatted =
+        value.charAt(0).toUpperCase() + value.slice(1);
+
+      setFormData((prev) => ({ ...prev, [name]: formatted }));
+      return;
+    }
+
     setFormData((prev) => ({ ...prev, [name]: value }));
+
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: false }));
   };
 
-  // Validación al perder foco
+  // Validación al perder foco (NO SE TOCA)
   const handleBlur = (e) => {
     const { name, value } = e.target;
     if (!value.trim()) setErrors((prev) => ({ ...prev, [name]: "Campo obligatorio" }));
@@ -42,29 +75,52 @@ export default function AddVehicleForm({ onSubmit, onClose }) {
       if (!formData[key].trim()) newErrors[key] = "Campo obligatorio";
     });
 
-    setErrors(newErrors);
-    if (Object.keys(newErrors).length > 0) return; // si hay errores no envía
+    // Placa Bolivia (Ej: 1234-ABC)
+    if (formData.placa && !/^\d{4}-[A-Z]{3}$/.test(formData.placa)) {
+      newErrors.placa = "Formato inválido (Ej: 1234-ABC)";
+    }
 
-    // Llamada a onSubmit del padre (que enviará con Axios)
+    // AsignadoA empieza con mayúscula
+    if (formData.asignadoA && !/^[A-ZÁÉÍÓÚÑ]/.test(formData.asignadoA)) {
+      newErrors.asignadoA = "Debe empezar con mayúscula";
+    }
+
+    // Validación numérica extra
+    const numericFields = ["chasis", "cilindrada", "pasajeros", "kilometraje"];
+    numericFields.forEach((field) => {
+      if (formData[field] && !/^\d+$/.test(formData[field])) {
+        newErrors[field] = "Solo se permiten números";
+      }
+    });
+
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
+
     onSubmit(formData);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center  bg-black/40 backdrop-blur-sm pt-9">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm pt-9">
       <div className="bg-white rounded-lg shadow-md w-full max-w-2xl p-4 overflow-y-auto max-h-[75vh] relative dark:bg-gray-800">
-          <button
+        <button
           onClick={onClose}
           className="absolute top-3 right-3 text-gray-700 font-bold px-3 py-1 rounded hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700"
           aria-label="Cerrar formulario"
         >
           X
         </button>
-        <h2 className="text-lg font-semibold text-gray-800 mb-4 pt-2 pl-10 dark:text-gray-200 text-center">Nuevo Vehículo</h2>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-2 p-5 dark:text-gray-200">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4 pt-2 pl-10 dark:text-gray-200 text-center">
+          Nuevo Vehículo
+        </h2>
+
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 md:grid-cols-3 gap-2 p-5 dark:text-gray-900"
+        >
           {[
-            { label: "Asignado a", name: "asignadoA", className:"dark:text-gray-200" },
-            { label: "Placa", name: "placa", className:"dark:text-gray-200" },
+            { label: "Asignado a", name: "asignadoA" },
+            { label: "Placa", name: "placa" },
             { label: "Color", name: "color" },
             { label: "Motor", name: "motor" },
             { label: "Chasis", name: "chasis" },
@@ -95,6 +151,7 @@ export default function AddVehicleForm({ onSubmit, onClose }) {
             onBlur={handleBlur}
             options={["", "optimo", "mantenimiento", "desuso"]}
             error={errors.estado}
+            className="text-gray-200"
           />
 
           <div className="md:col-span-3 flex justify-end mt-2">
@@ -106,27 +163,28 @@ export default function AddVehicleForm({ onSubmit, onClose }) {
             </button>
           </div>
         </form>
-
-        
       </div>
     </div>
   );
 }
 
-// Input con error
+// Input con error + dark mode
 function Input({ label, name, value, onChange, onBlur, error }) {
   return (
     <div className="flex flex-col w-full">
-      <label className="text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <label className="text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">
+        {label}
+      </label>
       <input
         type="text"
         name={name}
         value={value}
         onChange={onChange}
         onBlur={onBlur}
-        className={`h-9 px-2 border rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 w-full ${
-          error ? "border-red-500 bg-red-50" : "border-gray-300"
-        }`}
+        className={`p-2 border rounded text-sm w-full transition 
+        dark:bg-gray-200/40 dark:border-gray-200
+        focus:outline-none focus:ring-1 focus:ring-blue-500
+        ${error ? "border-red-500 bg-red-50" : "border-gray-300"}`}
         placeholder={`Ingrese ${label}`}
       />
       {error && <span className="text-red-500 text-xs mt-1">{error}</span>}
@@ -134,19 +192,22 @@ function Input({ label, name, value, onChange, onBlur, error }) {
   );
 }
 
-// Select con error
+// Select con error + dark mode
 function Select({ label, name, value, onChange, onBlur, options, error }) {
   return (
     <div className="flex flex-col w-full">
-      <label className="text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <label className="text-sm font-medium text-gray-700 mb-1 dark:text-gray-200">
+        {label}
+      </label>
       <select
         name={name}
         value={value}
         onChange={onChange}
         onBlur={onBlur}
-        className={`h-9 px-2 border rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 w-full ${
-          error ? "border-red-500 bg-red-50" : "border-gray-300"
-        }`}
+        className={`p-2 border rounded text-sm w-full transition 
+        dark:bg-gray-200/40 dark:border-gray-200
+        focus:outline-none focus:ring-1 focus:ring-blue-500
+        ${error ? "border-red-500 bg-red-50" : "border-gray-300"}`}
       >
         {options.map((opt) => (
           <option key={opt} value={opt}>

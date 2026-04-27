@@ -96,17 +96,17 @@ export default function ReservaModal({ initialData, isOpen, onClose, onSave, cho
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-5">
-      <div className="bg-gray-50 w-full max-w-4xl max-h-[80vh] p-6 rounded-xl shadow-2xl text-gray-800 overflow-hidden flex flex-col">
-        <h2 className="text-2xl font-bold border-b pb-2 mb-4 text-gray-900 flex-shrink-0">
+    <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-5  bg-black/40 backdrop-blur-sm">
+      <div className="bg-gray-50 w-full max-w-4xl max-h-[80vh] p-6 rounded-xl shadow-2xl text-gray-800 overflow-hidden flex flex-col dark:bg-gray-800 drak:text-gray-200">
+        <h2 className="text-2xl font-bold border-b pb-2 mb-4 text-gray-900 flex-shrink-0 dark:text-gray-200 text-center">
           Nuevo Viaje
         </h2>
 
-        <form onSubmit={handleSubmit} className="overflow-y-auto flex-grow pr-3 space-y-6">
+        <form onSubmit={handleSubmit} className="overflow-y-auto flex-grow pr-3 space-y-6 ">
 
           {/* Destinos dinámicos */}
-          <div className="bg-white p-4 rounded-lg shadow-sm border">
-            <h3 className="text-md font-semibold mb-3 text-gray-900 border-b pb-1">Destinos</h3>
+          <div className="bg-white p-4 rounded-lg shadow-sm border dark:bg-gray-800">
+            <h3 className="text-md font-semibold mb-3 text-gray-900 border-b pb-1 dark:text-gray-300">Destinos</h3>
             {formData.destinos.map((d, i) => {
               const filteredDestinos = destinos?.filter(dest =>
                 d.nombre
@@ -115,7 +115,7 @@ export default function ReservaModal({ initialData, isOpen, onClose, onSave, cho
               );
 
               return (
-                <div key={i} className="flex gap-2 items-start mb-2 relative">
+                <div key={i} className="flex gap-2 items-start mb-2 relative ">
                   <input
                     type="text"
                     placeholder="Destino"
@@ -123,15 +123,15 @@ export default function ReservaModal({ initialData, isOpen, onClose, onSave, cho
                     onChange={(e) => handleDestinoChange(i, e.target.value)}
                     onFocus={() => setShowAllDestinos(prev => { const newShow = [...prev]; newShow[i] = true; return newShow; })}
                     onBlur={() => setTimeout(() => setShowAllDestinos(prev => { const newShow = [...prev]; newShow[i] = false; return newShow; }), 200)}
-                    className="flex-1 border px-3 py-1.5 rounded-md text-sm bg-white"
+                    className="p-2 border rounded text-sm w-full transition  dark:bg-gray-200/40 dark:border-gray-200"
                   />
 
                   {(showAllDestinos[i] || d.nombre) && filteredDestinos?.length > 0 && (
-                    <ul className="absolute top-10 left-0 right-0 max-h-60 overflow-y-auto bg-white border rounded-md z-50 text-sm">
+                    <ul className="absolute top-10 left-0 right-0 max-h-60 overflow-y-auto bg-white border rounded-md z-50 text-sm ">
                       {filteredDestinos.map((dest) => (
                         <li
                           key={dest.id}
-                          className="px-2 py-1 hover:bg-blue-100 cursor-pointer"
+                          className="px-2 py-1 hover:bg-blue-100 cursor-pointer "
                           onClick={() => seleccionarDestino(i, dest)}
                         >
                           {`(${dest.departamentoInicio}) ${dest.origen} → (${dest.departamentoFinal}) ${dest.destino}`}
@@ -149,7 +149,7 @@ export default function ReservaModal({ initialData, isOpen, onClose, onSave, cho
                       nuevos[i].km = e.target.value;
                       setFormData(f => ({ ...f, destinos: nuevos }));
                     }}
-                    className="w-20 border px-3 py-1.5 rounded-md text-sm"
+                    className="w-20 border px-3 py-1.5 rounded-md text-sm dark:bg-gray-200/40 dark:border-gray-200"
                   />
 
                   {formData.destinos.length > 1 && (
@@ -159,17 +159,17 @@ export default function ReservaModal({ initialData, isOpen, onClose, onSave, cho
               );
             })}
             <button type="button" onClick={agregarDestino} className="mt-2 text-gray-600 font-bold text-sm flex items-center gap-1">+ Agregar destino</button>
-            <div className="flex gap-2 mt-4 items-center">
-              <input type="number" name="kmAdicional" placeholder="Km adicional" value={formData.kmAdicional} onChange={handleChange} className="w-36 border px-3 py-1.5 rounded-md text-sm"/>
-              <input type="text" value={calcularTotalKm()} readOnly className="w-28 border px-3 py-1.5 rounded-md bg-gray-100 font-semibold text-sm"/>
+            <div className="flex gap-2 mt-4 items-center dark:bg-gray-800">
+              <input type="number" name="kmAdicional" placeholder="Km adicional" value={formData.kmAdicional} onChange={handleChange} className="w-36 border px-3 py-1.5 rounded-md text-sm dark:bg-gray-200/40 dark:border-gray-200"/>
+              <input type="text" value={calcularTotalKm()} readOnly className="w-28 border px-3 py-1.5 rounded-md bg-gray-100 font-semibold text-sm dark:bg-gray-200/40 dark:border-gray-200"/>
             </div>
           </div>
 
           {/* Información general */}
-          <div className="bg-white p-4 rounded-lg shadow-sm border grid grid-cols-2 gap-4">
+          <div className="bg-white p-4 rounded-lg shadow-sm border grid grid-cols-2 gap-4 dark:bg-gray-800">
             <div>
-              <label className="block mb-1 text-gray-900 text-sm font-semibold">Tipo de viaje</label>
-              <select name="tipoViaje" value={formData.tipoViaje} onChange={handleChange} className="w-full border px-3 py-1.5 rounded-md text-sm">
+              <label className="block mb-1 text-gray-900 text-sm font-semibold dark:text-gray-300">Tipo de viaje</label>
+              <select name="tipoViaje" value={formData.tipoViaje} onChange={handleChange} className="w-full border px-3 py-1.5 rounded-md text-sm ">
                 <option value="">Seleccione</option>
                 <option>Viaje de Práctica</option>
                 <option>Viaje de Inspección</option>
@@ -179,20 +179,20 @@ export default function ReservaModal({ initialData, isOpen, onClose, onSave, cho
             </div>
             <div>
               <label className="block mb-1 text-gray-900 text-sm font-semibold">Número de pasajeros</label>
-              <input type="number" name="pasajeros" value={formData.pasajeros} onChange={handleChange} className="w-full border px-3 py-1.5 rounded-md text-sm"/>
+              <input type="number" name="pasajeros" value={formData.pasajeros} onChange={handleChange} className="w-full border px-3 py-1.5 rounded-md text-sm dark:bg-gray-200/40 dark:border-gray-200"/>
             </div>
             <div>
               <label className="block mb-1 text-gray-900 text-sm font-semibold">Fecha de inicio</label>
-              <input type="datetime-local" name="inicio" value={formData.inicio} onChange={handleChange} className="w-full border px-3 py-1.5 rounded-md text-sm"/>
+              <input type="datetime-local" name="inicio" value={formData.inicio} onChange={handleChange} className="w-full border px-3 py-1.5 rounded-md text-sm dark:bg-gray-200/40 dark:border-gray-200"/>
             </div>
             <div>
               <label className="block mb-1 text-gray-900 text-sm font-semibold">Fecha de fin</label>
-              <input type="datetime-local" name="final" value={formData.final} onChange={handleChange} className="w-full border px-3 py-1.5 rounded-md text-sm"/>
+              <input type="datetime-local" name="final" value={formData.final} onChange={handleChange} className="w-full border px-3 py-1.5 rounded-md text-sm dark:bg-gray-200/40 dark:border-gray-200"/>
             </div>
           </div>
 
           {/* Choferes, Vehículos y Encargados */}
-          <div className="bg-white p-4 rounded-lg shadow-sm border grid grid-cols-3 gap-4">
+          <div className="bg-white p-4 rounded-lg shadow-sm border grid grid-cols-3 gap-4 dark:bg-gray-800">
             <div>
               <label className="block mb-1 text-gray-900 text-sm font-semibold">Choferes</label>
               <select name="chofer" value={formData.chofer} onChange={handleChange} className="w-full border px-3 py-1.5 rounded-md text-sm">
@@ -228,7 +228,7 @@ export default function ReservaModal({ initialData, isOpen, onClose, onSave, cho
           </div>
 
           {/* Entidad y objetivo */}
-          <div className="bg-white p-4 rounded-lg shadow-sm border space-y-3">
+          <div className="bg-white p-4 rounded-lg shadow-sm border space-y-3 dark:bg-gray-800">
             <div>
               <label className="block mb-1 text-gray-900 text-sm font-semibold">Entidad</label>
               <input type="text" name="entidad" value={formData.entidad} onChange={handleChange} className="w-full border px-3 py-1.5 rounded-md text-sm"/>

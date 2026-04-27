@@ -17,9 +17,9 @@ function FixMap() {
 
 export default function ModalMap({ lat, lng, onClose, destino }) {
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 bg-black/40 backdrop-blur-sm">
       
-      <div className="bg-white rounded-lg w-96 h-96 flex flex-col relative">
+      <div className="bg-white rounded-lg w-96 h-96 flex flex-col relative dark:bg-gray-800">
         
         {/* HEADER */}
         <div className="flex justify-end p-2">

@@ -12,10 +12,13 @@ export default function AddReservaModal({ isOpen, onClose, onSave, encargados = 
     pasajeros: "",
   });
 
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
+
     setFormData({
       encargado: "",
       fechaInicial: "",
@@ -24,17 +27,69 @@ export default function AddReservaModal({ isOpen, onClose, onSave, encargados = 
       objetivo: "",
       pasajeros: "",
     });
+
+    setErrors({});
+    setTouched({});
   }, [isOpen]);
+
+  // vALIDACIÓN
+  const validateField = (name, value) => {
+    if (!value) return "Campo obligatorio";
+
+    if (name === "pasajeros" && Number(value) <= 0) {
+      return "Debe ser mayor a 0";
+    }
+
+    return "";
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // evitar números en texto
+    if ((name === "entidad" || name === "objetivo") && /\d/.test(value)) {
+      return;
+    }
+
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (touched[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: validateField(name, value),
+      }));
+    }
   };
 
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+
+    setTouched((prev) => ({ ...prev, [name]: true }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: validateField(name, value),
+    }));
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    Object.keys(formData).forEach((key) => {
+      newErrors[key] = validateField(key, formData[key]);
+    });
+
+    setErrors(newErrors);
+
+    return !Object.values(newErrors).some((e) => e);
+  };
+
+  // SUBMIT CORREGIDO CON TOASTIFY
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.encargado) {
-      toast.error("Seleccione un encargado");
+
+    if (!validateForm()) {
+      toast.error("Corrija los errores del formulario");
       return;
     }
 
@@ -47,17 +102,21 @@ export default function AddReservaModal({ isOpen, onClose, onSave, encargados = 
       pasajeros: Number(formData.pasajeros),
     };
 
-    console.log("Payload a enviar:", payload);
-
     setSaving(true);
-    const response = await onSave(payload);
-    setSaving(false);
 
-    if (!response?.ok) {
-      toast.error(response?.error || "Error al guardar");
-    } else {
+    try {
+      await onSave(payload); // ✔ sin depender de response.ok
+
       toast.success("Reserva creada correctamente");
+
       onClose();
+
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al guardar la reserva");
+
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -65,91 +124,117 @@ export default function AddReservaModal({ isOpen, onClose, onSave, encargados = 
 
   return (
     <>
+      {/* 🔥 SOLO UNA VEZ EN TODA LA APP (puede quedarse aquí si quieres) */}
       <ToastContainer position="top-right" autoClose={3000} />
-      <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-5">
-        <div className="bg-white w-full max-w-3xl p-6 rounded-xl shadow-2xl">
-          <h2 className="text-2xl font-bold text-center text-blue-700 mb-6">
+
+      <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-5 backdrop-blur-sm">
+
+        <div className="bg-white w-full max-w-3xl p-6 rounded-xl shadow-2xl dark:bg-gray-800">
+
+          <h2 className="text-2xl font-bold text-center text-blue-700 mb-6 dark:text-gray-200">
             Nueva Reserva
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block mb-1 text-gray-900 text-sm font-semibold">
-                Encargado
-              </label>
+
+            {/* ENCARGADO */}
+            <Field label="Encargado">
               <select
                 name="encargado"
                 value={formData.encargado}
                 onChange={handleChange}
-                className="w-full border px-3 py-2 rounded-md"
+                onBlur={handleBlur}
+                className={inputClass(errors.encargado)}
               >
-                <option value="">Seleccione encargado</option>
-                {encargados?.map((u) => (
+                <option value="">Seleccione</option>
+                {encargados.map((u) => (
                   <option key={u.id} value={u.id}>
                     {u.nombres} {u.apellidos}
                   </option>
                 ))}
               </select>
-            </div>
+              <Error error={errors.encargado} />
+            </Field>
 
+            {/* FECHAS */}
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label>Fecha Inicial</label>
+
+              <Field label="Fecha Inicial">
                 <input
                   type="datetime-local"
                   name="fechaInicial"
                   value={formData.fechaInicial}
                   onChange={handleChange}
-                  className="w-full border px-3 py-2 rounded-md"
+                  onBlur={handleBlur}
+                  className={inputClass(errors.fechaInicial)}
                 />
-              </div>
-              <div>
-                <label>Fecha Final</label>
+                <Error error={errors.fechaInicial} />
+              </Field>
+
+              <Field label="Fecha Final">
                 <input
                   type="datetime-local"
                   name="fechaFinal"
                   value={formData.fechaFinal}
                   onChange={handleChange}
-                  className="w-full border px-3 py-2 rounded-md"
+                  onBlur={handleBlur}
+                  className={inputClass(errors.fechaFinal)}
                 />
-              </div>
+                <Error error={errors.fechaFinal} />
+              </Field>
+
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
-              <input
-                type="text"
-                name="entidad"
-                placeholder="Entidad"
-                value={formData.entidad}
-                onChange={handleChange}
-                className="w-full border px-3 py-2 rounded-md"
-              />
-              <input
-                type="text"
-                name="objetivo"
-                placeholder="Objetivo"
-                value={formData.objetivo}
-                onChange={handleChange}
-                className="w-full border px-3 py-2 rounded-md"
-              />
-              <input
-                type="number"
-                name="pasajeros"
-                placeholder="Pasajeros"
-                value={formData.pasajeros}
-                onChange={handleChange}
-                className="w-full border px-3 py-2 rounded-md"
-              />
+            {/* CAMPOS */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+              <Field label="Entidad">
+                <input
+                  name="entidad"
+                  value={formData.entidad}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={inputClass(errors.entidad)}
+                />
+                <Error error={errors.entidad} />
+              </Field>
+
+              <Field label="Objetivo">
+                <input
+                  name="objetivo"
+                  value={formData.objetivo}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={inputClass(errors.objetivo)}
+                />
+                <Error error={errors.objetivo} />
+              </Field>
+
+              <Field label="Pasajeros">
+                <input
+                  type="number"
+                  name="pasajeros"
+                  value={formData.pasajeros}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={inputClass(errors.pasajeros)}
+                />
+                <Error error={errors.pasajeros} />
+              </Field>
+
             </div>
 
+            {/* BOTONES */}
             <div className="flex justify-end gap-3 pt-4 border-t">
+
               <button
                 type="button"
                 onClick={onClose}
-                className="bg-gray-500 text-white px-5 py-2 rounded-md"
+                className="bg-red-500 text-white px-5 py-2 rounded-md"
               >
                 Cancelar
               </button>
+
               <button
                 type="submit"
                 disabled={saving}
@@ -157,10 +242,38 @@ export default function AddReservaModal({ isOpen, onClose, onSave, encargados = 
               >
                 {saving ? "Guardando..." : "Registrar"}
               </button>
+
             </div>
+
           </form>
+
         </div>
       </div>
     </>
   );
+}
+
+
+function Field({ label, children }) {
+  return (
+    <div className="flex flex-col">
+      <label className="text-sm font-medium mb-1 dark:text-gray-300">
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
+
+function Error({ error }) {
+  if (!error) return null;
+  return <p className="text-red-500 text-xs mt-1">{error}</p>;
+}
+
+function inputClass(error) {
+  return `p-2 border rounded text-sm w-full transition
+  bg-white text-gray-800
+  focus:outline-none focus:ring-2 focus:ring-blue-400
+  dark:bg-gray-800 dark:text-gray-200
+  ${error ? "border-red-500 focus:ring-red-400" : "border-gray-300 dark:border-gray-600"}`;
 }

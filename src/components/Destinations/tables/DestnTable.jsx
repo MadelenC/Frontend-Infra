@@ -75,12 +75,14 @@ export default function DestTable() {
     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-4 border border-gray-200 dark:border-gray-700 transition-all">
 
       {/* Barra superior */}
-      <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
 
-        <div className="flex flex-col sm:flex-row items-center gap-2">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
+
+        {/* IZQUIERDA: filtros */}
+        <div className="flex flex-col sm:flex-row w-full lg:w-auto gap-2">
 
           {/* Search */}
-          <div className="h-10 w-full sm:w-64">
+          <div className="w-full sm:w-80">
             <SearchBar search={search} setSearch={setSearch} />
           </div>
 
@@ -88,7 +90,11 @@ export default function DestTable() {
           <select
             value={departmentFilter}
             onChange={(e) => setDepartmentFilter(e.target.value)}
-            className="h-10 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-3 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+            className="h-10 w-full sm:w-64 px-3 text-sm rounded-md border shadow-sm transition
+            bg-white border-gray-300 text-gray-800
+            focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400
+
+            dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200"
           >
             <option value="">Todos los Departamentos</option>
             {departments.map((d) => (
@@ -100,19 +106,24 @@ export default function DestTable() {
 
         </div>
 
-        {/* Botón imprimir */}
-        <button className="flex items-center gap-3 bg-gradient-to-r from-orange-600 to-orange-500
-          hover:from-orange-700 hover:to-orange-600 text-white px-5 py-3 rounded-lg shadow-lg font-medium
-          focus:outline-none focus:ring-4 focus:ring-orange-400 focus:ring-offset-2 transition-all duration-300
-          hover:scale-105 active:scale-95 mb-4">
+      
+        <div className="w-full lg:w-auto">
+          <button className="w-full lg:w-auto flex items-center justify-center gap-2
+            bg-gradient-to-r from-orange-600 to-orange-500
+            hover:from-orange-700 hover:to-orange-600
+            text-white px-5 h-10 rounded-md shadow-md font-medium
+            transition-all duration-300
+            hover:scale-[1.03] active:scale-95">
 
-          <FaPrint size={14} /> Imprimir
+            <FaPrint size={14} />
+            Imprimir
 
-        </button>
+          </button>
+        </div>
 
       </div>
 
-      {/* Tabla */}
+     
       <TableDest data={currentData} />
 
       {currentData.length === 0 && (
@@ -121,7 +132,7 @@ export default function DestTable() {
         </div>
       )}
 
-      {/* Paginación */}
+   
       {currentData.length > 0 && (
         <div className="flex justify-center mt-4">
           <Pagination page={page} totalPages={totalPages} setPage={setPage} />

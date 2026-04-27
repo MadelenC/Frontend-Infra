@@ -62,42 +62,44 @@ export default function TableVehicle() {
   return (
     <div className="max-w-full rounded-xl bg-white dark:bg-gray-900 shadow-md p-4 pt-14">
 
-      {/* FILTROS */}
-      <div className="flex items-center justify-between mb-4">
+{/* FILTROS */}
+<div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-4">
 
-        <div className="flex gap-3">
-          <div className="w-64">
-            <SearchBar search={search} setSearch={setSearch} />
-          </div>
+  {/* IZQUIERDA */}
+  <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto items-end">
 
-          <select
-            value={estadoFilter}
-            onChange={(e) => setEstadoFilter(e.target.value)}
-            className="h-10 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md px-3"
-          >
-            <option value="">Estado</option>
-            <option value="optimo">optimo</option>
-            <option value="mantenimiento">mantenimiento</option>
-            <option value="desuso">desuso</option>
-          </select>
-        </div>
+    <div className="w-full sm:w-64">
+      <SearchBar search={search} setSearch={setSearch} />
+    </div>
 
-        <button
-          onClick={() => setOpenAddPanel(true)}
-          className="flex items-center gap-3
-              bg-gradient-to-r from-blue-600 to-blue-500
-              hover:from-blue-700 hover:to-blue-600
-              dark:bg-gray-600 dark:bg-none dark:hover:bg-gray-800
-              text-white px-5 py-3 rounded-lg shadow-lg font-medium
-              focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-offset-2
-              dark:focus:ring-gray-600 dark:focus:ring-offset-gray-900
-              transition-all duration-300
-              hover:scale-105 active:scale-95"
-        >
-          + Agregar Vehículo
-        </button>
+    <select
+      value={estadoFilter}
+      onChange={(e) => setEstadoFilter(e.target.value)}
+      className="h-10 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md px-3"
+    >
+      <option value="">Estado</option>
+      <option value="optimo">optimo</option>
+      <option value="mantenimiento">mantenimiento</option>
+      <option value="desuso">desuso</option>
+    </select>
 
-      </div>
+  </div>
+
+  {/* BOTÓN */}
+  <button
+    onClick={() => setOpenAddPanel(true)}
+    className="h-10 flex items-center justify-center gap-2
+      bg-gradient-to-r from-blue-600 to-blue-500
+      hover:from-blue-700 hover:to-blue-600
+      dark:bg-gray-600 dark:bg-none dark:hover:bg-gray-800
+      text-white px-5 rounded-lg shadow-lg font-medium
+      transition-all duration-300
+      hover:scale-105 active:scale-95"
+  >
+    + Agregar Vehículo
+  </button>
+
+</div>
 
       {/* TABLA */}
       <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">

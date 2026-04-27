@@ -42,7 +42,7 @@ export default function TableMaps({ data, openModal }) {
             <tr>
               <td
                 colSpan={headers.length}
-                className="py-6 text-center text-gray-500 dark:text-gray-400"
+                className="py-6 text-center text-gray-500 dark:text-gray-300"
               >
                 No hay registros.
               </td>

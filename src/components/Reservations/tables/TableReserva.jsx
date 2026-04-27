@@ -36,18 +36,30 @@ export default function TableReserva() {
   const currentData = filtered.slice((page - 1) * limit, page * limit);
   const encargados = users?.filter(u => u.tipo === "encargado") || [];
 
-  const handleSaveReserva = async (data) => {
-    setSaving(true);
-    const response = await addReserva(data); 
-    setSaving(false);
+ const handleSaveReserva = async (data) => {
+  setSaving(true);
 
-    if (response.ok) {
-      await fetchReservas(); 
-      setIsModalOpen(false); 
-    } else {
-      alert("Error al guardar: " + response.error);
+  try {
+    const response = await addReserva(data);
+
+  
+    if (!response?.ok) {
+      toast.error(response?.error || "Error al guardar");
+      return;
     }
+
+    await fetchReservas();
+
+    toast.success("Reserva registrada correctamente"); 
+
+    setIsModalOpen(false);
+
+  } catch (error) {
+    toast.error("Error inesperado al guardar");
+  } finally {
+    setSaving(false);
   }
+};
 
   if (loading)
     return <div className="p-4 text-center text-gray-600 dark:text-gray-300">Cargando reservas...</div>;
@@ -60,26 +72,41 @@ export default function TableReserva() {
 
       <ToastContainer position="top-right" autoClose={3000} />
 
-      <div className="flex justify-between items-center mb-4 gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
 
-        <SearchBar search={search} setSearch={setSearch} />
+          {/* IZQUIERDA: SEARCH */}
+          <div className="w-full md:w-1/3">
+            <SearchBar search={search} setSearch={setSearch} />
+          </div>
 
-        <div className="flex gap-2 flex-wrap">
+          {/* DERECHA: BOTONES */}
+          <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto md:justify-end">
 
-          <button className="flex items-center gap-3 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 dark:from-orange-600 dark:to-orange-500 dark:hover:from-orange-700 dark:hover:to-orange-600 text-white px-5 py-3 rounded-lg shadow-lg font-medium transition">
-            Imprimir
-          </button>
+            <button className="flex items-center justify-center gap-2
+              bg-gradient-to-r from-orange-600 to-orange-500
+              hover:from-orange-700 hover:to-orange-600
+              dark:from-orange-600 dark:to-orange-500 dark:hover:from-orange-700 dark:hover:to-orange-600
+              text-white px-5 h-10 rounded-lg shadow-lg font-medium
+              transition hover:scale-[1.02] active:scale-95 w-full sm:w-auto">
 
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 dark:from-blue-600 dark:to-blue-500 dark:hover:from-blue-700 dark:hover:to-blue-600 text-white px-5 py-3 rounded-lg shadow-lg font-medium transition"
-          >
-            + Agregar Reserva
-          </button>
+              Imprimir
+            </button>
+
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center justify-center gap-2
+              bg-gradient-to-r from-blue-600 to-blue-500
+              hover:from-blue-700 hover:to-blue-600
+              dark:from-blue-600 dark:to-blue-500 dark:hover:from-blue-700 dark:hover:to-blue-600
+              text-white px-5 h-10 rounded-lg shadow-lg font-medium
+              transition hover:scale-[1.02] active:scale-95 w-full sm:w-auto"
+            >
+              + Agregar Reserva
+            </button>
+
+          </div>
 
         </div>
-
-      </div>
 
       <ReservaTable reservas={currentData} />
 
