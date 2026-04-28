@@ -26,7 +26,7 @@ export default function TableJobApplication({
             ].map((h) => (
               <th
                 key={h}
-                className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-300"
+                className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-300 dark:text-gray-40"
               >
                 {h}
               </th>

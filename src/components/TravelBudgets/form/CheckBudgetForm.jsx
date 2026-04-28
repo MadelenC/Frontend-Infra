@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function CheckBudgetForm({ data, onClose,choferes, encargados, vehiculos }) {
   const [form, setForm] = useState({
@@ -30,6 +31,8 @@ export default function CheckBudgetForm({ data, onClose,choferes, encargados, ve
     flete: [{ vueltas: 0, costo: 0 }],
   });
 
+  const [errors, setErrors] = useState({});
+
   const [collapsed, setCollapsed] = useState({
     casilla1: true,
     casilla2: true,
@@ -45,13 +48,54 @@ export default function CheckBudgetForm({ data, onClose,choferes, encargados, ve
     arr[index][key] = Number(value);
     setForm((prev) => ({ ...prev, [field]: arr }));
   };
+  const isNumberField = (name) =>
+  name?.includes("litros") ||
+  name?.includes("precio") ||
+  name?.includes("nro") ||
+  name?.includes("dias") ||
+  name?.includes("personas") ||
+  name?.includes("costo") ||
+  name?.includes("vueltas");
+
+const validateField = (name, value) => {
+  let error = "";
+
+  if (value === "") {
+    error = "Obligatorio";
+  }
+
+    if (isNumberField(name)) {
+    const num = parseFloat(value);
+      if (value === "" || value === null) {
+        error = "Obligatorio";
+      } else if (isNaN(num)) {
+        error = "Debe ser número";
+      } else if (num < 0) {
+        error = "No negativo";
+      }
+    }
+
+      if (name === "horaLlegada" && form.horaSalida && value) {
+        if (value <= form.horaSalida) {
+          error = "Debe ser mayor a salida";
+        }
+  }
+
+  setErrors((prev) => {
+  const copy = { ...prev };
+  if (!error) delete copy[name];
+  else copy[name] = error;
+  return copy;
+});
+};
+
 
   const addArrayItem = (field, template) => {
     setForm((prev) => ({ ...prev, [field]: [...prev[field], template] }));
   };
 
   // Casilla 2
-  const combustible = (form.litros * form.precioLitro).toFixed(2);
+  const combustible = (form.litros || 0) * (form.precioLitro || 0);
   const combustibleTotal = Math.round(form.litros);
 
   // Casilla 3
@@ -79,37 +123,86 @@ export default function CheckBudgetForm({ data, onClose,choferes, encargados, ve
 
   const formatBs = (value) => `${value.toFixed(2)} Bs.`;
 
-  // Funciones de acción
-  const handleDelete = () => {
-    console.log("El presupuesto ha sido eliminado");
-    onClose(); // Cierra el modal
+  
+ const handleDelete = () => {
+  toast.info("🗑 Presupuesto eliminado");
+  onClose();
+};
+
+  const validateAll = () => {
+      let newErrors = {};
+
+      for (const key in form) {
+        const value = form[key];
+
+        if (Array.isArray(value)) {
+          value.forEach((item, i) => {
+            for (const subKey in item) {
+              const v = item[subKey];
+
+              if (v === "") {
+                newErrors[`${key}_${i}_${subKey}`] = "Obligatorio";
+              } else if (!isNaN(v) && Number(v) < 0) {
+                newErrors[`${key}_${i}_${subKey}`] = "No negativo";
+              }
+            }
+          });
+        } else {
+          if (value === "") {
+            newErrors[key] = "Obligatorio";
+          } else if (!isNaN(value) && Number(value) < 0) {
+            newErrors[key] = "No negativo";
+          }
+        }
+      }
+
+      if (form.horaSalida && form.horaLlegada) {
+        if (form.horaLlegada <= form.horaSalida) {
+          newErrors.horaLlegada = "Debe ser mayor a salida";
+        }
+      }
+
+      if (!form.vehiculo) newErrors.vehiculo = "Seleccione vehículo";
+      if (!form.chofer) newErrors.chofer = "Seleccione chofer";
+      if (!form.encargado) newErrors.encargado = "Seleccione encargado";
+      if (!form.fecha) newErrors.fecha = "Fecha obligatoria";
+
+      const isValid = Object.keys(newErrors).length === 0;
+      setErrors(newErrors);
+      return isValid;
   };
 
   const handleUpdate = () => {
-    console.log("Datos actualizados:", form);
-    if (typeof data?.onUpdate === "function") {
-      data.onUpdate(form);
+    const isValid = validateAll();
+
+    if (!isValid) {
+      toast.error("⚠️ Complete correctamente todos los campos");
+      return;
     }
-    onClose(); // Cierra el modal después de actualizar
+
+    toast.success("Presupuesto actualizado correctamente");
+
+    data?.onUpdate?.(form);
+    onClose();
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex justify-center items-start pt-10 z-50 overflow-y-auto">
-      <div className="bg-white w-[95%] sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[60%] max-w-[1200px] p-6 rounded-xl shadow-lg space-y-6 relative">
+    <div className="fixed inset-0 bg-black/40 flex justify-center items-start pt-10 z-50 overflow-y-auto bg-black/40 backdrop-blur-sm">
+      <div className="bg-white w-[95%] sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[60%] max-w-[1200px] p-6 rounded-xl shadow-lg space-y-6 relative dark:bg-gray-800">
 
-        {/* Botón de cierre X */}
+        
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-gray font-bold bg-white-600 px-3 py-1 rounded hover:bg-gray-200"
+          className="absolute top-3 right-3 text-gray dark:text-gray-200 font-bold bg-white-600 px-3 py-1 rounded hover:bg-gray-200"
         >
           X
         </button>
 
-        <h2 className="text-2xl font-bold">
+        <h2 className="text-2xl font-bold dark:text-gray-200">
           Presupuesto del viaje de ({data?.entidad || "Entidad"})
         </h2>
 
-        {/* 1ra Casilla */}
+        
         <Section
           title="1️⃣ Datos generales"
           collapsed={collapsed.casilla1}
@@ -119,7 +212,7 @@ export default function CheckBudgetForm({ data, onClose,choferes, encargados, ve
         >
           <div className="grid grid-cols-2 gap-4 mt-2">
             <select
-              className="border p-2 rounded"
+              className="border p-2 rounded dark:bg-gray-200/40 dark:border-gray-200"
               value={form.vehiculo}
               onChange={(e) => handleChange("vehiculo", e.target.value)}
             >
@@ -130,8 +223,9 @@ export default function CheckBudgetForm({ data, onClose,choferes, encargados, ve
                 </option>
               ))}
             </select>
+            {errors.vehiculo && <p className="text-red-500 text-xs">{errors.vehiculo}</p>}
           <select
-            className="border p-2 rounded"
+            className="border p-2 rounded dark:bg-gray-200/40 dark:border-gray-200"
             value={form.chofer}
             onChange={(e) => handleChange("chofer", e.target.value)}
             >
@@ -142,8 +236,9 @@ export default function CheckBudgetForm({ data, onClose,choferes, encargados, ve
               </option>
             ))}
            </select>
+           {errors.chofer && <p className="text-red-500 text-xs">{errors.chofer}</p>}
             <select
-              className="border p-2 rounded"
+              className="border p-2 rounded dark:bg-gray-200/40 dark:border-gray-200 "
               value={form.encargado}
               onChange={(e) => handleChange("encargado", e.target.value)}
             >
@@ -154,6 +249,7 @@ export default function CheckBudgetForm({ data, onClose,choferes, encargados, ve
                 </option>
               ))}
             </select>
+            {errors.encargado && <p className="text-red-500 text-xs">{errors.encargado}</p>}
             <Input
               label="Fecha de solicitud"
               type="date"
@@ -173,14 +269,18 @@ export default function CheckBudgetForm({ data, onClose,choferes, encargados, ve
         >
           <div className="grid grid-cols-3 gap-4 mt-2">
             <Input
+              name="litros"
               label="Gasolina/Diesel (L)"
               type="number"
               value={form.litros}
               onChange={(v) => handleChange("litros", Number(v))}
+              onBlur={validateField}
+               error={errors.litros}
             />
             <Input label="Combustible (Bs.)" value={combustible} readOnly />
             <Input label="Combustible Total (L)" value={combustibleTotal} />
             <Input
+              name="precioLitro"
               label="Precio (L.) Bs"
               type="number"
               value={form.precioLitro}
@@ -188,33 +288,39 @@ export default function CheckBudgetForm({ data, onClose,choferes, encargados, ve
             />
             <Input label="Costo Total" value={combustible} readOnly />
             <Input
+             name="horaSalida"
               label="Hora de salida"
               type="time"
               value={form.horaSalida}
               onChange={(v) => handleChange("horaSalida", v)}
             />
             <Input
+              name="horaLlegada"
               label="Hora de llegada"
               type="time"
               value={form.horaLlegada}
               onChange={(v) => handleChange("horaLlegada", v)}
             />
             <Input
+            name="materia"
               label="Materia"
               value={form.materia}
               onChange={(v) => handleChange("materia", v)}
             />
             <Input
+            name="docentes"
               label="Docentes"
               value={form.docentes}
               onChange={(v) => handleChange("docentes", v)}
             />
             <Input
+            name="sigla"
               label="Sigla"
               value={form.sigla}
               onChange={(v) => handleChange("sigla", v)}
             />
             <Input
+            name="nota"
               label="Nota"
               value={form.nota}
               onChange={(v) => handleChange("nota", v)}
@@ -231,46 +337,58 @@ export default function CheckBudgetForm({ data, onClose,choferes, encargados, ve
             setCollapsed((prev) => ({ ...prev, casilla3: !prev.casilla3 }))
           }
         >
-          <div className="grid grid-cols-2 gap-4 mt-2">
+          <div className="grid grid-cols-2 gap-4 mt-2 dark:text-gray-300">
             <ArrayInput
               title="Peajes ida y vuelta"
               array={form.peajes}
               onChange={(i, k, v) => handleArrayChange("peajes", i, k, v)}
               total={formatBs(peajesTotal)}
+              onBlur={validateField}
+errors={errors}
             />
             <ArrayInput
               title="Viáticos provincia"
               array={form.viaticosProvincia}
               onChange={(i, k, v) => handleArrayChange("viaticosProvincia", i, k, v)}
               total={formatBs(0)}
+              onBlur={validateField}
+errors={errors}
             />
             <ArrayInput
               title="Viáticos frontera"
               array={form.viaticosFrontera}
               onChange={(i, k, v) => handleArrayChange("viaticosFrontera", i, k, v)}
               total={formatBs(0)}
+              onBlur={validateField}
+errors={errors}
             />
             <ArrayInput
               title="Viáticos ciudad"
               array={form.viaticosCiudad}
               onChange={(i, k, v) => handleArrayChange("viaticosCiudad", i, k, v)}
               total={formatBs(viaticosCiudadTotal)}
+              onBlur={validateField}
+errors={errors}
             />
             <ArrayInput
               title="Mantenimiento vehicular"
               array={form.mantenimiento}
               onChange={(i, k, v) => handleArrayChange("mantenimiento", i, k, v)}
               total={formatBs(0)}
+              onBlur={validateField}
+errors={errors}
             />
             <ArrayInput
               title="Garaje del vehículo"
               array={form.garaje}
               onChange={(i, k, v) => handleArrayChange("garaje", i, k, v)}
               total={formatBs(0)}
+              onBlur={validateField}
+errors={errors}
             />
 
             <div className="col-span-2">
-              <label className="font-semibold">Total (A)</label>
+              <label className="font-semibold dark:text-gray-300">Total (A)</label>
               <input
                 readOnly
                 value={formatBs(totalA)}
@@ -290,7 +408,7 @@ export default function CheckBudgetForm({ data, onClose,choferes, encargados, ve
         >
           <div className="grid grid-cols-2 gap-4 mt-2">
             {form.transporte.map((t, i) => (
-              <div key={i} className="border p-2 rounded space-y-2 relative">
+              <div key={i} className="border p-2 rounded space-y-2 relative dark:text-gray-200">
                 <button
                   onClick={() => {
                     const arr = [...form.transporte];
@@ -309,6 +427,7 @@ export default function CheckBudgetForm({ data, onClose,choferes, encargados, ve
                     arr[i].ruta = v;
                     setForm((prev) => ({ ...prev, transporte: arr }));
                   }}
+              
                 />
                 <Input
                   label="Personas"
@@ -319,6 +438,7 @@ export default function CheckBudgetForm({ data, onClose,choferes, encargados, ve
                     arr[i].personas = Number(v);
                     setForm((prev) => ({ ...prev, transporte: arr }));
                   }}
+                
                 />
                 <Input
                   label="Costo"
@@ -329,6 +449,7 @@ export default function CheckBudgetForm({ data, onClose,choferes, encargados, ve
                     arr[i].costo = Number(v);
                     setForm((prev) => ({ ...prev, transporte: arr }));
                   }}
+               
                 />
                 <Input label="Total" type="text" readOnly value={formatBs(t.personas * t.costo)} />
               </div>
@@ -342,7 +463,7 @@ export default function CheckBudgetForm({ data, onClose,choferes, encargados, ve
               +
             </button>
 
-            <div className="mt-4 col-span-2">
+            <div className="mt-4 col-span-2 dark:text-gray-300">
               <h4 className="font-semibold">Uso del flete por el camión</h4>
               {form.flete.map((f, i) => (
                 <div key={i} className="flex gap-2 mt-2">
@@ -355,6 +476,8 @@ export default function CheckBudgetForm({ data, onClose,choferes, encargados, ve
                       arr[i].vueltas = Number(v);
                       setForm((prev) => ({ ...prev, flete: arr }));
                     }}
+                    onBlur={validateField}
+                    errors={errors}
                   />
                   <Input
                     label="Costo"
@@ -365,22 +488,24 @@ export default function CheckBudgetForm({ data, onClose,choferes, encargados, ve
                       arr[i].costo = Number(v);
                       setForm((prev) => ({ ...prev, flete: arr }));
                     }}
+                    onBlur={validateField}
+                    errors={errors}
                   />
                   <Input label="Total" type="text" readOnly value={formatBs(f.vueltas * f.costo)} />
                 </div>
               ))}
             </div>
 
-            <div className="col-span-2 mt-2">
+            <div className="col-span-2 mt-2 dark:text-gray-300">
               <label className="font-semibold">Total (B)</label>
               <input
                 readOnly
                 value={formatBs(totalB)}
-                className="border p-2 rounded w-full text-right bg-yellow-100"
+                className="border p-2 rounded w-full text-right bg-yellow-100 "
               />
             </div>
 
-            <div className="col-span-2 mt-2">
+            <div className="col-span-2 mt-2 dark:text-gray-300">
               <label className="font-semibold">Diferencia (A - B)</label>
               <input
                 readOnly
@@ -399,7 +524,7 @@ export default function CheckBudgetForm({ data, onClose,choferes, encargados, ve
                 handleDelete();
               }
             }}
-            className="px-4 py-2 border rounded bg-red-600 text-white hover:bg-red-700"
+            className="px-4 py-2  rounded bg-red-600 text-white hover:bg-red-700"
           >
             Eliminar
           </button>
@@ -415,35 +540,65 @@ export default function CheckBudgetForm({ data, onClose,choferes, encargados, ve
   );
 }
 
-// Componentes auxiliares
+
 const Section = ({ title, children, collapsed, toggle }) => (
   <div className="border rounded p-4">
-    <div className="flex justify-between items-center cursor-pointer" onClick={toggle}>
-      <h3 className="font-semibold text-lg">{title}</h3>
+    <div className="flex justify-between items-center cursor-pointer dark:text-gray-300" onClick={toggle}>
+      <h3 className="font-semibold text-lg ">{title}</h3>
       <span>{collapsed ? "+" : "-"}</span>
     </div>
     {!collapsed && <div className="mt-2">{children}</div>}
   </div>
 );
 
-const Input = ({ label, type = "text", value, onChange, readOnly, colSpan = 1 }) => (
-  <div className={`col-span-${colSpan}`}>
-    <label className="block text-sm font-medium">{label}</label>
-    <input
-      type={type}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      readOnly={readOnly}
-      className={`border p-2 rounded w-full ${readOnly ? "bg-gray-100" : ""} text-right`}
-    />
-  </div>
-);
+const Input = ({
+  label,
+  name,
+  type = "text",
+  value,
+  onChange,
+  onBlur,
+  error,
+  readOnly,
+  colSpan = 1,
+}) => {
+  const spanClass =
+    colSpan === 2 ? "col-span-2" :
+    colSpan === 3 ? "col-span-3" :
+    colSpan === 4 ? "col-span-4" :
+    "col-span-1";
 
-const ArrayInput = ({ title, array, onChange, total }) => (
+  return (
+    <div className={spanClass}>
+      <label className="block text-sm font-medium dark:text-gray-300">
+        {label}
+      </label>
+
+      <input
+      
+       
+        name={name}
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onBlur={(e) => onBlur?.(name, e.target.value)}   
+        readOnly={readOnly}
+        className={`border p-2 rounded w-full dark:bg-gray-200/40 dark:border-gray-200 
+          ${readOnly ? "bg-gray-100" : ""} 
+          ${error ? "border-red-500" : ""} 
+          text-right`}
+      />
+
+      {error && <p className="text-red-500 text-xs">{error}</p>}
+    </div>
+  );
+};
+
+const ArrayInput = ({ title, array, onChange, total,onBlur, errors={}  }) => (
   <div className="border p-2 rounded space-y-2">
     <h4 className="font-semibold">{title}</h4>
     {array.map((item, i) => (
-      <div key={i} className="flex gap-2">
+      <div  key={`${title}-${i}`} className="flex gap-2">
         {Object.keys(item).map((key) => {
           let label = "";
           if (title.includes("Peajes")) {
@@ -455,13 +610,16 @@ const ArrayInput = ({ title, array, onChange, total }) => (
             if (key === "precio") label = "Precio por Día";
           }
           return (
-            <Input
-              key={key}
-              label={label}
-              type="number"
-              value={item[key] || 0}
-              onChange={(v) => onChange(i, key, v)}
-            />
+           <Input
+           key={`${i}-${key}`} 
+            name={`${title}_${i}_${key}`}
+            label={label}
+            type="number"
+            value={item[key] || 0}
+            onChange={(v) => onChange(i, key, v)}
+            onBlur={(name, value) => onBlur?.(name, value)}  // 👈 FIX
+            error={errors?.[`${title}_${i}_${key}`]}
+          />
           );
         })}
       </div>

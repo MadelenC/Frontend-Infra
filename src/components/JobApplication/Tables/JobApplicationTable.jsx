@@ -20,6 +20,7 @@ export default function JobApplicationTable() {
 
   const { vehicles, fetchVehicles } = useVehicleStore();
   const { accessories, fetchAccessories } = useAccessoriesStore();
+  console.log("accessories:", accessories);
   const { users, fetchUsers } = useUserStore();
 
   const [chofer, setChofer] = useState("");
@@ -160,7 +161,7 @@ export default function JobApplicationTable() {
               ].map((h) => (
                 <th
                   key={h}
-                  className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-300"
+                  className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-left font-semibold text-gray-700 dark:bg-gray-700 dark:text-gray-300"
                 >
                   {h}
                 </th>

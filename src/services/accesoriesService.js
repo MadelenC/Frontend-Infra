@@ -1,60 +1,53 @@
-// src/services/accessoryService.js
-export const accessoriesService = {
-  // Obtener todos los accesorios
-  getAll: async () => {
-    try {
-      const res = await fetch("/api/accessories"); // tu endpoint
-      if (!res.ok) throw new Error("Error al obtener accesorios");
-      return await res.json();
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  },
+import api from "../helpers/axiosClient";
+export const getAccessories = async (solicitudId = null) => {
+  try {
+    const url = solicitudId
+      ? `/accesorios?solicitud_id=${solicitudId}`
+      : "/accesorios";
 
-  // Crear un accesorio nuevo
-  create: async (accessory) => {
-    try {
-      const res = await fetch("/api/accessories", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(accessory),
-      });
-      if (!res.ok) throw new Error("Error al crear accesorio");
-      return await res.json();
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  },
+    const response = await api.get(url);
+    return response.data;
+  } catch (err) {
+    throw err.response?.data?.message || "Error al obtener accesorios";
+  }
+};
 
-  // Actualizar un accesorio existente
-  update: async (id, accessory) => {
-    try {
-      const res = await fetch(`/api/accessories/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(accessory),
-      });
-      if (!res.ok) throw new Error("Error al actualizar accesorio");
-      return await res.json();
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  },
 
-  // Eliminar un accesorio
-  delete: async (id) => {
-    try {
-      const res = await fetch(`/api/accessories/${id}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) throw new Error("Error al eliminar accesorio");
-      return true;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  },
+export const getAccessoryById = async (id) => {
+  try {
+    const response = await api.get(`/accesorios/${id}`);
+    return response.data;
+  } catch (err) {
+    throw err.response?.data?.message || "Error al obtener el accesorio";
+  }
+};
+
+
+export const createAccessory = async (data) => {
+  try {
+    const response = await api.post("/accesorios", data);
+    return response.data;
+  } catch (err) {
+    throw err.response?.data?.message || "Error al crear el accesorio";
+  }
+};
+
+
+export const updateAccessory = async (id, data) => {
+  try {
+    const response = await api.put(`/accesorios/${id}`, data);
+    return response.data;
+  } catch (err) {
+    throw err.response?.data?.message || "Error al actualizar el accesorio";
+  }
+};
+
+
+export const deleteAccessory = async (id) => {
+  try {
+    const response = await api.delete(`/accesorios/${id}`);
+    return response.data;
+  } catch (err) {
+    throw err.response?.data?.message || "Error al eliminar el accesorio";
+  }
 };

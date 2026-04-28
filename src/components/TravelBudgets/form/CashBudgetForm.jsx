@@ -19,7 +19,7 @@ export default function CashBudgetForm({ data, onClose, onSave }) {
   const handleChange = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex justify-center items-start pt-10 z-50 overflow-y-auto">
+    <div className="fixed inset-0 bg-black/40 flex justify-center items-start pt-10 z-50 overflow-y-auto bg-black/40 backdrop-blur-sm">
       <div className="bg-white w-[95%] sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[60%] max-w-[1000px] p-6 rounded-xl shadow-lg space-y-6">
         
         <h2 className="text-2xl font-bold">Presupuesto de viaje por caja</h2>

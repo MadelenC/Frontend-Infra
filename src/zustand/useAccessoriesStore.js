@@ -1,37 +1,67 @@
-// src/zustand/useAccessoryStore.js
 import { create } from "zustand";
+import {
+  getAccessories,
+  createAccessory,
+  deleteAccessory,
+} from "../services/accesoriesService";
 
-export const useAccessoriesStore = create((set) => ({
-  accessories: [],            
-  loading: false,             
-  error: null,                
+export const useAccessoriesStore = create((set, get) => ({
+  accessories: [],
+  loading: false,
+  error: null,
 
-  // Función para traer todos los accesorios
-  fetchAccessories: async () => {
+
+  fetchAccessories: async (solicitudId = null) => {
     set({ loading: true, error: null });
+
     try {
-      const res = await fetch("/api/accessorios"); // tu endpoint para accesorios
-      if (!res.ok) throw new Error("Error al cargar accesorios");
-      const data = await res.json();
-      set({ accessories: data, loading: false });
+      const data = await getAccessories(solicitudId);
+
+      const mapped = data.map(a => ({
+        id: a.id,
+        solicitud1: a.solicitud1,
+        solicitud_id: a.solicitud?.id || a.solicitud_id,
+      }));
+
+      set({ accessories: mapped, loading: false });
     } catch (err) {
-      set({ error: err.message, loading: false });
+      set({ error: err.message || err, loading: false });
     }
   },
 
-  // Opcional: agregar un accesorio
-  addAccessory: async (newAcc) => {
+ 
+  addAccessory: async (data) => {
     try {
-      const res = await fetch("/api/accessorios", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newAcc),
+      const newAcc = await createAccessory({
+        solicitud: data.solicitud,
+        solicitud_id: data.solicitud_id,
       });
-      if (!res.ok) throw new Error("Error al crear accesorio");
-      const created = await res.json();
-      set((state) => ({ accessories: [...state.accessories, created] }));
+
+      const mapped = {
+        id: newAcc.id,
+        solicitud: newAcc.solicitud,
+        solicitud_id: newAcc.solicitud_id,
+      };
+
+      set({ accessories: [...get().accessories, mapped] });
+
+      return { ok: true };
     } catch (err) {
-      set({ error: err.message });
+      return { ok: false, error: err.message || err };
+    }
+  },
+
+  
+  removeAccessory: async (id) => {
+    try {
+      await deleteAccessory(id);
+      set({
+        accessories: get().accessories.filter(a => a.id !== id),
+      });
+
+      return { ok: true };
+    } catch (err) {
+      return { ok: false, error: err.message || err };
     }
   },
 }));
