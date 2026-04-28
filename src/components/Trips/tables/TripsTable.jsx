@@ -6,6 +6,7 @@ import AddTripsFrom from "../form/AddTripsFrom";
 import CheckTripForm from "../form/TripsCheckForm";
 import TripsCajaForm from "../form/TripsCajaForm";
 import TripDeclarationForm from "../form/TripDeclarationForm";
+import TripDetailForm from "../form/TripDetailForm";
 
 import { FiFileText, FiBarChart2, FiPlus } from "react-icons/fi";
 
@@ -44,9 +45,22 @@ export default function TripsTable({ externalTripId = null }) {
 
   useEffect(() => setPage(1), [search, tipo]);
 
-  const handleOpenModal = (type, trip = null) => {
+  const handleOpenModal = async (type, trip = null) => {
+
+    // 🔥 IMPORTANTE: si es detalle, recarga desde backend por ID
+    if (type === "detalle" && trip?.id) {
+      try {
+        const res = await fetch(`http://localhost:3000/api/viajes/${trip.id}`);
+        const data = await res.json();
+        setSelectedTrip(data);
+      } catch (err) {
+        toast.error("Error al cargar detalle del viaje");
+      }
+    } else {
+      setSelectedTrip(trip);
+    }
+
     setModalType(type);
-    setSelectedTrip(trip);
   };
 
   const handleCloseModal = () => {
@@ -109,16 +123,20 @@ export default function TripsTable({ externalTripId = null }) {
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4">
 
-      {/* HEADER */}
-      <div className="flex justify-between items-center mb-4 gap-4 flex-wrap">
+      {/* FILTROS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 items-center">
 
-        <div className="flex items-center gap-2 h-10">
-          <SearchBarTrips search={search} setSearch={setSearch} />
+        <div className="flex gap-2 w-full">
+          <div className="flex-1">
+            <SearchBarTrips search={search} setSearch={setSearch} />
+          </div>
 
           <select
             value={tipo}
             onChange={(e) => setTipo(e.target.value)}
-            className="h-full px-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200"
+            className="h-10 px-3 rounded-md border border-gray-300 
+            dark:border-gray-600 bg-white dark:bg-gray-800 
+            text-gray-800 dark:text-gray-200 text-sm"
           >
             <option value="">Todos</option>
             <option value="Viaje de Práctica">Viaje de Práctica</option>
@@ -128,20 +146,19 @@ export default function TripsTable({ externalTripId = null }) {
           </select>
         </div>
 
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex flex-wrap gap-2 justify-start md:justify-end">
 
           <button
             onClick={() => handleOpenModal("declaratoria")}
-            className="flex items-center gap-3 bg-gradient-to-r from-gray-700 to-gray-500
-             hover:from-gray-700 hover:to-gray-600 text-white px-5 py-3 rounded-lg shadow-lg"
+            className="flex items-center gap-2 bg-gray-600 hover:bg-gray-500 text-white px-3 h-10 rounded-md"
           >
             <FiFileText />
-            Declaratorias
+            Declaratoria
           </button>
 
           <button
             onClick={() => handleOpenModal("informe")}
-            className="flex items-center gap-3 bg-blue-800 hover:bg-blue-700 text-white px-5 py-3 rounded-lg shadow-lg"
+            className="flex items-center gap-2 bg-gray-600 hover:bg-gray-500 text-white px-3 h-10 rounded-md"
           >
             <FiBarChart2 />
             Informe
@@ -150,7 +167,7 @@ export default function TripsTable({ externalTripId = null }) {
           {!externalTripId && (
             <button
               onClick={() => handleOpenModal("add")}
-              className="flex items-center gap-3 bg-blue-600 hover:bg-blue-500 text-white px-5 py-3 rounded-lg shadow-lg"
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 h-10 rounded-md"
             >
               <FiPlus />
               Agregar Viaje
@@ -160,22 +177,19 @@ export default function TripsTable({ externalTripId = null }) {
         </div>
       </div>
 
-      {/* TABLE */}
+      {/* TABLA */}
       <div className="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-xl">
 
         <table className="w-full text-sm">
-
-          <thead className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200">
+          <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
               {["#", "Entidad", "Tipo", "Objetivo", "Días", "Pasajeros", "Inicio", "Fin", "Estado", "Acciones"].map(h => (
-                <th key={h} className="px-3 py-2 border border-gray-200 dark:border-gray-700">
-                  {h}
-                </th>
+                <th key={h} className="px-3 py-2 border">{h}</th>
               ))}
             </tr>
           </thead>
 
-          <tbody className="text-gray-700 dark:text-gray-200">
+          <tbody>
             {currentTrips.length > 0 ? (
               currentTrips.map(trip => (
                 <TripsRow
@@ -183,11 +197,12 @@ export default function TripsTable({ externalTripId = null }) {
                   trip={trip}
                   onOpenModal={handleOpenModal}
                   onCancelTrip={handleCancelTrip}
+                   
                 />
               ))
             ) : (
               <tr>
-                <td colSpan={10} className="text-center py-4 text-gray-500 dark:text-gray-400">
+                <td colSpan={10} className="text-center py-4">
                   No hay registros
                 </td>
               </tr>
@@ -197,7 +212,7 @@ export default function TripsTable({ externalTripId = null }) {
         </table>
       </div>
 
-      {/* PAGINATION */}
+      {/* PAGINACIÓN */}
       <div className="flex justify-center mt-4">
         <Pagination
           page={page}
@@ -206,7 +221,7 @@ export default function TripsTable({ externalTripId = null }) {
         />
       </div>
 
-      {/* MODALS */}
+      {/* MODALES */}
       {modalType === "add" && (
         <AddTripsFrom
           isOpen={true}
@@ -224,14 +239,7 @@ export default function TripsTable({ externalTripId = null }) {
                 body: JSON.stringify(data),
               });
 
-              const text = await res.text();
-
-              let result;
-              try {
-                result = JSON.parse(text);
-              } catch (e) {
-                throw new Error("Backend no devolvió JSON válido");
-              }
+              const result = await res.json();
 
               if (!res.ok) throw new Error(result?.message);
 
@@ -247,11 +255,23 @@ export default function TripsTable({ externalTripId = null }) {
       )}
 
       {modalType === "caja" && (
-        <TripsCajaForm viajeData={selectedTrip} onClose={handleCloseModal} />
+        <TripsCajaForm
+          viajeData={selectedTrip}
+          choferes={choferes}
+          encargados={encargados}
+          vehiculos={vehicles}
+          onClose={handleCloseModal}
+        />
       )}
 
       {modalType === "cheque" && (
-        <CheckTripForm data={selectedTrip} onClose={handleCloseModal} />
+        <CheckTripForm
+          data={selectedTrip}
+          onClose={handleCloseModal}
+          choferes={choferes}
+          encargados={encargados}
+          vehiculos={vehicles}
+        />
       )}
 
       {modalType === "declaratoria" && (
@@ -268,6 +288,13 @@ export default function TripsTable({ externalTripId = null }) {
         <SimpleModal title="Informe de Viajes">
           Aquí podrás generar reportes de viajes.
         </SimpleModal>
+      )}
+
+      {modalType === "detalle" && (
+        <TripDetailForm
+          data={selectedTrip}
+          onClose={handleCloseModal}
+        />
       )}
 
     </div>

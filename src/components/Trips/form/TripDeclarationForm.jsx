@@ -20,27 +20,24 @@ export default function TripsInformeForm({ onClose, onSubmit }) {
   };
   
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+    <div className="fixed inset-0  flex items-center justify-center z-50 bg-black/40 backdrop-blur-sm ">
 
-      <div className="relative bg-white w-[420px] rounded-xl shadow-lg p-6">
+      <div className="relative bg-white w-[420px] rounded-xl shadow-lg p-6 dark:bg-gray-800 ">
 
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-gray font-bold bg-white-600 px-3 py-1 rounded hover:bg-gray-200"
+          className="absolute top-3 right-3 text-gray font-bold bg-white-600 px-3 py-1 rounded hover:bg-gray-200 dark:text-gray-200"
         >
           X
         </button>
 
-        {/* TÍTULO */}
-        <h2 className="text-lg font-semibold mb-4">
+        <h2 className="text-3x1 font-semibold mb-4 dark:text-gray-200 text-center">
           Informe de Viajes
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-
-          {/* TÍTULO */}
           <div>
-            <label className="text-sm font-medium">Título</label>
+            <label className="text-sm font-medium  dark:text-gray-300">Título:</label>
             <input
               type="text"
               name="titulo"
@@ -52,9 +49,9 @@ export default function TripsInformeForm({ onClose, onSubmit }) {
             />
           </div>
 
-          {/* FECHA INICIO */}
+          
           <div>
-            <label className="text-sm font-medium">Fecha de Inicio</label>
+            <label className="text-sm font-medium dark:text-gray-300">Fecha de Inicio:</label>
             <input
               type="date"
               name="fechaInicio"
@@ -65,20 +62,20 @@ export default function TripsInformeForm({ onClose, onSubmit }) {
             />
           </div>
 
-          {/* FECHA FIN */}
+         
           <div>
-            <label className="text-sm font-medium">Fecha Final</label>
+            <label className="text-sm font-medium dark:text-gray-300">Fecha Final:</label>
             <input
               type="date"
               name="fechaFin"
               value={form.fechaFin}
               onChange={handleChange}
-              className="w-full mt-1 px-3 py-2 border rounded-lg"
+              className="w-full mt-1 px-3 py-2 border rounded-lg "
               required
             />
           </div>
 
-          {/* BOTONES */}
+          
           <div className="flex justify-end gap-2 pt-4">
             <button
               type="button"

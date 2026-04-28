@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { TableCell } from "../../ui/table";
 import Badge from "../../ui/badge/Badge";
+
 import {
   FaMoneyBill,
   FaFileInvoice,
@@ -29,14 +30,8 @@ export default function TripsRow({ trip, onOpenModal, onCancelTrip }) {
   };
 
   return (
-    <tr
-      className="
-        border border-gray-200
-        dark:border-gray-700
-        hover:bg-gray-50 dark:hover:bg-gray-800
-        transition-colors
-      "
-    >
+    <tr className="border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+
       <TableCell className="border px-3 py-2 dark:border-gray-700 text-gray-800 dark:text-gray-200">
         {trip.id}
       </TableCell>
@@ -139,8 +134,14 @@ export default function TripsRow({ trip, onOpenModal, onCancelTrip }) {
               <div className="absolute right-0 mt-1 w-36 bg-white dark:bg-gray-900
                               border dark:border-gray-700 rounded shadow-md z-10 text-xs">
 
-                <button className="flex items-center gap-1 w-full text-left px-2 py-1 hover:bg-gray-100
-                                   dark:hover:bg-gray-800">
+                {/* VER DETALLE */}
+                <button
+                  onClick={() => {
+                    onOpenModal("detalle", trip);
+                    setOpenMenu(null);
+                  }}
+                  className="flex items-center gap-1 w-full text-left px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-800"
+                >
                   <FaEye size={10} />
                   Ver
                 </button>

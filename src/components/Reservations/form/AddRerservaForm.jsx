@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 export default function AddReservaModal({ isOpen, onClose, onSave, encargados = [] }) {
   const [formData, setFormData] = useState({
@@ -86,51 +85,57 @@ export default function AddReservaModal({ isOpen, onClose, onSave, encargados = 
 
   // SUBMIT CORREGIDO CON TOASTIFY
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!validateForm()) {
-      toast.error("Corrija los errores del formulario");
-      return;
-    }
+  if (!validateForm()) {
+    toast.error("❌ Corrija los errores del formulario");
+    return;
+  }
 
-    const payload = {
-      user_id: Number(formData.encargado),
-      fecha_inicial: formData.fechaInicial + ":00",
-      fecha_final: formData.fechaFinal + ":00",
-      entidad: formData.entidad,
-      objetivo: formData.objetivo,
-      pasajeros: Number(formData.pasajeros),
-    };
-
-    setSaving(true);
-
-    try {
-      await onSave(payload); // ✔ sin depender de response.ok
-
-      toast.success("Reserva creada correctamente");
-
-      onClose();
-
-    } catch (error) {
-      console.error(error);
-      toast.error("Error al guardar la reserva");
-
-    } finally {
-      setSaving(false);
-    }
+  const payload = {
+    user_id: Number(formData.encargado),
+    fecha_inicial: formData.fechaInicial + ":00",
+    fecha_final: formData.fechaFinal + ":00",
+    entidad: formData.entidad,
+    objetivo: formData.objetivo,
+    pasajeros: Number(formData.pasajeros),
   };
+
+  setSaving(true);
+
+  try {
+    await onSave(payload);
+
+    toast.success("✅ Reserva creada correctamente");
+
+    onClose();
+
+  } catch (error) {
+    console.error(error);
+    toast.error("⚠️ Error al guardar la reserva");
+
+  } finally {
+    setSaving(false);
+  }
+};
 
   if (!isOpen) return null;
 
   return (
     <>
-      {/* 🔥 SOLO UNA VEZ EN TODA LA APP (puede quedarse aquí si quieres) */}
-      <ToastContainer position="top-right" autoClose={3000} />
+      
+      
 
       <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-5 backdrop-blur-sm">
 
-        <div className="bg-white w-full max-w-3xl p-6 rounded-xl shadow-2xl dark:bg-gray-800">
-
+        <div className="bg-white w-full max-w-3xl p-6 rounded-xl shadow-2xl dark:bg-gray-800 relative">
+     <button
+          onClick={onClose}
+          className="absolute top-3 right-3 text-gray-700 font-bold px-3 py-1 rounded hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700"
+          aria-label="Cerrar formulario"
+        >
+          X
+        </button>
           <h2 className="text-2xl font-bold text-center text-blue-700 mb-6 dark:text-gray-200">
             Nueva Reserva
           </h2>

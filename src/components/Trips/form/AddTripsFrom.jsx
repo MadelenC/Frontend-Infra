@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 export default function AddTripsModal({ initialData, isOpen, onClose, onSave, choferes, encargados, vehiculos, destinos }) {
   const [formData, setFormData] = useState({
@@ -169,7 +168,8 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  
+ const handleSubmit = async (e) => {
   e.preventDefault();
 
   if (!validate()) {
@@ -183,13 +183,11 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
     objetivo: formData.objetivo,
     dias: formData.dias,
     pasajeros: Number(formData.pasajeros),
-
     fecha_inicial: formData.inicio,
     fecha_final: formData.final,
 
     destinos: formData.destinos.map(d => ({
       id: d.id,
-      //km: Number(d.km)
     })),
 
     vehiculos: formData.vehiculo.map(v => ({
@@ -202,11 +200,14 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
     ]
   };
 
-  console.log("Nuevo viaje:", dataToSend); // 👈 DEBUG
-
-  onSave(dataToSend);
-
-  toast.success("Viaje registrado correctamente!");
+  try {
+    await onSave(dataToSend);
+    toast.success("Viaje registrado correctamente!");
+    onClose();
+  } catch (error) {
+    toast.error("Error al registrar el viaje");
+    console.error(error);
+  }
 };
 
   const choferOptions = choferes?.map(c => ({ value: c.id, label: `${c.nombres} ${c.apellidos}` })) || [];
@@ -215,18 +216,24 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
 
   return (
     <>
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
-      <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-5">
-        <div className="bg-gray-50 w-full max-w-4xl max-h-[80vh] p-6 rounded-xl shadow-2xl text-gray-800 overflow-hidden flex flex-col">
-          <h2 className="text-2xl font-bold border-b pb-2 mb-4 text-gray-900 flex-shrink-0">
+      
+      <div className="fixed inset-0  flex justify-center items-center z-50 p-5 bg-black/40 backdrop-blur-sm">
+        <div className="bg-gray-50 w-full max-w-4xl max-h-[80vh] p-6 rounded-xl shadow-2xl text-gray-800 overflow-hidden flex flex-col relative dark:bg-gray-800">
+          <button
+          onClick={onClose}
+          className="absolute top-3 right-3 text-gray-700 font-bold px-3 py-1 rounded hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700"
+          aria-label="Cerrar formulario"
+        >
+          X
+        </button>
+          <h2 className="text-2xl font-bold border-b pb-2 mb-4 text-gray-900 flex-shrink-0 dark:text-gray-200 text-center">
             Nuevo Viaje
           </h2>
 
           <form onSubmit={handleSubmit} className="overflow-y-auto flex-grow pr-3 space-y-6">
 
-            {/* Destinos dinámicos */}
-            <div className="bg-white p-4 rounded-lg shadow-sm border">
-              <h3 className="text-md font-semibold mb-3 text-gray-900 border-b pb-1">Destinos</h3>
+            <div className="bg-white p-4 rounded-lg shadow-sm border dark:bg-gray-800 dark:border-gray-700">
+              <h3 className="text-md font-semibold mb-3 text-gray-900 border-b pb-1 dark:text-gray-300">Destinos</h3>
               {formData.destinos.map((d, i) => {
                 const filteredDestinos = destinos?.filter(dest =>
                   d.nombre
@@ -236,14 +243,65 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
 
                 return (
                   <div key={i} className="flex gap-2 items-start mb-2 relative">
-                    <input
-                      type="text"
-                      placeholder="Destino"
-                      value={d.nombre}
-                      onChange={(e) => handleDestinoChange(i, e.target.value)}
-                      onFocus={() => setShowAllDestinos(prev => { const newShow = [...prev]; newShow[i] = true; return newShow; })}
-                      onBlur={() => setTimeout(() => setShowAllDestinos(prev => { const newShow = [...prev]; newShow[i] = false; return newShow; }), 200)}
-                      className={`flex-1 border px-3 py-1.5 rounded-md text-sm bg-white ${errors.destinos ? "border-red-600" : ""}`}
+                   <Select
+                      options={destinos?.map(dest => ({
+                        value: dest,
+                        label: `(${dest.departamentoInicio}) ${dest.origen} → (${dest.departamentoFinal}) ${dest.destino}`
+                      }))}
+                      value={d.id? {value: destinos.find(x => x.id === d.id),label: d.nombre}: null }
+                      onChange={(selected) => {const dest = selected.value;const nuevos = [...formData.destinos];
+                        nuevos[i] = {
+                          id: dest.id,
+                          nombre: selected.label,
+                          km: dest.distancia || "",
+                        };
+
+                        setFormData(f => ({ ...f, destinos: nuevos }));
+                      }}
+                      placeholder="Buscar destino..."
+                      styles={{
+                              control: (base) => ({
+                                ...base,
+                                backgroundColor: document.documentElement.classList.contains("dark")
+                                  ? "rgba(229, 231, 235, 0.4)" 
+                                  : "white",
+
+                                borderColor: document.documentElement.classList.contains("dark")
+                                  ? "#e5e7eb" 
+                                  : "#d1d5db",
+
+                                fontSize: "0.875rem",
+                                boxShadow: "none",
+                              }),
+
+                              menu: (base) => ({
+                                ...base,
+                                zIndex: 50,
+                              }),
+
+                              option: (base, state) => ({
+                                ...base,
+                                backgroundColor: state.isFocused
+                                  ? document.documentElement.classList.contains("dark")
+                                    ? "#374151"
+                                    : "#dbeafe"
+                                  : document.documentElement.classList.contains("dark")
+                                  ? "#1f2937"
+                                  : "white",
+
+                                color: document.documentElement.classList.contains("dark")
+                                  ? "white"
+                                  : "black",
+                              }),
+
+                              singleValue: (base) => ({
+                                ...base,
+                                color: document.documentElement.classList.contains("dark")
+                                  ? "white"
+                                  : "black",
+                              }),
+                            }}
+                      
                     />
 
                     {(showAllDestinos[i] || d.nombre) && filteredDestinos?.length > 0 && (
@@ -269,7 +327,7 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
                         nuevos[i].km = e.target.value;
                         setFormData(f => ({ ...f, destinos: nuevos }));
                       }}
-                      className="w-20 border px-3 py-1.5 rounded-md text-sm"
+                      className="w-20 border px-3 py-1.5 rounded text-sm dark:bg-gray-200/40 dark:border-gray-200"
                     />
 
                     {formData.destinos.length > 1 && (
@@ -278,7 +336,11 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
                   </div>
                 );
               })}
-              <button type="button" onClick={agregarDestino} className="mt-2 text-gray-600 font-bold text-sm flex items-center gap-1">+ Agregar destino</button>
+              <button type="button" onClick={agregarDestino} className="mt-2 inline-flex items-center gap-2 px-3 py-1.5 
+                    bg-blue-600 hover:bg-blue-700 text-white 
+                    dark:bg-blue-500 dark:hover:bg-blue-600
+                    text-sm font-semibold rounded-md shadow-sm 
+                    transition cursor-pointer">+ Agregar destino</button>
               <div className="flex gap-2 mt-4 items-center">
                 <input
                   type="number"
@@ -286,28 +348,28 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
                   placeholder="Km adicional"
                   value={formData.kmAdicional}
                   onChange={handleChange}
-                  className="w-36 border px-3 py-1.5 rounded-md text-sm"
+                  className="w-36 border px-3 py-1.5 rounded text-sm dark:bg-gray-200/40 dark:border-gray-200"
                 />
                 <input
                   type="text"
                   value={calcularTotalKm()}
                   readOnly
-                  className="w-28 border px-3 py-1.5 rounded-md bg-gray-100 font-semibold text-sm"
+                  className="w-28 border px-3 py-1.5 rounded bg-gray-100 font-semibold text-sm dark:bg-gray-200/40 dark:border-gray-200"
                 />
               </div>
             </div>
 
             {/* Información general */}
-            <div className="bg-white p-4 rounded-lg shadow-sm border grid grid-cols-2 gap-4">
+            <div className="bg-white p-4 rounded-lg shadow-sm border grid grid-cols-2 gap-4 dark:bg-gray-800 dark:border-gray-700">
               <div>
-                <label className="block mb-1 text-gray-900 text-sm font-semibold">Tipo de viaje</label>
+                <label className="block mb-1 text-gray-900 text-sm font-semibold dark:text-gray-300">Tipo de viaje</label>
                 <select
                   name="tipoViaje"
                   value={formData.tipoViaje}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full border px-3 py-1.5 rounded-md text-sm ${errors.tipoViaje ? "border-red-600" : ""}`}
-                >
+                  className={`w-full border px-3 py-1.5 rounded text-sm dark:bg-gray-200/40 dark:border-gray-200 ${errors.tipoViaje ? "border-red-600" : ""}`}
+                  >
                   <option value="">Seleccione</option>
                   <option>Viaje de Práctica</option>
                   <option>Viaje de Inspección</option>
@@ -324,7 +386,7 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
                   value={formData.pasajeros}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full border px-3 py-1.5 rounded-md text-sm ${errors.pasajeros ? "border-red-600" : ""}`}
+                  className={`w-full border px-3 py-1.5 rounded text-sm dark:bg-gray-200/40 dark:border-gray-200 ${errors.pasajeros ? "border-red-600" : ""}`}
                   min={1}
                 />
                 {errors.pasajeros && <p className="text-red-600 text-xs mt-1">{errors.pasajeros}</p>}
@@ -337,7 +399,7 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
                   value={formData.inicio}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full border px-3 py-1.5 rounded-md text-sm ${errors.inicio ? "border-red-600" : ""}`}
+                  className={`w-full border px-3 py-1.5 rounded text-sm dark:bg-gray-200/40 dark:border-gray-200 ${errors.inicio ? "border-red-600" : ""}`}
                 />
                 {errors.inicio && <p className="text-red-600 text-xs mt-1">{errors.inicio}</p>}
               </div>
@@ -349,16 +411,16 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
                   value={formData.final}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full border px-3 py-1.5 rounded-md text-sm ${errors.final ? "border-red-600" : ""}`}
+                  className={`w-full border px-3 py-1.5 rounded text-sm dark:bg-gray-200/40 dark:border-gray-200 ${errors.final ? "border-red-600" : ""}`}
                 />
                 {errors.final && <p className="text-red-600 text-xs mt-1">{errors.final}</p>}
               </div>
             </div>
 
             {/* Choferes, Vehículos y Encargados */}
-            <div className="bg-white p-4 rounded-lg shadow-sm border grid grid-cols-3 gap-4">
+            <div className="bg-white p-4 rounded-lg shadow-sm border grid grid-cols-3 gap-4 dark:bg-gray-800 dark:border-gray-700 ">
               <div>
-                <label className="block mb-1 text-gray-900 text-sm font-semibold">Choferes</label>
+                <label className="block mb-1 text-gray-900 text-sm font-semibold dark:text-gray-300">Choferes</label>
                 <Select
                   isMulti
                   name="chofer"
@@ -367,13 +429,62 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
                   onChange={(selected) => handleMultiSelectChange("chofer", selected)}
                   classNamePrefix="react-select"
                   placeholder="Seleccione choferes"
-                  className={errors.chofer ? "react-select-container border-red-600 rounded-md" : "react-select-container"}
+                  className={errors.chofer ? "react-select-container border-red-600 rounded dark:bg-gray-200/40 dark:border-gray-200" : "react-select-container"}
+                  styles={{
+                              control: (base) => ({
+                                ...base,
+                                backgroundColor: document.documentElement.classList.contains("dark")
+                                  ? "rgba(229, 231, 235, 0.4)" 
+                                  : "white",
+
+                                borderColor: document.documentElement.classList.contains("dark")
+                                  ? "#e5e7eb" 
+                                  : "#d1d5db",
+
+                                fontSize: "0.875rem",
+                                boxShadow: "none",
+                              }),
+
+                              menu: (base) => ({
+                                ...base,
+                                zIndex: 50,
+                              }),
+
+                              option: (base, state) => ({
+                                ...base,
+                                backgroundColor: state.isFocused
+                                  ? document.documentElement.classList.contains("dark")
+                                    ? "#374151"
+                                    : "#dbeafe"
+                                  : document.documentElement.classList.contains("dark")
+                                  ? "#1f2937"
+                                  : "white",
+
+                                color: document.documentElement.classList.contains("dark")
+                                  ? "white"
+                                  : "black",
+                              }),
+
+                              singleValue: (base) => ({
+                                ...base,
+                                color: document.documentElement.classList.contains("dark")
+                                  ? "white"
+                                  : "black",
+                              }),
+                               placeholder: (base) => ({
+                                ...base,
+                                color: document.documentElement.classList.contains("dark")
+                                  ? "#9ca3af" 
+                                  : "#6b7280", 
+                                fontSize: "0.875rem",
+                              }),
+                            }}
                 />
                 {errors.chofer && <p className="text-red-600 text-xs mt-1">{errors.chofer}</p>}
               </div>
 
               <div>
-                <label className="block mb-1 text-gray-900 text-sm font-semibold">Vehículos</label>
+                <label className="block mb-1 text-gray-900 text-sm font-semibold dark:text-gray-300">Vehículos</label>
                 <Select
                   isMulti
                   name="vehiculo"
@@ -383,12 +494,61 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
                   classNamePrefix="react-select"
                   placeholder="Seleccione vehículos"
                   className={errors.vehiculo ? "react-select-container border-red-600 rounded-md" : "react-select-container"}
+                  styles={{
+                              control: (base) => ({
+                                ...base,
+                                backgroundColor: document.documentElement.classList.contains("dark")
+                                  ? "rgba(229, 231, 235, 0.4)" 
+                                  : "white",
+
+                                borderColor: document.documentElement.classList.contains("dark")
+                                  ? "#e5e7eb" 
+                                  : "#d1d5db",
+
+                                fontSize: "0.875rem",
+                                boxShadow: "none",
+                              }),
+
+                              menu: (base) => ({
+                                ...base,
+                                zIndex: 50,
+                              }),
+
+                              option: (base, state) => ({
+                                ...base,
+                                backgroundColor: state.isFocused
+                                  ? document.documentElement.classList.contains("dark")
+                                    ? "#374151"
+                                    : "#dbeafe"
+                                  : document.documentElement.classList.contains("dark")
+                                  ? "#1f2937"
+                                  : "white",
+
+                                color: document.documentElement.classList.contains("dark")
+                                  ? "white"
+                                  : "black",
+                              }),
+
+                              singleValue: (base) => ({
+                                ...base,
+                                color: document.documentElement.classList.contains("dark")
+                                  ? "white"
+                                  : "black",
+                              }),
+                               placeholder: (base) => ({
+                                  ...base,
+                                  color: document.documentElement.classList.contains("dark")
+                                    ? "#9ca3af" 
+                                    : "#6b7280", 
+                                  fontSize: "0.875rem",
+                                }),
+                            }}
                 />
                 {errors.vehiculo && <p className="text-red-600 text-xs mt-1">{errors.vehiculo}</p>}
               </div>
 
               <div>
-                <label className="block mb-1 text-gray-900 text-sm font-semibold">Encargados</label>
+                <label className="block mb-1 text-gray-900 text-sm font-semibold dark:text-gray-300">Encargados</label>
                 <Select
                   isMulti
                   name="encargado"
@@ -398,46 +558,95 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
                   classNamePrefix="react-select"
                   placeholder="Seleccione encargados"
                   className={errors.encargado ? "react-select-container border-red-600 rounded-md" : "react-select-container"}
+                  styles={{
+                              control: (base) => ({
+                                ...base,
+                                backgroundColor: document.documentElement.classList.contains("dark")
+                                  ? "rgba(229, 231, 235, 0.4)" 
+                                  : "white",
+
+                                borderColor: document.documentElement.classList.contains("dark")
+                                  ? "#e5e7eb" 
+                                  : "#d1d5db",
+
+                                fontSize: "0.875rem",
+                                boxShadow: "none",
+                              }),
+
+                              menu: (base) => ({
+                                ...base,
+                                zIndex: 50,
+                              }),
+
+                              option: (base, state) => ({
+                                ...base,
+                                backgroundColor: state.isFocused
+                                  ? document.documentElement.classList.contains("dark")
+                                    ? "#374151"
+                                    : "#dbeafe"
+                                  : document.documentElement.classList.contains("dark")
+                                  ? "#1f2937"
+                                  : "white",
+
+                                color: document.documentElement.classList.contains("dark")
+                                  ? "white"
+                                  : "black",
+                              }),
+
+                              singleValue: (base) => ({
+                                ...base,
+                                color: document.documentElement.classList.contains("dark")
+                                  ? "white"
+                                  : "black",
+                              }),
+                               placeholder: (base) => ({
+                                    ...base,
+                                    color: document.documentElement.classList.contains("dark")
+                                      ? "#9ca3af" 
+                                      : "#6b7280", 
+                                    fontSize: "0.875rem",
+                                  }),
+                            }}
                 />
                 {errors.encargado && <p className="text-red-600 text-xs mt-1">{errors.encargado}</p>}
               </div>
             </div>
 
             {/* Entidad, Días y Objetivo */}
-            <div className="bg-white p-4 rounded-lg shadow-sm border space-y-3">
+            <div className="bg-white p-4 rounded-lg shadow-sm border space-y-3 dark:bg-gray-800 dark:border-gray-700">
               <div>
-                <label className="block mb-1 text-gray-900 text-sm font-semibold">Entidad</label>
+                <label className="block mb-1 text-gray-900 text-sm font-semibold dark:text-gray-300">Entidad</label>
                 <input
                   type="text"
                   name="entidad"
                   value={formData.entidad}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full border px-3 py-1.5 rounded-md text-sm ${errors.entidad ? "border-red-600" : ""}`}
+                  className={`w-full border px-3 py-1.5 rounded text-sm dark:bg-gray-200/40 dark:border-gray-200 ${errors.entidad ? "border-red-600" : ""}`}
                 />
                 {errors.entidad && <p className="text-red-600 text-xs mt-1">{errors.entidad}</p>}
               </div>
               <div>
-                <label className="block mb-1 text-gray-900 text-sm font-semibold">Días</label>
+                <label className="block mb-1 text-gray-900 text-sm font-semibold dark:text-gray-300">Días</label>
                 <input
                   type="text"
                   name="dias"
                   value={formData.dias || ""}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full border px-3 py-1.5 rounded-md text-sm ${errors.dias ? "border-red-600" : ""}`}
+                  className={`w-full border px-3 py-1.5 rounded text-sm  dark:bg-gray-200/40 dark:border-gray-200${errors.dias ? "border-red-600" : ""}`}
                 />
                 {errors.dias && <p className="text-red-600 text-xs mt-1">{errors.dias}</p>}
               </div>
               <div>
-                <label className="block mb-1 text-gray-900 text-sm font-semibold">Objetivo</label>
+                <label className="block mb-1 text-gray-900 text-sm font-semibold dark:text-gray-300">Objetivo</label>
                 <textarea
                   name="objetivo"
                   value={formData.objetivo}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   rows={3}
-                  className={`w-full border px-3 py-1.5 rounded-md text-sm ${errors.objetivo ? "border-red-600" : ""}`}
+                  className={`w-full border px-3 py-1.5 rounded text-sm dark:bg-gray-200/40 dark:border-gray-200 ${errors.objetivo ? "border-red-600" : ""}`}
                 />
                 {errors.objetivo && <p className="text-red-600 text-xs mt-1">{errors.objetivo}</p>}
               </div>
