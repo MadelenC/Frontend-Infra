@@ -18,7 +18,7 @@ export default function SearchBar({ search, setSearch, roleFilter, setRoleFilter
   }, []);
 
   return (
-    <div className="flex flex-col md:flex-row gap-3 mb-4">
+    <div className="flex gap-3 w-full">
 
       {/* FILTRO POR ROL */}
       <div className="relative w-full md:w-1/3 lg:w-1/5" ref={dropdownRef}>

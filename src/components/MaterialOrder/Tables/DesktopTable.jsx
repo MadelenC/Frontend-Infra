@@ -2,61 +2,59 @@ import React, { useState, useEffect } from "react";
 import DesktopRow from "./DesktopRow";
 import Pagination from "./Pagination";
 import { FaPlus } from "react-icons/fa";
-import MaterialRequestForm from "../Form/MaterialRequestOrderForm"; 
+import MaterialRequestForm from "../Form/MaterialRequestOrderForm";
 
 export default function DesktopTable({ data, onAction, onCreate }) {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [formOpen, setFormOpen] = useState(false); 
+  const [formOpen, setFormOpen] = useState(false);
   const limit = 8;
 
-  // reset página al buscar
   useEffect(() => {
     setPage(1);
   }, [search]);
 
-  // filtro
   const filtered =
     data?.filter((d) =>
       d.nombre?.toLowerCase().includes(search.toLowerCase())
     ) || [];
 
-  // paginación
   const totalPages = Math.ceil(filtered.length / limit);
   const currentData = filtered.slice(
     (page - 1) * limit,
     page * limit
   );
 
-  // Función para abrir el formulario
   const handleCreate = () => {
     setFormOpen(true);
   };
 
-  // Función para cerrar el formulario
   const handleCloseForm = () => {
     setFormOpen(false);
   };
 
-  // Función para guardar (simulada aquí)
   const handleSaveForm = async (formData) => {
-    // Aquí deberías mandar la data a backend o manejar como sea tu lógica
     console.log("Datos guardados:", formData);
-
-    // Simula un resultado exitoso
     return { ok: true };
   };
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md p-4">
+    <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4">
+
       {/* HEADER */}
       <div className="flex justify-between items-center mb-4">
+
         <input
           type="text"
           placeholder="Buscar por nombre..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="border px-3 py-1 rounded shadow-sm"
+         className="h-10 w-80 px-4 text-sm rounded-md border shadow-sm transition
+        bg-white border-gray-300 text-gray-800 placeholder-gray-400
+        focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400
+
+        dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-400
+        dark:focus:ring-blue-500 dark:focus:border-blue-500"
         />
 
         <button
@@ -66,15 +64,23 @@ export default function DesktopTable({ data, onAction, onCreate }) {
           <FaPlus size={14} />
           Crear nuevo
         </button>
+
       </div>
 
       {/* TABLA */}
-      <div className="overflow-x-auto rounded-xl border border-gray-200">
+      <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
+
         <table className="w-full text-sm">
-          <thead className="bg-gradient-to-r from-blue-50 to-blue-100">
+
+          <thead className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-900">
             <tr>
               {["#", "Nombre", "Motivo", "Fecha", "Operación"].map((h) => (
-                <th key={h} className="border px-3 py-2 text-left font-bold">
+                <th
+                  key={h}
+                  className="border px-3 py-2 text-left font-bold
+                  border-gray-200 dark:border-gray-700
+                  text-gray-700 dark:text-gray-300"
+                >
                   {h}
                 </th>
               ))}
@@ -93,20 +99,26 @@ export default function DesktopTable({ data, onAction, onCreate }) {
               ))
             ) : (
               <tr>
-                <td colSpan={5} className="text-center py-4 text-gray-500">
+                <td
+                  colSpan={5}
+                  className="text-center py-4 text-gray-500 dark:text-gray-400"
+                >
                   No hay registros
                 </td>
               </tr>
             )}
           </tbody>
+
         </table>
+
       </div>
 
+      {/* PAGINATION */}
       <div className="flex justify-center mt-4">
         <Pagination page={page} totalPages={totalPages} setPage={setPage} />
       </div>
 
-      {/* FORMULARIO PETICIÓN MATERIAL */}
+      {/* FORM */}
       {formOpen && (
         <MaterialRequestForm
           isOpen={formOpen}
@@ -114,6 +126,7 @@ export default function DesktopTable({ data, onAction, onCreate }) {
           onSave={handleSaveForm}
         />
       )}
+
     </div>
   );
 }

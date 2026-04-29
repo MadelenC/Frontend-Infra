@@ -1,10 +1,19 @@
 import api from "../helpers/axiosClient";
 
 // Traer todos los usuarios
-export const getUsers = async () => {
+export const getUsers = async ({ page, limit, search, role }) => {
   try {
-    const response = await api.get("/users");
+    const response = await api.get("/users", {
+      params: {
+        page,
+        limit,
+        search,
+        role,
+      },
+    });
+
     return response.data;
+
   } catch (err) {
     throw err.response?.data?.message || "Error al obtener usuarios";
   }

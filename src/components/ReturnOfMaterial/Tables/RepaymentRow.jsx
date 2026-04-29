@@ -6,42 +6,36 @@ export default function RepaymentRow({ item, index, onAction }) {
   return (
     <TableRow className="border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
 
-      {/* # */}
       <TableCell className="border px-3 py-2 text-gray-800 dark:text-gray-200">
         {index}
       </TableCell>
 
-      {/* Serial */}
       <TableCell className="border px-3 py-2 text-gray-800 dark:text-gray-200">
         {item.serial || "-"}
       </TableCell>
 
-      {/* Fecha */}
       <TableCell className="border px-3 py-2 text-gray-800 dark:text-gray-200">
         {item.fecha || "-"}
       </TableCell>
 
-      {/* Nombre */}
       <TableCell className="border px-3 py-2 text-gray-800 dark:text-gray-200">
         {item.nombre || "-"}
       </TableCell>
 
-      {/* Cantidad */}
       <TableCell className="border px-3 py-2 text-gray-800 dark:text-gray-200">
         {item.cantidad || "-"}
       </TableCell>
 
-      {/* Detalle */}
       <TableCell className="border px-3 py-2 text-gray-800 dark:text-gray-200">
         {item.detalle || "-"}
       </TableCell>
 
-      {/* Vehiculo */}
       <TableCell className="border px-3 py-2 text-gray-800 dark:text-gray-200">
-        {item.vehiculo || "-"}
+        {item.solicitud?.vehiculo
+  ? `${item.solicitud.vehiculo.placa} - ${item.solicitud.vehiculo.tipog}`
+  : "-"}
       </TableCell>
 
-      {/* Operación */}
       <TableCell className="border px-3 py-2 flex gap-2 justify-center">
 
         <button

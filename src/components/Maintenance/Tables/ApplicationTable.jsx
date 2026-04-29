@@ -21,6 +21,7 @@ export default function ApplicationTable() {
   const { vehicles, fetchVehicles } = useVehicleStore();
   const { accessories, fetchAccessories } = useAccessoriesStore();
   const { users, fetchUsers } = useUserStore(); 
+
   const [chofer, setChofer] = useState("");
   const [vehiculo, setVehiculo] = useState("");
   const [search, setSearch] = useState("");
@@ -30,7 +31,7 @@ export default function ApplicationTable() {
   const [jobFormOpen, setJobFormOpen] = useState(false);
   const [selectedJobApplication, setSelectedJobApplication] = useState(null);
   const [materialRequestOpen, setMaterialRequestOpen] = useState(false);
-const [selectedMaterialApplication, setSelectedMaterialApplication] = useState(null);
+  const [selectedMaterialApplication, setSelectedMaterialApplication] = useState(null);
 
   const limit = 8;
 
@@ -83,31 +84,34 @@ const [selectedMaterialApplication, setSelectedMaterialApplication] = useState(n
   };
 
   const handleOpenMaterialRequestForm = (application) => {
-  setSelectedMaterialApplication(application);
-  setMaterialRequestOpen(true);
-};
+    setSelectedMaterialApplication(application);
+    setMaterialRequestOpen(true);
+  };
 
-const handleCloseMaterialRequestForm = () => {
-  setMaterialRequestOpen(false);
-  setSelectedMaterialApplication(null);
-};
+  const handleCloseMaterialRequestForm = () => {
+    setMaterialRequestOpen(false);
+    setSelectedMaterialApplication(null);
+  };
+
   const choferes = users?.filter(u => u.tipo && u.tipo.toLowerCase() === "chofer");
+
   const filtered = applications.filter((a) => {
-      const choferNombre = a.chofer
-        ? `${a.chofer.nombres || ""} ${a.chofer.apellidos || ""}`.toLowerCase()
-        : "";
+    const choferNombre = a.chofer
+      ? `${a.chofer.nombres || ""} ${a.chofer.apellidos || ""}`.toLowerCase()
+      : "";
 
-      const matchChofer = chofer
-        ? choferNombre.includes(chofer.toLowerCase())
-        : true;
+    const matchChofer = chofer
+      ? choferNombre.includes(chofer.toLowerCase())
+      : true;
 
-      const idVehiculo = a.vehiculo?.id ? String(a.vehiculo.id) : "";
-      const tipoVehiculo = a.vehiculo?.tipog ? String(a.vehiculo.tipog).toLowerCase() : "";
-      const matchVehiculo = vehiculo
-        ? idVehiculo === vehiculo || tipoVehiculo.includes(vehiculo.toLowerCase())
-        : true;
+    const idVehiculo = a.vehiculo?.id ? String(a.vehiculo.id) : "";
+    const tipoVehiculo = a.vehiculo?.tipog ? String(a.vehiculo.tipog).toLowerCase() : "";
 
-      return matchChofer && matchVehiculo;
+    const matchVehiculo = vehiculo
+      ? idVehiculo === vehiculo || tipoVehiculo.includes(vehiculo.toLowerCase())
+      : true;
+
+    return matchChofer && matchVehiculo;
   });
 
   const totalPages = Math.ceil(filtered.length / limit);
@@ -118,7 +122,7 @@ const handleCloseMaterialRequestForm = () => {
   );
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md p-4">
+    <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4 transition-all">
 
       {/* HEADER */}
       <div className="flex justify-between items-center mb-4">
@@ -137,30 +141,32 @@ const handleCloseMaterialRequestForm = () => {
 
         <button
           onClick={handleOpenCreate}
-        className="flex items-center gap-3 bg-gradient-to-r from-orange-600 to-orange-500
+          className="flex items-center gap-3 bg-gradient-to-r from-orange-600 to-orange-500
               hover:from-orange-700 hover:to-orange-600 text-white px-5 py-3 rounded-lg shadow-lg font-medium
-              focus:outline-none focus:ring-4 focus:ring-orange-400 focus:ring-offset-2 transition-all duration-300
-              hover:scale-105 active:scale-95 mb-4">
+              focus:outline-none focus:ring-4 focus:ring-orange-400 focus:ring-offset-2
+              dark:focus:ring-gray-600 dark:focus:ring-offset-gray-900
+              transition-all duration-300 hover:scale-105 active:scale-95 mb-4"
+        >
           Imprimir
         </button>
 
       </div>
 
       {/* TABLE */}
-      <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+      <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
 
-        <table className="w-full text-sm">
+        <table className="w-full text-sm bg-white dark:bg-gray-900">
 
-          <thead className="bg-gradient-to-r from-blue-50 to-blue-100 ">
+          <thead className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-800">
             <tr>
-              <th className="border px-3 py-2">#</th>
-              <th className="border px-3 py-2">Chofer</th>
-              <th className="border px-3 py-2">Vehículo</th>
-              <th className="border px-3 py-2">Accesorios</th>
-              <th className="border px-3 py-2">Descripción</th>
-              <th className="border px-3 py-2">Fecha</th>
-              <th className="border px-3 py-2">Operación</th>
-              <th className="border px-3 py-2">Trabajos</th>
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">#</th>
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">Chofer</th>
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">Vehículo</th>
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">Accesorios</th>
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">Descripción</th>
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">Fecha</th>
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">Operación</th>
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">Trabajos</th>
             </tr>
           </thead>
 
@@ -178,7 +184,7 @@ const handleCloseMaterialRequestForm = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={8} className="text-center py-4 text-gray-500">
+                <td colSpan={8} className="text-center py-4 text-gray-500 dark:text-gray-400">
                   No hay registros
                 </td>
               </tr>
@@ -197,17 +203,13 @@ const handleCloseMaterialRequestForm = () => {
         />
       </div>
 
-      {/* FORMULARIO MODAL concretar */}
+      {/* FORMULARIOS */}
       {jobFormOpen && selectedJobApplication && (
         <CreateJobForm
           isOpen={jobFormOpen}
           onClose={handleCloseJobForm}
           application={selectedJobApplication}
           onSave={async (data) => {
-            // Aquí guardas el trabajo realizado, luego refrescas la lista y cierras modal
-            // Ejemplo (debes adaptar según tu store/api):
-            // await saveJob(data); 
-            // fetchApplications();
             setJobFormOpen(false);
             return { ok: true };
           }}
@@ -219,11 +221,6 @@ const handleCloseMaterialRequestForm = () => {
           isOpen={materialRequestOpen}
           onClose={handleCloseMaterialRequestForm}
           onSave={async (data) => {
-            // Aquí guardas la petición de material
-            // Puedes usar selectedMaterialApplication si necesitas datos para el guardado
-            // Ejemplo:
-            // await saveMaterialRequest(data);
-            // fetchApplications();
             setMaterialRequestOpen(false);
             return { ok: true };
           }}

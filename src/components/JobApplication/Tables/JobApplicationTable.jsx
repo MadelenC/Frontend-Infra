@@ -114,34 +114,41 @@ export default function JobApplicationTable() {
     <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4">
 
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-4">
+    <div className="flex flex-col gap-3 md:flex-row md:items-stretch md:justify-between mb-4">
 
-        <SearchBar
-          chofer={chofer}
-          setChofer={setChofer}
-          vehiculo={vehiculo}
-          setVehiculo={setVehiculo}
-          listaChoferes={choferes.map(c => ({
-            value: `${c.nombres} ${c.apellidos}`,
-            label: `${c.nombres} ${c.apellidos}`
-          }))}
-          listaVehiculos={vehicles}
-          search={search}
-          setSearch={setSearch}
-        />
+  {/* SearchBar */}
+  <div className="w-full md:flex-1">
+    <SearchBar
+      chofer={chofer}
+      setChofer={setChofer}
+      vehiculo={vehiculo}
+      setVehiculo={setVehiculo}
+      listaChoferes={choferes.map((c) => ({
+        value: `${c.nombres} ${c.apellidos}`,
+        label: `${c.nombres} ${c.apellidos}`,
+      }))}
+      listaVehiculos={vehicles}
+      search={search}
+      setSearch={setSearch}
+    />
+  </div>
 
-        <button
-          onClick={handleOpenCreate}
-          className="flex items-center gap-3 bg-gradient-to-r from-blue-600 to-blue-500
-          hover:from-blue-700 hover:to-blue-600 text-white px-5 py-3 rounded-lg shadow-lg font-medium
-          focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-offset-2
-          transition-all duration-300 hover:scale-105 active:scale-95 mb-4"
-        >
-          <FiPlus size={18} />
-          Agregar Solicitud
-        </button>
+  {/* Button */}
+  <div className="w-full md:w-auto flex md:items-stretch">
+    <button
+      onClick={handleOpenCreate}
+      className="h-10 flex items-center gap-2 px-5 rounded-lg
+      bg-blue-600 text-white font-medium shadow-sm
+      hover:bg-blue-700 transition-colors
+      focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2
+      w-full md:w-auto justify-center"
+    >
+      <FiPlus size={18} />
+      Agregar Solicitud
+    </button>
+  </div>
 
-      </div>
+</div>
 
       {/* TABLE */}
       <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">

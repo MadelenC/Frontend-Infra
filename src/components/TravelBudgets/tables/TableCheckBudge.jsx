@@ -29,7 +29,6 @@ export default function TableCheckBudget() {
     setPage(1);
   }, [search]);
 
-  // filtros tipo TripsTable
   const choferes = users.filter(u => u.tipo === "chofer");
   const encargados = users.filter(u => u.tipo === "encargado");
 
@@ -59,7 +58,7 @@ export default function TableCheckBudget() {
   const currentData = filteredBudgets.slice((page - 1) * limit, page * limit);
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md p-4">
+    <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4">
       
       <div className="h-10 w-64 mb-4">
         <CheckBudgetSearch search={search} setSearch={setSearch} />

@@ -2,24 +2,38 @@ import React, { useState, useEffect } from "react";
 import RepaymentRow from "./RepaymentRow";
 import Pagination from "./Pagination";
 import { FaPrint } from "react-icons/fa";
+import { useRepaymentStore } from "../../../zustand/useRepaymetnStore";
 
-export default function RepaymentTable({ data, onAction }) {
+export default function RepaymentTable({ onAction }) {
+
+  const { repayments, fetchRepayments } = useRepaymentStore();
   const [searchDate, setSearchDate] = useState("");
   const [page, setPage] = useState(1);
   const limit = 8;
 
   useEffect(() => {
+    fetchRepayments();
+  }, []);
+
+
+  useEffect(() => {
     setPage(1);
   }, [searchDate]);
 
+  
   const filteredData =
-    data?.filter((item) => {
+    repayments?.filter((item) => {
       if (!searchDate) return true;
-      const itemDate = new Date(item.fecha).toISOString().split("T")[0];
+
+      const itemDate = item.fecha
+        ? new Date(item.fecha).toISOString().split("T")[0]
+        : "";
+
       return itemDate === searchDate;
     }) || [];
 
   const totalPages = Math.ceil(filteredData.length / limit);
+
   const currentData = filteredData.slice(
     (page - 1) * limit,
     page * limit
@@ -32,7 +46,7 @@ export default function RepaymentTable({ data, onAction }) {
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4">
 
-      {/* HEADER */}
+      
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
 
         <div className="flex gap-2 items-center text-gray-700 dark:text-gray-200">
@@ -62,10 +76,12 @@ export default function RepaymentTable({ data, onAction }) {
           <FaPrint />
           Imprimir
         </button>
+
       </div>
 
-      {/* TABLA */}
+    
       <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
+
         <table className="w-full text-sm">
 
           <thead className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-700">
@@ -113,12 +129,18 @@ export default function RepaymentTable({ data, onAction }) {
           </tbody>
 
         </table>
+
       </div>
 
-      {/* PAGINACIÓN */}
+     
       <div className="flex justify-center mt-4">
-        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          setPage={setPage}
+        />
       </div>
+
     </div>
   );
 }

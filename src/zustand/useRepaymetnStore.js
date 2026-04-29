@@ -25,6 +25,12 @@ export const useRepaymentStore = create((set, get) => ({
         detalle: d.detalle,
         insertador: d.insertador,
         mecanico: d.mecanico ? { ...d.mecanico } : null,
+          // 🚨 AQUÍ ESTÁ EL FIX REAL
+        vehiculo: d.solicitud?.vehiculo
+          ? { ...d.solicitud.vehiculo }
+          : null,
+
+        solicitud: d.solicitud || null,
         created_at: d.created_at,
         updated_at: d.updated_at,
       }));

@@ -11,94 +11,92 @@ export default function TableUser() {
     loading,
     error,
     page,
-    limit,
     totalPages,
     fetchUsers,
     setPage,
-    search = "",
+    search,
     setSearch,
-    roleFilter = "",
+    roleFilter,
     setRoleFilter,
   } = useUserStore();
 
   const [openPanel, setOpenPanel] = useState(false);
   const [formType, setFormType] = useState(null);
 
+ 
   useEffect(() => {
     fetchUsers();
-  }, [fetchUsers]);
+  }, []);
 
-  const sortedUsers = [...users].sort((a, b) => a.id - b.id);
 
-  const currentUsers = sortedUsers
-    .filter((u) => {
-      const term = (search || "").toLowerCase();
-
-      const matchesSearch =
-        String(u.nombres || "").toLowerCase().includes(term) ||
-        String(u.apellidos || "").toLowerCase().includes(term) ||
-        String(u.cedula || "").toLowerCase().includes(term) ||
-        String(u.celular || "").toLowerCase().includes(term);
-
-      const matchesRole = roleFilter ? u.tipo === roleFilter : true;
-
-      return matchesSearch && matchesRole;
-    })
-    .slice((page - 1) * limit, page * limit);
-
-  if (loading)
+  if (loading) {
     return (
       <div className="p-6 text-center text-gray-500 dark:text-gray-400 animate-pulse">
         Cargando usuarios...
       </div>
     );
+  }
 
-  if (error)
+  if (error) {
     return (
       <div className="p-6 text-center text-red-500 font-semibold">
         Error: {error}
       </div>
     );
+  }
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md transition-all p-4">
 
-      {/* BOTÓN */}
-      <div className="flex justify-end mb-4">
-        <button
-          onClick={() => { setOpenPanel(true); setFormType(null); }}
-          className="flex items-center gap-3
-              bg-gradient-to-r from-blue-600 to-blue-500
-              hover:from-blue-700 hover:to-blue-600
-              dark:bg-gray-600 dark:bg-none dark:hover:bg-gray-800
+     
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+
+        
+        <div className="w-full md:flex-1 min-w-0">
+          <SearchBar
+            search={search}
+            setSearch={setSearch}
+            roleFilter={roleFilter}
+            setRoleFilter={setRoleFilter}
+          />
+        </div>
+
+       
+        <div className="w-full md:w-auto flex justify-end">
+          <button
+            onClick={() => {
+              setOpenPanel(true);
+              setFormType(null);
+            }}
+            className="w-full md:w-auto flex items-center justify-center gap-3
+              bg-blue-600 hover:bg-blue-700
               text-white px-5 py-3 rounded-lg shadow-lg font-medium
-              focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-offset-2
-              dark:focus:ring-gray-600 dark:focus:ring-offset-gray-900
-              transition-all duration-300
-              hover:scale-105 active:scale-95">
-          <span className="text-lg font-bold">＋</span>
-          Agregar Usuario
-        </button>
+              transition-all duration-300"
+          >
+            <span className="text-lg font-bold">＋</span>
+            Agregar Usuario
+          </button>
+        </div>
+
       </div>
 
-      {/* SEARCH */}
-      <SearchBar
-        search={search}
-        setSearch={setSearch}
-        roleFilter={roleFilter}
-        setRoleFilter={setRoleFilter}
+      
+      <UserTable users={users} />
+
+      
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        setPage={setPage}
       />
 
-      {/* TABLE */}
-      <UserTable users={currentUsers} />
-
-      {/* PAGINATION */}
-      <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-
-      {/* PANEL */}
+     
       <UserFormPanel
         open={openPanel}
-        onClose={() => { setOpenPanel(false); setFormType(null); }}
+        onClose={() => {
+          setOpenPanel(false);
+          setFormType(null);
+        }}
         formType={formType}
         setFormType={setFormType}
       />
@@ -106,7 +104,6 @@ export default function TableUser() {
     </div>
   );
 }
-
 
 
 

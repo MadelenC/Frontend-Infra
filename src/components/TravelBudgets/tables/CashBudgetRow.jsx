@@ -18,25 +18,44 @@ export default function CashBudgetRow({ budget, index, onEdit }) {
   };
 
   return (
-    <TableRow className="border border-gray-200 hover:bg-gray-50 transition-colors">
-      <TableCell className="border border-gray-200 px-3 py-2 font-medium text-gray-700">{index}</TableCell>
-      <TableCell className="border border-gray-200 px-3 py-2 text-gray-700">{budget.numPre} </TableCell>
-      <TableCell className="border border-gray-200 px-3 py-2 text-gray-700">{budget.chofer}</TableCell>
-      <TableCell className="border border-gray-200 px-3 py-2 text-gray-700">{budget.vehiculo}</TableCell>
-      <TableCell className="border border-gray-200 px-3 py-2">
-        <Badge size="sm" color={badgeColor}>{budget.entidad} </Badge></TableCell>
-      <TableCell className="border border-gray-200 px-3 py-2">
+    <TableRow className="border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+
+      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 font-medium text-gray-700 dark:text-gray-300">
+        {index}
+      </TableCell>
+
+      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">
+        {budget.numPre}
+      </TableCell>
+
+      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">
+        {budget.chofer}
+      </TableCell>
+
+      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">
+        {budget.vehiculo}
+      </TableCell>
+
+      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2">
+        <Badge size="sm" color={badgeColor}>
+          {budget.entidad}
+        </Badge>
+      </TableCell>
+
+      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2">
         <div className="flex items-center gap-2">
+
           <button
             onClick={() => onEdit(budget)}
-            className="p-2 rounded-full bg-indigo-100 text-indigo-600 hover:bg-indigo-200 transition"
+            className="p-2 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-200 dark:hover:bg-indigo-800 transition"
             title="Editar"
           >
             <FaEdit size={14} />
           </button>
+
           <button
             onClick={handlePrint}
-            className="p-2 rounded-full bg-green-100 text-green-600 hover:bg-green-200 transition"
+            className="p-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-800 transition"
             title="Imprimir"
           >
             <FaPrint size={14} />

@@ -4,9 +4,13 @@ import Pagination from "./Pagination";
 import UpdateKmForm from "../Form/UpdateKmForm";
 import ProcessReturnForm from "../Form/ProcessReturnForm";
 import { useMechanicsStore } from "../../../zustand/useMechanicsStore";
+import { useRepaymentStore } from "../../../zustand/useRepaymetnStore"; 
 
 export default function KardexTable({ onRealizar }) {
   const { mechanics, fetchMechanics, editMechanic } = useMechanicsStore();
+
+  // ✅ STORE DEVOLUCIONES
+  const { addRepayment } = useRepaymentStore();
 
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -34,7 +38,6 @@ export default function KardexTable({ onRealizar }) {
     handleCloseUpdateKm();
   };
 
-  // Abrir formulario de devolución
   const handleOpenProcessReturn = (maintenance) => {
     setSelectedReturn(maintenance);
     setProcessReturnOpen(true);
@@ -45,11 +48,16 @@ export default function KardexTable({ onRealizar }) {
     setProcessReturnOpen(false);
   };
 
-  // Guardar devolución
+  // ✅ 🔥 AQUÍ ESTABA EL ERROR
   const handleSaveProcessReturn = async (data) => {
-    await editMechanic(data.id, { devolucion: data.devolucion });
-    fetchMechanics();
-    handleCloseProcessReturn();
+    const res = await addRepayment(data); // 👈 ahora guarda en devoluciones
+
+    if (res.ok) {
+      fetchMechanics(); // opcional refrescar tabla
+      handleCloseProcessReturn();
+    } else {
+      console.error(res.error);
+    }
   };
 
   useEffect(() => {
@@ -66,38 +74,55 @@ export default function KardexTable({ onRealizar }) {
   const currentData = filtered.slice((page - 1) * limit, page * limit);
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md p-4">
-      
+    <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4 transition-all">
+
       {/* HEADER */}
       <div className="flex justify-between items-center mb-4">
+
         <input
           type="text"
           placeholder="Buscar por descripción..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="border px-3 py-1 rounded shadow-sm"
+          className="h-10 w-70 px-4 text-sm rounded-md border shadow-sm transition
+        bg-white border-gray-300 text-gray-800 placeholder-gray-400
+        focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400
+
+        dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-400
+        dark:focus:ring-blue-500 dark:focus:border-blue-500"
         />
+
         <button
           onClick={() => window.print()}
-         className="flex items-center gap-3 bg-gradient-to-r from-orange-600 to-orange-500
+          className="flex items-center gap-3 bg-gradient-to-r from-orange-600 to-orange-500
               hover:from-orange-700 hover:to-orange-600 text-white px-5 py-3 rounded-lg shadow-lg font-medium
-              focus:outline-none focus:ring-4 focus:ring-orange-400 focus:ring-offset-2 transition-all duration-300
-              hover:scale-105 active:scale-95 mb-4">
+              focus:outline-none focus:ring-4 focus:ring-orange-400 focus:ring-offset-2
+              dark:focus:ring-gray-600 dark:focus:ring-offset-gray-900
+              transition-all duration-300 hover:scale-105 active:scale-95 mb-4"
+        >
           Imprimir
         </button>
+
       </div>
 
       {/* TABLE */}
-      <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
-        <table className="w-full text-sm">
-          <thead className="bg-gradient-to-r from-blue-50 to-blue-100">
+      <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+
+        <table className="w-full text-sm bg-white dark:bg-gray-900">
+
+          <thead className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-800">
             <tr>
               {[
                 "#", "Vehículo", "Kilometraje", "Fecha", "Cantidad",
                 "Unidad", "Trabajo", "Marca", "Código", "Repuesto",
                 "Actualizar KM", "Operación", "Devolución"
               ].map((header) => (
-                <th key={header} className="border px-3 py-2 font-bold">{header}</th>
+                <th
+                  key={header}
+                  className="border border-gray-200 dark:border-gray-700 px-3 py-2 font-bold text-gray-700 dark:text-gray-300"
+                >
+                  {header}
+                </th>
               ))}
             </tr>
           </thead>
@@ -124,18 +149,23 @@ export default function KardexTable({ onRealizar }) {
                   }}
                   index={(page - 1) * limit + i + 1}
                   onActualizarKm={handleOpenUpdateKm}
-                  onRealizar={handleOpenProcessReturn} // <- CORREGIDO
+                  onRealizar={handleOpenProcessReturn}
                 />
               ))
             ) : (
               <tr>
-                <td colSpan={13} className="text-center py-4 text-gray-500">
+                <td
+                  colSpan={13}
+                  className="text-center py-4 text-gray-500 dark:text-gray-400"
+                >
                   No hay registros
                 </td>
               </tr>
             )}
           </tbody>
+
         </table>
+
       </div>
 
       {/* PAGINACIÓN */}
@@ -143,7 +173,7 @@ export default function KardexTable({ onRealizar }) {
         <Pagination page={page} totalPages={totalPages} setPage={setPage} />
       </div>
 
-      {/* MODAL Actualizar KM */}
+      {/* MODALES */}
       {updateKmOpen && selectedVehicle && (
         <UpdateKmForm
           vehicle={selectedVehicle}
@@ -152,7 +182,6 @@ export default function KardexTable({ onRealizar }) {
         />
       )}
 
-      {/* MODAL Devolución */}
       {processReturnOpen && selectedReturn && (
         <ProcessReturnForm
           isOpen={processReturnOpen}

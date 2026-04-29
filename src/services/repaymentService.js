@@ -3,7 +3,7 @@ import api from "../helpers/axiosClient";
 // Traer todas las devoluciones
 export const getRepayments = async () => {
   try {
-    const response = await api.get("/returns");
+    const response = await api.get("/devoluciones");
     return response.data;
   } catch (err) {
     throw err.response?.data?.message || "Error al obtener las devoluciones";
@@ -13,7 +13,7 @@ export const getRepayments = async () => {
 // Traer devolución por ID
 export const getRepaymentById = async (id) => {
   try {
-    const response = await api.get(`/returns/${id}`);
+    const response = await api.get(`/devoluciones/${id}`);
     return response.data;
   } catch (err) {
     throw err.response?.data?.message || "Error al obtener la devolución";
@@ -23,7 +23,7 @@ export const getRepaymentById = async (id) => {
 // Crear devolución
 export const createRepayment = async (data) => {
   try {
-    const response = await api.post("/returns", data);
+    const response = await api.post("/devoluciones", data);
     return response.data;
   } catch (err) {
     throw err.response?.data?.message || "Error al crear la devolución";
@@ -33,7 +33,7 @@ export const createRepayment = async (data) => {
 // Actualizar devolución
 export const updateRepayment = async (id, data) => {
   try {
-    const response = await api.put(`/returns/${id}`, data);
+    const response = await api.put(`/devoluciones/${id}`, data);
     return response.data;
   } catch (err) {
     throw err.response?.data?.message || "Error al actualizar la devolución";
@@ -43,7 +43,7 @@ export const updateRepayment = async (id, data) => {
 // Eliminar devolución
 export const deleteRepayment = async (id) => {
   try {
-    const response = await api.delete(`/returns/${id}`);
+    const response = await api.delete(`/devoluciones/${id}`);
     return response.data;
   } catch (err) {
     throw err.response?.data?.message || "Error al eliminar la devolución";

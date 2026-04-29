@@ -1,4 +1,3 @@
-// TableCashBudget.js
 import React, { useState, useEffect } from "react";
 import CashBudgetTable from "./CashBudgetTable";
 import CashBudgetSearch from "../search/SearchBar";
@@ -18,7 +17,7 @@ export default function TableCashBudget() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [budgets, setBudgets] = useState(dummyBudgets);
-  const [activeBudget, setActiveBudget] = useState(null); // fila seleccionada para editar
+  const [activeBudget, setActiveBudget] = useState(null);
   const limit = 3;
 
   useEffect(() => {
@@ -50,7 +49,7 @@ export default function TableCashBudget() {
   };
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md p-4">
+    <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4">
 
       {/* Buscador */}
       <CashBudgetSearch search={search} setSearch={setSearch} />
@@ -60,7 +59,7 @@ export default function TableCashBudget() {
 
       {/* Paginación */}
       <div className="mt-4">
-        <Pagination 
+        <Pagination
           page={page}
           totalPages={totalPages}
           onPageChange={setPage}
@@ -69,9 +68,9 @@ export default function TableCashBudget() {
 
       {/* Formulario de edición */}
       {activeBudget && (
-        <CashBudgetForm 
-          data={activeBudget} 
-          onClose={handleCloseForm} 
+        <CashBudgetForm
+          data={activeBudget}
+          onClose={handleCloseForm}
           onSave={handleSave}
         />
       )}
