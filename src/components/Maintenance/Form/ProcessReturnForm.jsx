@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { useAuthStore } from "../../../zustand/AuthUsers"
 
 export default function ProcessReturnForm({
   isOpen,
   onClose,
   onSave,
   maintenance,
-  user, // 👈 usuario logeado
+ 
 }) {
+  const { user } = useAuthStore();
   const [formData, setFormData] = useState({
     serial: "",
     fecha: "",
@@ -93,8 +95,10 @@ export default function ProcessReturnForm({
         nombre: formData.nombre,
         detalle: formData.detalle,
 
-        // 👇 backend fields
-        insertador: user?.name || "admin",
+
+        insertador:
+        `${user?.nombres || ""} ${user?.apellidos || ""}`.trim() ||
+        "DESCONOCIDO",
         mecanico_id: maintenance?.id,
       });
 
@@ -126,7 +130,7 @@ export default function ProcessReturnForm({
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3 dark:text-gray-300">
 
-          {/* SERIAL */}
+        
           <div>
             <label className="block font-medium mb-1">Serial</label>
             <input
@@ -138,7 +142,6 @@ export default function ProcessReturnForm({
             {errors.serial && <p className="text-red-500 text-xs">{errors.serial}</p>}
           </div>
 
-          {/* FECHA */}
           <div>
             <label className="block font-medium mb-1">Fecha</label>
             <input
@@ -151,7 +154,6 @@ export default function ProcessReturnForm({
             {errors.fecha && <p className="text-red-500 text-xs">{errors.fecha}</p>}
           </div>
 
-          {/* CANTIDAD */}
           <div>
             <label className="block font-medium mb-1">Cantidad</label>
             <input
@@ -164,7 +166,6 @@ export default function ProcessReturnForm({
             {errors.cantidad && <p className="text-red-500 text-xs">{errors.cantidad}</p>}
           </div>
 
-          {/* NOMBRE */}
           <div>
             <label className="block font-medium mb-1">Nombre</label>
             <input
@@ -176,7 +177,7 @@ export default function ProcessReturnForm({
             {errors.nombre && <p className="text-red-500 text-xs">{errors.nombre}</p>}
           </div>
 
-          {/* DETALLE */}
+          
           <div>
             <label className="block font-medium mb-1">Detalle</label>
             <textarea
@@ -188,7 +189,7 @@ export default function ProcessReturnForm({
             {errors.detalle && <p className="text-red-500 text-xs">{errors.detalle}</p>}
           </div>
 
-          {/* BUTTON */}
+          
           <button
             type="submit"
             disabled={loading}

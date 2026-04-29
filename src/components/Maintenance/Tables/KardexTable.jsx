@@ -6,10 +6,11 @@ import ProcessReturnForm from "../Form/ProcessReturnForm";
 import { useMechanicsStore } from "../../../zustand/useMechanicsStore";
 import { useRepaymentStore } from "../../../zustand/useRepaymetnStore"; 
 
+
 export default function KardexTable({ onRealizar }) {
   const { mechanics, fetchMechanics, editMechanic } = useMechanicsStore();
 
-  // ✅ STORE DEVOLUCIONES
+
   const { addRepayment } = useRepaymentStore();
 
   const [page, setPage] = useState(1);
@@ -21,6 +22,8 @@ export default function KardexTable({ onRealizar }) {
 
   const [processReturnOpen, setProcessReturnOpen] = useState(false);
   const [selectedReturn, setSelectedReturn] = useState(null);
+
+ 
 
   const handleOpenUpdateKm = (vehicle) => {
     setSelectedVehicle(vehicle);
@@ -48,17 +51,24 @@ export default function KardexTable({ onRealizar }) {
     setProcessReturnOpen(false);
   };
 
-  // ✅ 🔥 AQUÍ ESTABA EL ERROR
   const handleSaveProcessReturn = async (data) => {
-    const res = await addRepayment(data); // 👈 ahora guarda en devoluciones
+  try {
+    const res = await addRepayment(data);
 
-    if (res.ok) {
-      fetchMechanics(); // opcional refrescar tabla
-      handleCloseProcessReturn();
-    } else {
+    if (!res.ok) {
       console.error(res.error);
+      return { ok: false, error: res.error };
     }
-  };
+
+    fetchMechanics();
+    handleCloseProcessReturn();
+
+    return res;
+  } catch (error) {
+    console.error(error);
+    return { ok: false, error: error.message };
+  }
+};
 
   useEffect(() => {
     fetchMechanics();
@@ -76,7 +86,7 @@ export default function KardexTable({ onRealizar }) {
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4 transition-all">
 
-      {/* HEADER */}
+    
       <div className="flex justify-between items-center mb-4">
 
         <input
@@ -188,6 +198,7 @@ export default function KardexTable({ onRealizar }) {
           onClose={handleCloseProcessReturn}
           onSave={handleSaveProcessReturn}
           maintenance={selectedReturn}
+          
         />
       )}
 

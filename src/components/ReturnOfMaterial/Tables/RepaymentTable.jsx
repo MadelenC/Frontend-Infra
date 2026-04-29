@@ -3,12 +3,18 @@ import RepaymentRow from "./RepaymentRow";
 import Pagination from "./Pagination";
 import { FaPrint } from "react-icons/fa";
 import { useRepaymentStore } from "../../../zustand/useRepaymetnStore";
+import EditRepaymentForm from "../Form/EditRepaymentForm";
 
 export default function RepaymentTable({ onAction }) {
+
 
   const { repayments, fetchRepayments } = useRepaymentStore();
   const [searchDate, setSearchDate] = useState("");
   const [page, setPage] = useState(1);
+
+  const [openEdit, setOpenEdit] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+
   const limit = 8;
 
   useEffect(() => {
@@ -42,6 +48,7 @@ export default function RepaymentTable({ onAction }) {
   const handlePrint = () => {
     window.print();
   };
+  
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4">
@@ -113,7 +120,12 @@ export default function RepaymentTable({ onAction }) {
                   key={item.id || i}
                   item={item}
                   index={(page - 1) * limit + i + 1}
-                  onAction={onAction}
+                    onAction={(type, row) => {
+                    if (type === "edit") {
+                      setSelectedItem(row);
+                      setOpenEdit(true);
+                    }
+                  }}
                 />
               ))
             ) : (
@@ -122,7 +134,7 @@ export default function RepaymentTable({ onAction }) {
                   colSpan={8}
                   className="text-center py-4 text-gray-500 dark:text-gray-400"
                 >
-                  No hay registros
+                  No hay registros 
                 </td>
               </tr>
             )}
@@ -140,6 +152,20 @@ export default function RepaymentTable({ onAction }) {
           setPage={setPage}
         />
       </div>
+      {openEdit && (
+      <EditRepaymentForm
+          isOpen={openEdit}
+          maintenance={selectedItem}
+          onClose={() => setOpenEdit(false)}
+          onSave={(data) => {
+            console.log("EDITADO:", data);
+
+            fetchRepayments(); 
+            setOpenEdit(false);
+          }}
+        />
+      )}            
+        
 
     </div>
   );
