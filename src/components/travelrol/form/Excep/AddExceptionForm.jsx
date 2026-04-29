@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
+import Select from "react-select";
 
 export default function AddExceptionForm({ travel, onClose, onAdd }) {
   const [formData, setFormData] = useState({
@@ -12,6 +13,13 @@ export default function AddExceptionForm({ travel, onClose, onAdd }) {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  
+  const handleSelectChange = (selectedOption) => {
+    setFormData({
+      ...formData,
+      tipoViaje: selectedOption ? selectedOption.value : "",
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -45,6 +53,11 @@ export default function AddExceptionForm({ travel, onClose, onAdd }) {
       toast.error("⚠️ Error inesperado");
     }
   };
+   const tipoViajeOptions = [
+    { value: "ciudadA", label: "Ciudad (A)" },
+    { value: "provinciaB", label: "Provincia (B)" },
+    { value: "fronteraC", label: "Frontera (C)" },
+  ];
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
@@ -69,14 +82,17 @@ export default function AddExceptionForm({ travel, onClose, onAdd }) {
               className="p-2 border rounded text-sm w-full transition  dark:bg-gray-200/40 dark:border-gray-200 dark:text-gray-800"
             />
           </div>
-             <label className="text-sm font-medium text-gray-700 dark:text-gray-200">Tipo de Viaje:</label>
-          <input
-            name="tipoViaje"
-            value={formData.tipoViaje}
-            onChange={handleChange}
-            placeholder="Tipo de viaje"
-            className="p-2 border rounded text-sm w-full transition  dark:bg-gray-200/40 dark:border-gray-800"
-          />
+           <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-200">Tipo de Viaje:</label>
+            <Select
+              name="tipoViaje"
+              value={tipoViajeOptions.find(option => option.value === formData.tipoViaje)}
+              onChange={handleSelectChange} 
+              options={tipoViajeOptions} 
+              placeholder="Selecciona un tipo de viaje"
+              className="p-2 border rounded text-sm w-full transition  dark:bg-gray-200/40 dark:border-gray-800"
+            />
+          </div>
            <label className="text-sm font-medium text-gray-700 dark:text-gray-200">Lugar:</label>
           <input
             name="lugar"

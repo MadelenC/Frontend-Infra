@@ -18,11 +18,30 @@ export default function TravelTable() {
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [openPanel, setOpenPanel] = useState(false);
-
+  const [drivers, setDrivers] = useState([]);  
   const [selectedTravel, setSelectedTravel] = useState(null);
   const [openExceptionsModal, setOpenExceptionsModal] = useState(false);
 
-  const drivers = getDrivers();
+  // Obtener los choferes cuando se monta el componente
+  useEffect(() => {
+    const fetchAndSetDrivers = async () => {
+      try {
+        const driversData = await getDrivers();  
+        setDrivers(driversData);  
+      } catch (error) {
+        console.error("Error al obtener los choferes:", error);
+      }
+    };
+
+    fetchAndSetDrivers();
+    fetchRolTravels();  
+    fetchUsers();  
+  }, [getDrivers, fetchRolTravels, fetchUsers]);
+
+  // Filtrar los choferes que no están ya registrados en los viajes
+  const availableDrivers = drivers.filter((driver) => {
+    return !rolTravels.some((travel) => travel.chofer_id === driver.id);
+  });
 
   const filteredTravels = rolTravels.filter((v) => {
     const term = search.toLowerCase();
@@ -39,11 +58,6 @@ export default function TravelTable() {
     (page - 1) * limit,
     page * limit
   );
-
-  useEffect(() => {
-    fetchRolTravels();
-    fetchUsers();
-  }, [fetchRolTravels, fetchUsers]);
 
   const handleViewExceptions = (travel) => {
     setSelectedTravel(travel);
@@ -82,35 +96,10 @@ export default function TravelTable() {
     }
   };
 
-  const handleAddException = async (data) => {
-    try {
-      const API_URL = import.meta.env.VITE_API_URL;
-
-      const response = await fetch(`${API_URL}/excepciones`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        return { ok: false, error: errorData.error };
-      }
-
-      const result = await response.json();
-
-      fetchRolTravels();
-
-      return { ok: true, data: result };
-    } catch (error) {
-      return { ok: false, error: error.message };
-    }
-  };
-
-  if (loading)
+  if (loading || loadingUsers)
     return (
       <div className="p-6 text-center text-gray-500 dark:text-gray-300">
-        Cargando viajes...
+        Cargando datos...
       </div>
     );
 
@@ -123,83 +112,46 @@ export default function TravelTable() {
 
   return (
     <div className="overflow-hidden rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-md p-4">
-
       <div className="print:hidden">
-         
-        {/* BOTONES */}
-       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
+        {/* Botones */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
 
-  {/* SEARCH (izquierda) */}
-  <div className="w-full md:w-auto">
-    <SearchBar search={search} setSearch={setSearch} />
-  </div>
+          {/* Buscador */}
+          <div className="w-full md:w-auto">
+            <SearchBar search={search} setSearch={setSearch} />
+          </div>
 
-  {/* BOTONES (derecha) */}
-  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:justify-end w-full md:w-auto">
+          {/* Botones */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:justify-end w-full md:w-auto">
+            <button
+              onClick={() => setOpenPanel(true)}
+              className="flex items-center justify-center gap-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white px-5 py-3 rounded-lg shadow-lg font-medium"
+            >
+              <FaPlus size={14} /> Agregar Chofer
+            </button>
 
-    <button
-      onClick={() => setOpenPanel(true)}
-      className="flex items-center justify-center gap-3
-        bg-gradient-to-r from-blue-600 to-blue-500
-        hover:from-blue-700 hover:to-blue-600
-        dark:bg-gray-600 dark:bg-none dark:hover:bg-gray-800
-        text-white px-5 py-3 rounded-lg shadow-lg font-medium
-        focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-offset-2
-        dark:focus:ring-gray-600 dark:focus:ring-offset-gray-900
-        transition-all duration-300
-        hover:scale-105 active:scale-95 w-full sm:w-auto">
-      <FaPlus size={14} /> Agregar Chofer
-    </button>
+            <button
+              onClick={() => window.print()}
+              className="flex items-center justify-center gap-3 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white px-5 py-3 rounded-lg shadow-lg font-medium"
+            >
+              <FaPrint size={20} />
+            </button>
+          </div>
+        </div>
 
-    <button
-      onClick={() => window.print()}
-      className="flex items-center justify-center
-        gap-3 bg-gradient-to-r from-orange-600 to-orange-500
-        hover:from-orange-700 hover:to-orange-600
-        text-white px-5 py-3 rounded-lg shadow-lg font-medium
-        focus:outline-none focus:ring-4 focus:ring-orange-400 focus:ring-offset-2
-        transition-all duration-300
-        hover:scale-105 active:scale-95 w-full sm:w-auto">
-      <FaPrint size={20} />
-    </button>
-
-  </div>
-</div>
-
-       
-
-        {/* TABLA */}
+        {/* Tabla */}
         <div className="overflow-x-auto">
-
           <table className="min-w-full text-sm bg-white dark:bg-gray-900">
-
             <thead className="bg-blue-50 dark:bg-gray-800">
-
               <tr>
-                {[
-                  "ID",
-                  "Chofer",
-                  "TipoA",
-                  "TipoB",
-                  "TipoC",
-                  "Cantidad",
-                  "Excepciones",
-                  "Fecha",
-                  "Operaciones",
-                ].map((head) => (
-                  <th
-                    key={head}
-                    className="px-4 py-3  border-white-200 text-left font-medium text-gray-700 dark:text-gray-300 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
-                  >
+                {["ID", "Chofer", "TipoA", "TipoB", "TipoC", "Cantidad", "Excepciones", "Fecha", "Operaciones"].map((head) => (
+                  <th key={head} className="px-4 py-3 border-white-200 text-left font-medium text-gray-700 dark:text-gray-300 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                     {head}
                   </th>
                 ))}
               </tr>
-
             </thead>
-
             <tbody>
-
               {currentTravels.length > 0 ? (
                 currentTravels.map((travel) => (
                   <TravelRow
@@ -208,29 +160,22 @@ export default function TravelTable() {
                     drivers={drivers}
                     onViewExceptions={handleViewExceptions}
                     onDelete={handleDelete}
-                    onAddException={handleAddException}
                   />
                 ))
               ) : (
                 <tr>
-                  <td
-                    colSpan={9}
-                    className="text-center py-4 text-gray-500 dark:text-gray-400"
-                  >
+                  <td colSpan={9} className="text-center py-4 text-gray-500 dark:text-gray-400">
                     No hay registros
                   </td>
                 </tr>
               )}
-
             </tbody>
-
           </table>
-
         </div>
 
         <Pagination page={page} totalPages={totalPages} setPage={setPage} />
 
-        {/* MODAL EXCEPCIONES */}
+        {/* Modal Excepciones */}
         {openExceptionsModal && selectedTravel && (
           <ListException
             entitie={selectedTravel}
@@ -239,7 +184,7 @@ export default function TravelTable() {
           />
         )}
 
-        {/* MODAL AGREGAR CHOFER */}
+        {/* Modal Agregar Chofer */}
         {openPanel && (
           <div className="fixed inset-0 z-50 flex items-center justify-center">
 
@@ -249,32 +194,21 @@ export default function TravelTable() {
             />
 
             <div className="relative z-10 w-[420px] animate-fadeIn">
-
-              {loadingUsers ? (
-                <div className="p-4 text-center text-gray-300">
-                  Cargando choferes...
-                </div>
-              ) : (
-                <AddDriverForm
-                  choferes={drivers}
-                  choferesRegistrados={rolTravels}
-                  onSubmit={handleAddDriver}
-                  onClose={() => setOpenPanel(false)}
-                />
-              )}
-
+              <AddDriverForm
+                choferes={availableDrivers}
+                choferesRegistrados={rolTravels.map((travel) => travel.chofer_id)}
+                onSubmit={handleAddDriver}
+                setOpenPanel={setOpenPanel}
+              />
             </div>
-
           </div>
         )}
-
       </div>
 
-      {/* PRINT */}
-      <div className="hidden print:block">
-        <PrintTravel travels={filteredTravels} />
+      {/* Print Modal */}
+      <div className="print:block hidden">
+        <PrintTravel />
       </div>
-
     </div>
   );
 }

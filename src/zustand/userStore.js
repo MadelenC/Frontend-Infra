@@ -18,7 +18,7 @@ export const useUserStore = create((set, get) => ({
   search: "",
   roleFilter: "",
 
-  // ================= FETCH =================
+
   fetchUsers: async () => {
     set({ loading: true, error: null });
 
@@ -33,7 +33,7 @@ export const useUserStore = create((set, get) => ({
       });
 
       set({
-        users: res.data,        // 🔥 SOLO datos de la página
+        users: res.data,        
         totalPages: res.totalPages,
         loading: false,
       });
@@ -104,9 +104,35 @@ export const useUserStore = create((set, get) => ({
   },
 
   // ================= HELPERS =================
-  getDrivers: () => {
-    return get().users.filter(u => u.tipo === "chofer");
-  },
+  getDrivers: async () => {
+  const allDrivers = [];
+  let page = 1;
+  let totalPages;
+
+  // Mientras haya más páginas, solicita los choferes de todas las páginas
+  do {
+    const { limit, search, roleFilter } = get();
+
+    // Solicita la página actual con la paginación
+    const res = await getUsers({
+      page,
+      limit,
+      search,
+      role: roleFilter,
+    });
+
+    // Obtén solo los choferes de esta página y agrégalos al array
+    allDrivers.push(...res.data.filter(u => u.tipo === "chofer"));
+
+    // Actualiza la variable de totalPages desde la respuesta de la API
+    totalPages = res.totalPages;
+
+    // Incrementa la página para la siguiente solicitud
+    page++;
+  } while (page <= totalPages);
+
+  return allDrivers;
+}
 }));
 
 

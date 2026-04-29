@@ -6,6 +6,9 @@ export default function PrintTravel({ travels }) {
   const options = { weekday: "long", day: "numeric", month: "long", year: "numeric" };
   const formattedDate = today.toLocaleDateString("es-ES", options);
 
+  // Asegurarnos de que travels sea un array, si no lo es, le asignamos un array vacío
+  const travelsList = Array.isArray(travels) ? travels : [];
+
   return (
     <div className="p-6 text-sm print:p-0">
       {/* Encabezado */}
@@ -29,8 +32,8 @@ export default function PrintTravel({ travels }) {
           </tr>
         </thead>
         <tbody>
-          {travels.length > 0 ? (
-            travels.map((t, i) => (
+          {travelsList.length > 0 ? (
+            travelsList.map((t, i) => (
               <tr key={t.id}>
                 <td className="border px-3 py-1">{i + 1}</td>
                 <td className="border px-3 py-1">{t.chofer}</td>
