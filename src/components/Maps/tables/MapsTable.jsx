@@ -12,28 +12,26 @@ export default function MapsTable() {
     fetchMaps,
     loading,
     error,
+    page,
+    setPage,
   } = useMapsStore();
 
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [page, setPage] = useState(1);
   const [modalItem, setModalItem] = useState(null);
-
-  const limit = 8;
+  const [search, setSearch] = useState("");
+  const [estadoFilter, setEstadoFilter] = useState("");
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(search);
-      setPage(1); 
-    }, 400);
+    fetchMaps();
+  }, [page]);
 
-    return () => clearTimeout(timer);
-  }, [search]);
-
-  
-  useEffect(() => {
-    fetchMaps(page, limit, debouncedSearch);
-  }, [page, debouncedSearch]);
+ 
+  const filteredMaps = maps.filter((m) =>
+    (
+      (m.titulo || "").toLowerCase().includes(search.toLowerCase()) ||
+      (m.destino || "").toLowerCase().includes(search.toLowerCase())
+    ) &&
+    (estadoFilter === "" || m.estado === estadoFilter)
+  );
 
   if (loading)
     return <div className="p-4 text-center">Cargando mapas...</div>;
@@ -46,11 +44,13 @@ export default function MapsTable() {
 
       {/* SEARCH */}
       <div className="mb-4 w-64">
-        <SearchBar search={search} setSearch={setSearch} />
+        <SearchBar
+          search={search}
+          setSearch={setSearch}
+        />
       </div>
-
       {/* TABLE */}
-      <TableMaps data={maps} openModal={setModalItem} />
+      <TableMaps data={filteredMaps} openModal={setModalItem} />
 
       {/* PAGINATION */}
       {maps.length > 0 && (

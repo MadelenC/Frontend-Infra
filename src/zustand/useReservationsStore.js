@@ -6,13 +6,45 @@ export const useReservaStore = create((set, get) => ({
   loading: false,
   error: null,
 
+ page: 1,
+  limit: 8,
+  totalPages: 1,
+
+  estadoFilter: "",
+
+
+  setPage: (page) => {
+    set({ page });
+  },
+
+  setEstadoFilter: (estado) => {
+    set({ estadoFilter: estado, page: 1 });
+  },
+
   fetchReservas: async () => {
+    const { page, limit, estadoFilter, loading } = get();
+
+    if (loading) return;
+
     set({ loading: true, error: null });
-    const response = await getReservas();
-    if (response.ok) {
-      set({ reservas: response.data, loading: false });
-    } else {
-      set({ error: response.error, loading: false });
+
+    try {
+      const res = await getReservas({
+        page,
+        limit,
+        estado: estadoFilter,
+      });
+
+      set({
+        reservas: res.data,
+        totalPages: res.totalPages,
+        loading: false,
+      });
+    } catch (err) {
+      set({
+        error: err.message || "Error al cargar reservas",
+        loading: false,
+      });
     }
   },
 

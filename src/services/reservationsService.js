@@ -1,15 +1,21 @@
 import api from "../helpers/axiosClient";
 
 // Traer todas las reservas
-export const getReservas = async () => {
+export const getReservas = async ({ page, limit, estado }) => {
   try {
-    const response = await api.get("/reservas");
-    return { ok: true, data: response.data };
+    const response = await api.get("/reservas", {
+      params: {
+        page,
+        limit,
+        estado, 
+      },
+    });
+
+    return response.data;
   } catch (err) {
-    return { ok: false, error: err.response?.data?.message || "Error al obtener reservas" };
+    throw err.response?.data?.message || "Error al obtener reservas";
   }
 };
-
 // Traer reserva por ID
 export const getReservaById = async (id) => {
   try {
