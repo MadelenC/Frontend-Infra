@@ -6,62 +6,64 @@ import { useMapsStore } from "../../../zustand/useMapsStore";
 import ModalMap from "./ModalMap";
 
 export default function MapsTable() {
-  const { maps, fetchMaps, loading, error } = useMapsStore();
+  const {
+    maps,
+    totalPages,
+    fetchMaps,
+    loading,
+    error,
+  } = useMapsStore();
 
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(1);
   const [modalItem, setModalItem] = useState(null);
+
   const limit = 8;
 
   useEffect(() => {
-    fetchMaps();
-  }, [fetchMaps]);
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1); 
+    }, 400);
 
-  useEffect(() => {
-    setPage(1);
+    return () => clearTimeout(timer);
   }, [search]);
 
-  const filtered = maps.filter((m) =>
-    Object.values(m).some(
-      (v) => v && String(v).toLowerCase().includes(search.toLowerCase())
-    )
-  );
-
-  const totalPages = Math.ceil(filtered.length / limit);
-  const currentData = filtered.slice((page - 1) * limit, page * limit);
+  
+  useEffect(() => {
+    fetchMaps(page, limit, debouncedSearch);
+  }, [page, debouncedSearch]);
 
   if (loading)
-    return (
-      <div className="p-4 text-center text-gray-500 dark:text-gray-400">
-        Cargando mapas...
-      </div>
-    );
+    return <div className="p-4 text-center">Cargando mapas...</div>;
 
   if (error)
-    return (
-      <div className="p-4 text-center text-red-500 dark:text-red-400">
-        {error}
-      </div>
-    );
+    return <div className="p-4 text-center text-red-500">{error}</div>;
 
   return (
-    <div className="bg-white dark:bg-white/[0.03] rounded-xl shadow p-4 border border-gray-200 dark:border-gray-700">
+    <div className="bg-white dark:bg-white/[0.03] p-4 rounded-xl shadow">
 
-      <div className="flex justify-between items-center mb-4">
-        <div className="h-10 w-64">
-          <SearchBar search={search} setSearch={setSearch} />
+      {/* SEARCH */}
+      <div className="mb-4 w-64">
+        <SearchBar search={search} setSearch={setSearch} />
+      </div>
+
+      {/* TABLE */}
+      <TableMaps data={maps} openModal={setModalItem} />
+
+      {/* PAGINATION */}
+      {maps.length > 0 && (
+        <div className="flex justify-center mt-4">
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            setPage={setPage}
+          />
         </div>
-      </div>
+      )}
 
-      {/* Tabla */}
-      <TableMaps data={currentData} openModal={setModalItem} />
-
-      {/* Paginación */}
-      <div className="flex justify-center mt-4">
-        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-      </div>
-
-      {/* Modal */}
+      {/* MODAL */}
       {modalItem && (
         <ModalMap
           lat={modalItem.lat}
@@ -70,7 +72,6 @@ export default function MapsTable() {
           onClose={() => setModalItem(null)}
         />
       )}
-
     </div>
   );
 }

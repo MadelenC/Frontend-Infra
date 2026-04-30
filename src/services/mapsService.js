@@ -1,9 +1,12 @@
 import api from "../helpers/axiosClient";
 
 // Traer todos los mapas
-export const getMaps = async () => {
+export const getMaps = async ({ page, limit, search }) => {
   try {
-    const response = await api.get("/mapas");
+    const response = await api.get("/mapas", {
+      params: { page, limit, search },
+    });
+
     return response.data;
   } catch (err) {
     throw err.response?.data?.message || "Error al obtener los mapas";

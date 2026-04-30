@@ -10,39 +10,48 @@ import ListException from "../form/Excep/ListException";
 import { FaPlus, FaPrint } from "react-icons/fa";
 
 export default function TravelTable() {
-  const { rolTravels = [], fetchRolTravels, removeRolTravel, loading, error } =
-    useRolTravelStore();
-  const { fetchUsers, getDrivers, loading: loadingUsers } = useUserStore();
+  const {
+    rolTravels,
+    fetchRolTravels,
+    removeRolTravel,
+    loading,
+    error,
+    page,
+    totalPages,
+    setPage,
+  } = useRolTravelStore();
+
+  const { fetchUsers, getDrivers } = useUserStore();
 
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const [limit] = useState(10);
   const [openPanel, setOpenPanel] = useState(false);
-  const [drivers, setDrivers] = useState([]);  
+  const [drivers, setDrivers] = useState([]);
   const [selectedTravel, setSelectedTravel] = useState(null);
   const [openExceptionsModal, setOpenExceptionsModal] = useState(false);
 
-  // Obtener los choferes cuando se monta el componente
+
   useEffect(() => {
-    const fetchAndSetDrivers = async () => {
-      try {
-        const driversData = await getDrivers();  
-        setDrivers(driversData);  
-      } catch (error) {
-        console.error("Error al obtener los choferes:", error);
-      }
+    fetchRolTravels();
+    fetchUsers();
+  }, []);
+
+  
+  useEffect(() => {
+    const loadDrivers = async () => {
+      const data = await getDrivers();
+      setDrivers(Array.isArray(data) ? data : []);
     };
 
-    fetchAndSetDrivers();
-    fetchRolTravels();  
-    fetchUsers();  
-  }, [getDrivers, fetchRolTravels, fetchUsers]);
+    loadDrivers();
+  }, [getDrivers]);
 
-  // Filtrar los choferes que no están ya registrados en los viajes
-  const availableDrivers = drivers.filter((driver) => {
-    return !rolTravels.some((travel) => travel.chofer_id === driver.id);
-  });
+ 
+  const availableDrivers = drivers.filter(
+    (driver) =>
+      !rolTravels.some((travel) => travel.chofer_id === driver.id)
+  );
 
+  
   const filteredTravels = rolTravels.filter((v) => {
     const term = search.toLowerCase();
     return (
@@ -53,23 +62,20 @@ export default function TravelTable() {
     );
   });
 
-  const totalPages = Math.ceil(filteredTravels.length / limit);
-  const currentTravels = filteredTravels.slice(
-    (page - 1) * limit,
-    page * limit
-  );
-
+  
   const handleViewExceptions = (travel) => {
     setSelectedTravel(travel);
     setOpenExceptionsModal(true);
   };
 
+  
   const handleDelete = async (id) => {
     if (window.confirm("¿Desea eliminar este viaje?")) {
       await removeRolTravel(id);
     }
   };
 
+  
   const handleAddDriver = async (data) => {
     try {
       const API_URL = import.meta.env.VITE_API_URL;
@@ -79,11 +85,6 @@ export default function TravelTable() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        return { ok: false, error: errorData.error };
-      }
 
       const result = await response.json();
 
@@ -96,119 +97,133 @@ export default function TravelTable() {
     }
   };
 
-  if (loading || loadingUsers)
+ 
+  if (loading) {
     return (
-      <div className="p-6 text-center text-gray-500 dark:text-gray-300">
+      <div className="p-6 text-center text-gray-500">
         Cargando datos...
       </div>
     );
+  }
 
-  if (error)
+  if (error) {
     return (
       <div className="p-6 text-center text-red-500">
         Error: {error}
       </div>
     );
+  }
 
   return (
     <div className="overflow-hidden rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-md p-4">
-      <div className="print:hidden">
-        {/* Botones */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
 
-          {/* Buscador */}
-          <div className="w-full md:w-auto">
-            <SearchBar search={search} setSearch={setSearch} />
-          </div>
+      {/* HEADER */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
 
-          {/* Botones */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:justify-end w-full md:w-auto">
-            <button
-              onClick={() => setOpenPanel(true)}
-              className="flex items-center justify-center gap-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white px-5 py-3 rounded-lg shadow-lg font-medium"
-            >
-              <FaPlus size={14} /> Agregar Chofer
-            </button>
-
-            <button
-              onClick={() => window.print()}
-              className="flex items-center justify-center gap-3 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white px-5 py-3 rounded-lg shadow-lg font-medium"
-            >
-              <FaPrint size={20} />
-            </button>
-          </div>
+        <div className="w-full md:w-auto">
+          <SearchBar search={search} setSearch={setSearch} />
         </div>
 
-        {/* Tabla */}
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-sm bg-white dark:bg-gray-900">
-            <thead className="bg-blue-50 dark:bg-gray-800">
+        <div className="flex flex-col sm:flex-row gap-2 md:justify-end w-full md:w-auto">
+
+          <button
+            onClick={() => setOpenPanel(true)}
+            className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg shadow"
+          >
+            <FaPlus size={14} /> Agregar Chofer
+          </button>
+
+          <button
+            onClick={() => window.print()}
+            className="flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-5 py-3 rounded-lg shadow"
+          >
+            <FaPrint size={18} />
+          </button>
+
+        </div>
+      </div>
+
+      {/* TABLE */}
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-sm bg-white dark:bg-gray-900">
+
+          <thead className="bg-blue-50 dark:bg-gray-800">
+            <tr>
+              {[
+                "ID",
+                "Chofer",
+                "TipoA",
+                "TipoB",
+                "TipoC",
+                "Cantidad",
+                "Excepciones",
+                "Fecha",
+                "Operaciones",
+              ].map((head) => (
+                <th
+                  key={head}
+                  className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700"
+                >
+                  {head}
+                </th>
+              ))}
+            </tr>
+          </thead>
+
+          <tbody>
+            {filteredTravels.length > 0 ? (
+              filteredTravels.map((travel) => (
+                <TravelRow
+                  key={travel.id}
+                  entitie={travel}
+                  drivers={drivers}
+                  onViewExceptions={handleViewExceptions}
+                  onDelete={handleDelete}
+                />
+              ))
+            ) : (
               <tr>
-                {["ID", "Chofer", "TipoA", "TipoB", "TipoC", "Cantidad", "Excepciones", "Fecha", "Operaciones"].map((head) => (
-                  <th key={head} className="px-4 py-3 border-white-200 text-left font-medium text-gray-700 dark:text-gray-300 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                    {head}
-                  </th>
-                ))}
+                <td colSpan={9} className="text-center py-4 text-gray-500">
+                  No hay registros
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {currentTravels.length > 0 ? (
-                currentTravels.map((travel) => (
-                  <TravelRow
-                    key={travel.id}
-                    entitie={travel}
-                    drivers={drivers}
-                    onViewExceptions={handleViewExceptions}
-                    onDelete={handleDelete}
-                  />
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={9} className="text-center py-4 text-gray-500 dark:text-gray-400">
-                    No hay registros
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+            )}
+          </tbody>
 
-        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-
-        {/* Modal Excepciones */}
-        {openExceptionsModal && selectedTravel && (
-          <ListException
-            entitie={selectedTravel}
-            exceptions={selectedTravel.exceptions || []}
-            onClose={() => setOpenExceptionsModal(false)}
-          />
-        )}
-
-        {/* Modal Agregar Chofer */}
-        {openPanel && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center">
-
-            <div
-              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-              onClick={() => setOpenPanel(false)}
-            />
-
-            <div className="relative z-10 w-[420px] animate-fadeIn">
-              <AddDriverForm
-                choferes={availableDrivers}
-                choferesRegistrados={rolTravels.map((travel) => travel.chofer_id)}
-                onSubmit={handleAddDriver}
-                setOpenPanel={setOpenPanel}
-              />
-            </div>
-          </div>
-        )}
+        </table>
       </div>
 
-      {/* Print Modal */}
-      <div className="print:block hidden">
-        <PrintTravel />
+      {/* PAGINATION */}
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        setPage={setPage}
+      />
+
+      {/* MODAL EXCEPCIONES */}
+      {openExceptionsModal && selectedTravel && (
+        <ListException
+          entitie={selectedTravel}
+          exceptions={selectedTravel.exceptions || []}
+          onClose={() => setOpenExceptionsModal(false)}
+        />
+      )}
+
+      {/* MODAL FORM */}
+      {openPanel && (
+        <AddDriverForm
+          choferes={availableDrivers}
+          choferesRegistrados={rolTravels.map(t => t.chofer_id)}
+          onSubmit={handleAddDriver}
+          setOpenPanel={setOpenPanel}
+        />
+      )}
+
+      {/* PRINT */}
+      <div className="hidden print:block">
+        <PrintTravel travels={rolTravels} />
       </div>
+
     </div>
   );
 }

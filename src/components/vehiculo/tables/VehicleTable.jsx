@@ -9,17 +9,22 @@ import UpdateKmForm from "../form/oper/UpdateKmForm";
 import VehicleDetail from "../form/oper/VehicleDetail";
 
 export default function TableVehicle() {
-  const removeVehicle = useVehicleStore((state) => state.removeVehicle);
-  const vehicles = useVehicleStore((state) => state.vehicles);
-  const fetchVehicles = useVehicleStore((state) => state.fetchVehicles);
-  const loading = useVehicleStore((state) => state.loading);
-  const error = useVehicleStore((state) => state.error);
-  const addVehicle = useVehicleStore((state) => state.addVehicle);
-  const editVehicle = useVehicleStore((state) => state.editVehicle);
+  const {
+  vehicles,
+  page,
+  totalPages,
+  setPage,
+  fetchVehicles,
+  loading,
+  error,
+  addVehicle,
+  editVehicle,
+  removeVehicle,
+} = useVehicleStore();
+  
 
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const limit = 8;
+  const { setEstadoFilter, estadoFilter } = useVehicleStore();
 
   const [openAddPanel, setOpenAddPanel] = useState(false);
   const [openEditPanel, setOpenEditPanel] = useState(false);
@@ -29,11 +34,10 @@ export default function TableVehicle() {
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [selectedDetailVehicle, setSelectedDetailVehicle] = useState(null);
 
-  const [estadoFilter, setEstadoFilter] = useState("");
 
   useEffect(() => {
     fetchVehicles();
-  }, []);
+  }, [page]);
 
   const filteredVehicles = vehicles.filter(
     (v) =>
@@ -42,9 +46,9 @@ export default function TableVehicle() {
       (estadoFilter === "" || v.estado === estadoFilter)
   );
 
-  const sortedVehicles = [...filteredVehicles].sort((a, b) => b.id - a.id);
-  const totalPages = Math.ceil(sortedVehicles.length / limit);
-  const currentVehicles = sortedVehicles.slice((page - 1) * limit, page * limit);
+ 
+  
+  
 
   const handleAddVehicle = async (vehicleData) => {
     const result = await addVehicle(vehicleData);
@@ -85,7 +89,7 @@ export default function TableVehicle() {
 
   </div>
 
-  {/* BOTÓN */}
+ 
   <button
     onClick={() => setOpenAddPanel(true)}
     className="h-10 flex items-center justify-center gap-2
@@ -101,7 +105,6 @@ export default function TableVehicle() {
 
 </div>
 
-      {/* TABLA */}
       <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
 
         <table className="w-full text-sm bg-white dark:bg-gray-900">
@@ -122,8 +125,8 @@ export default function TableVehicle() {
           </thead>
 
           <tbody>
-            {currentVehicles.length > 0 ? (
-              currentVehicles.map((v) => (
+            {filteredVehicles.length > 0 ? (
+              filteredVehicles.map((v) => (
                 <VehicleRow
                   key={v.id}
                   vehicle={v}

@@ -1,12 +1,15 @@
 import api from "../helpers/axiosClient";
 
 // Traer todos los destinos
-export const getDestinos = async () => {
+export const getDestinos = async ({ page, limit, departamento,search }) => {
   try {
-    const response = await api.get("/destino");
+    const response = await api.get("/destino", {
+      params: { page, limit, departamento,search },
+    });
+
     return response.data;
   } catch (err) {
-    throw err.response?.data?.message || "Error al obtener los destinos";
+    throw err.response?.data?.message || "Error al obtener destinos";
   }
 };
 

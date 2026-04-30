@@ -10,28 +10,44 @@ export const useDestinoStore = create((set, get) => ({
   destinos: [],
   loading: false,
   error: null,
+  page: 1,
+  limit: 8,
+  totalPages: 1,
 
-  // Traer todos los destinos
-  fetchDestinos: async () => {
-    set({ loading: true, error: null });
-    try {
-      const data = await getDestinos();
-      const mapped = data.map(d => ({
-        id: d.id,
-        departamentoInicio: d.dep_inicio,
-        origen: d.origen,
-        ruta: d.ruta,
-        destino: d.destino,
-        departamentoFinal: d.dep_final,
-        distancia: d.kilometraje,
-        tiempo: d.tiempo,
-        mapa: d.mapa ? { ...d.mapa } : { lat: -17.3935, lng: -66.1568, titulo: "" },
-      }));
-      set({ destinos: mapped, loading: false });
-    } catch (err) {
-      set({ error: err.message || err, loading: false });
-    }
-  },
+ 
+fetchDestinos: async ( page, limit, departamento, search  ) => {
+  set({ loading: true, error: null });
+
+  try {
+    const data = await getDestinos({
+      page,
+      limit,
+      departamento,
+      search,
+    });
+
+    const mapped = data.data.map(d => ({
+      id: d.id,
+      departamentoInicio: d.dep_inicio,
+      departamentoFinal: d.dep_final,
+      origen: d.origen,
+      destino: d.destino,
+      ruta: d.ruta,
+      distancia: d.kilometraje,
+      tiempo: d.tiempo,
+      mapa: d.mapa ? { ...d.mapa } : { lat: -17.3935, lng: -66.1568 },
+    }));
+
+    set({
+      destinos: mapped,
+      totalPages: data.totalPages,
+      loading: false,
+    });
+
+  } catch (err) {
+    set({ error: err.message || err, loading: false });
+  }
+},
 
   // Crear un destino
   addDestino: async (data) => {
@@ -92,7 +108,7 @@ export const useDestinoStore = create((set, get) => ({
     }
   },
 
-  // Eliminar un destino
+ 
   removeDestino: async (id) => {
     try {
       await deleteDestino(id);
@@ -103,7 +119,6 @@ export const useDestinoStore = create((set, get) => ({
     }
   },
 
-  // Actualizar solo la ubicación (mapa) de un destino
   updateDestinoMapa: async (id, newMapa) => {
     try {
       // Aquí puedes llamar a la API si quieres guardar cambios

@@ -49,43 +49,58 @@ export const useVehicleStore = create((set, get) => ({
   vehicles: [],
   loading: false,
   error: null,
-  fetchVehicles: async () => {
-    set({ loading: true, error: null });
-    try {
-      const data = await getVehicles();
-      set({
-        vehicles: (data || []).map(mapVehicleFromApi),
-        loading: false,
-      });
-    } catch (err) {
-      set({ error: err.message || err, loading: false });
-    }
+  page: 1,
+  limit: 8,
+  totalPages: 1,
+ fetchVehicles: async () => {
+  set({ loading: true, error: null });
+
+  try {
+    const { page, limit, estadoFilter } = get();
+
+    const data = await getVehicles({
+      page,
+      limit,
+      estado: estadoFilter,
+    });
+
+    set({
+      vehicles: data.data.map(mapVehicleFromApi),
+      totalPages: data.totalPages,
+      loading: false,
+    });
+  } catch (err) {
+    set({ error: err.message, loading: false });
+  }
+},
+setPage: (page) => {
+    set({ page });
+    get().fetchVehicles();
   },
 
+  estadoFilter: "",
+setEstadoFilter: (estado) => {
+  set({ estadoFilter: estado, page: 1 });
+  get().fetchVehicles();
+},
   
   addVehicle: async (vehicleUI) => {
-    try {
-      await createVehicle(mapVehicleToApi(vehicleUI));
-      set({
-        vehicles: [
-          ...get().vehicles,
-          {
-            ...vehicleUI,
-            id: Date.now(), 
-          },
-        ],
-      });
+  try {
+    await createVehicle(mapVehicleToApi(vehicleUI));
 
-      return { ok: true };
-    } catch (err) {
-      return { ok: false, error: err.message || err };
-    }
-  },
+    await get().fetchVehicles(); 
+
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err.message || err };
+  }
+},
 
 
   editVehicle: async (id, vehicleUI) => {
     try {
       await updateVehicle(id, mapVehicleToApi(vehicleUI));
+      await get().fetchVehicles();
 
       set({
         vehicles: get().vehicles.map((v) =>
@@ -103,6 +118,7 @@ export const useVehicleStore = create((set, get) => ({
   removeVehicle: async (id) => {
     try {
       await deleteVehicle(id);
+      await get().fetchVehicles();
       set({
         vehicles: get().vehicles.filter((v) => v.id !== id),
       });

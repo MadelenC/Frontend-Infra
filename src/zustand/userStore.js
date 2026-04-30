@@ -7,8 +7,12 @@ import {
 } from "../services/userService";
 
 export const useUserStore = create((set, get) => ({
+  
   users: [],
+  drivers: [],
+
   loading: false,
+  loadingDrivers: false,
   error: null,
 
   page: 1,
@@ -17,7 +21,6 @@ export const useUserStore = create((set, get) => ({
 
   search: "",
   roleFilter: "",
-
 
   fetchUsers: async () => {
     set({ loading: true, error: null });
@@ -33,7 +36,7 @@ export const useUserStore = create((set, get) => ({
       });
 
       set({
-        users: res.data,        
+        users: res.data,
         totalPages: res.totalPages,
         loading: false,
       });
@@ -46,10 +49,9 @@ export const useUserStore = create((set, get) => ({
     }
   },
 
-  // ================= PAGINACIÓN =================
   setPage: (page) => {
     set({ page });
-    get().fetchUsers(); // 🔥 CLAVE
+    get().fetchUsers();
   },
 
   setSearch: (term) => {
@@ -62,7 +64,7 @@ export const useUserStore = create((set, get) => ({
     get().fetchUsers();
   },
 
-  // ================= CRUD =================
+  
   createUser: async (userData) => {
     try {
       const newUser = await apiCreateUser(userData);
@@ -103,38 +105,51 @@ export const useUserStore = create((set, get) => ({
     }
   },
 
-  // ================= HELPERS =================
-  getDrivers: async () => {
-  const allDrivers = [];
-  let page = 1;
-  let totalPages;
 
-  // Mientras haya más páginas, solicita los choferes de todas las páginas
-  do {
-    const { limit, search, roleFilter } = get();
+  fetchDrivers: async () => {
+    set({ loadingDrivers: true });
 
-    // Solicita la página actual con la paginación
-    const res = await getUsers({
-      page,
-      limit,
-      search,
-      role: roleFilter,
-    });
+    try {
+      let allDrivers = [];
+      let page = 1;
+      let totalPages = 1;
 
-    // Obtén solo los choferes de esta página y agrégalos al array
-    allDrivers.push(...res.data.filter(u => u.tipo === "chofer"));
+      do {
+        const { limit } = get();
 
-    // Actualiza la variable de totalPages desde la respuesta de la API
-    totalPages = res.totalPages;
+        const res = await getUsers({
+          page,
+          limit,
+          search: "",
+          role: "chofer", 
+        });
 
-    // Incrementa la página para la siguiente solicitud
-    page++;
-  } while (page <= totalPages);
+        allDrivers = [...allDrivers, ...res.data];
 
-  return allDrivers;
-}
+        totalPages = res.totalPages;
+        page++;
+
+      } while (page <= totalPages);
+
+      set({
+        drivers: allDrivers,
+        loadingDrivers: false
+      });
+
+    } catch (err) {
+      set({
+        loadingDrivers: false,
+        error: err.message || "Error cargando choferes",
+      });
+    }
+  },
+
+  
+  getDrivers: () => {
+    return get().drivers || [];
+  },
+
 }));
-
 
 
 

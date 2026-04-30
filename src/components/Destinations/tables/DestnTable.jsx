@@ -6,10 +6,18 @@ import { useDestinoStore } from "../../../zustand/useDestinationsStore";
 import { FaPrint } from "react-icons/fa";
 
 export default function DestTable() {
-  const { destinos = [], fetchDestinos, loading, error } = useDestinoStore();
+  const {
+    destinos,
+    totalPages,
+    fetchDestinos,
+    loading,
+    error,
+  } = useDestinoStore();
+
   const [search, setSearch] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [page, setPage] = useState(1);
+
   const limit = 8;
 
   const departments = [
@@ -24,38 +32,10 @@ export default function DestTable() {
     "Pando",
   ];
 
+  // 🔥 SOLO BACKEND
   useEffect(() => {
-    fetchDestinos();
-  }, []);
-
-  useEffect(() => {
-    setPage(1);
-  }, [search, departmentFilter]);
-
-  const normalize = (str) =>
-    str
-      ? str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
-      : "";
-
-  const filtered = destinos.filter((d) => {
-    const searchMatch = Object.values(d).some(
-      (v) =>
-        v !== undefined &&
-        normalize(String(v)).includes(normalize(search))
-    );
-
-    const departmentNormalized = normalize(departmentFilter);
-
-    const departmentMatch =
-      departmentFilter === "" ||
-      normalize(d.departamentoInicio).includes(departmentNormalized) ||
-      normalize(d.departamentoFinal).includes(departmentNormalized);
-
-    return searchMatch && departmentMatch;
-  });
-
-  const totalPages = Math.ceil(filtered.length / limit);
-  const currentData = filtered.slice((page - 1) * limit, page * limit);
+    fetchDestinos(page, limit, departmentFilter, search);
+  }, [page, departmentFilter, search]);
 
   if (loading)
     return (
@@ -72,76 +52,52 @@ export default function DestTable() {
     );
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-4 border border-gray-200 dark:border-gray-700 transition-all">
+    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-4">
 
-      {/* Barra superior */}
+      {/* FILTROS */}
+      <div className="flex justify-between gap-3 mb-4">
 
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
+        <div className="flex gap-2">
+          <SearchBar search={search} setSearch={setSearch} />
 
-        {/* IZQUIERDA: filtros */}
-        <div className="flex flex-col sm:flex-row w-full lg:w-auto gap-2">
-
-          {/* Search */}
-          <div className="w-full sm:w-80">
-            <SearchBar search={search} setSearch={setSearch} />
-          </div>
-
-          {/* Select */}
           <select
             value={departmentFilter}
             onChange={(e) => setDepartmentFilter(e.target.value)}
-            className="h-10 w-full sm:w-64 px-3 text-sm rounded-md border shadow-sm transition
-            bg-white border-gray-300 text-gray-800
-            focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400
-
-            dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200"
+            className="h-10 px-3 border rounded-md"
           >
-            <option value="">Todos los Departamentos</option>
+            <option value="">Todos</option>
             {departments.map((d) => (
-              <option key={d} value={d}>
-                {d}
-              </option>
+              <option key={d} value={d}>{d}</option>
             ))}
           </select>
-
         </div>
 
-      
-        <div className="w-full lg:w-auto">
-          <button className="w-full lg:w-auto flex items-center justify-center gap-2
-            bg-gradient-to-r from-orange-600 to-orange-500
-            hover:from-orange-700 hover:to-orange-600
-            text-white px-5 h-10 rounded-md shadow-md font-medium
-            transition-all duration-300
-            hover:scale-[1.03] active:scale-95">
-
-            <FaPrint size={14} />
-            Imprimir
-
-          </button>
-        </div>
-
+        <button className="flex items-center gap-2 bg-orange-600 text-white px-4 rounded-md">
+          <FaPrint />
+          Imprimir
+        </button>
       </div>
 
-     
-      <TableDest data={currentData} />
+      {/* TABLA */}
+      <TableDest data={destinos} />
 
-      {currentData.length === 0 && (
-        <div className="p-4 text-center text-gray-500 dark:text-gray-400">
-          No hay resultados para los filtros seleccionados.
+      {/* SIN RESULTADOS */}
+      {destinos.length === 0 && (
+        <div className="text-center text-gray-500 mt-3">
+          No hay resultados
         </div>
       )}
 
-   
-      {currentData.length > 0 && (
-        <div className="flex justify-center mt-4">
-          <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-        </div>
+      {/* PAGINACIÓN */}
+      {destinos.length > 0 && (
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          setPage={setPage}
+        />
       )}
 
     </div>
   );
 }
-
-
 

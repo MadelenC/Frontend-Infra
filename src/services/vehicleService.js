@@ -1,9 +1,16 @@
 import api from "../helpers/axiosClient";
 
 // Obtener todos los vehículos
-export const getVehicles = async () => {
+export const getVehicles = async ({ page, limit, estado }) => {
   try {
-    const response = await api.get("/vehicle");
+    const response = await api.get("/vehicle", {
+      params: {
+        page,
+        limit,
+        estado, // 👈 aquí va el filtro
+      },
+    });
+
     return response.data;
   } catch (err) {
     throw err.response?.data?.message || "Error al obtener vehículos";

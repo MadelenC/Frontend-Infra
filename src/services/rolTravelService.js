@@ -1,13 +1,12 @@
 import api from "../helpers/axiosClient";
 
 // Traer todos los viajes
-export const getRolTravels = async () => {
-  try {
-    const response = await api.get("/rolTravel");
-    return response.data;
-  } catch (err) {
-    throw err.response?.data?.message || "Error al obtener los viajes";
-  }
+export const getRolTravels = async ({ page, limit }) => {
+  const response = await api.get("/rolTravel", {
+    params: { page, limit }
+  });
+
+  return response.data;
 };
 
 // Traer un viaje por ID

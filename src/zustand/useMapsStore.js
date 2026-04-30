@@ -12,12 +12,13 @@ export const useMapsStore = create((set, get) => ({
   error: null,
 
   // Traer todos los mapas
-  fetchMaps: async () => {
+   fetchMaps: async (page = 1, limit = 8, search = "") => {
     set({ loading: true, error: null });
-    try {
-      const data = await getMaps();
 
-      const mapped = data.map((m) => ({
+    try {
+      const data = await getMaps({ page, limit, search });
+
+      const mapped = data.data.map((m) => ({
         id: m.id,
         destino: m.user?.destino || "",
         titulo: m.titulo,
@@ -25,7 +26,11 @@ export const useMapsStore = create((set, get) => ({
         lng: m.lng,
       }));
 
-      set({ maps: mapped, loading: false });
+      set({
+        maps: mapped,
+        totalPages: data.totalPages,
+        loading: false,
+      });
     } catch (err) {
       set({ error: err.message || err, loading: false });
     }
