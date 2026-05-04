@@ -60,7 +60,7 @@ export default function TableVehicle() {
     }
   };
 
-  if (loading) return <div className="p-6 text-center text-gray-600 dark:text-gray-300">Cargando vehículos...</div>;
+
   if (error) return <div className="p-6 text-center text-red-500">Error: {error}</div>;
 
   return (
@@ -106,6 +106,11 @@ export default function TableVehicle() {
 </div>
 
       <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+        {loading && (
+            <div className="text-center py-2 text-sm text-gray-500 dark:text-gray-400">
+              Cargando vehículos...
+            </div>
+          )}
 
         <table className="w-full text-sm bg-white dark:bg-gray-900">
 

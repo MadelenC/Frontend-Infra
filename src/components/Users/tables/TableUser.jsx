@@ -7,90 +7,94 @@ import UserFormPanel from "../form/UserFormPanel";
 
 export default function TableUser() {
   const {
-    users = [],
+    users,
     loading,
     error,
     page,
     totalPages,
-    fetchUsers,
-    setPage,
     search,
-    setSearch,
     roleFilter,
+    fetchUsers,
+    setSearch,
     setRoleFilter,
+    setPage,
+    limit,
   } = useUserStore();
 
   const [openPanel, setOpenPanel] = useState(false);
   const [formType, setFormType] = useState(null);
 
- 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    fetchUsers(page, search, roleFilter);
+  }, [page, search, roleFilter]);
 
+  const handleSearchChange = (term) => {
+    setSearch(term);
+  };
 
-  if (loading) {
-    return (
-      <div className="p-6 text-center text-gray-500 dark:text-gray-400 animate-pulse">
-        Cargando usuarios...
-      </div>
-    );
-  }
+  const handleRoleChange = (role) => {
+    setRoleFilter(role);
+  };
 
+  // =========================
+  // ERROR
+  // =========================
   if (error) {
     return (
       <div className="p-6 text-center text-red-500 font-semibold">
-        Error: {error}
+        {error}
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md transition-all p-4">
+    <div className="p-4 space-y-4">
 
      
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
 
-        
-        <div className="w-full md:flex-1 min-w-0">
-          <SearchBar
-            search={search}
-            setSearch={setSearch}
-            roleFilter={roleFilter}
-            setRoleFilter={setRoleFilter}
-          />
-        </div>
+        <SearchBar
+          search={search}
+          setSearch={handleSearchChange}
+          roleFilter={roleFilter}
+          setRoleFilter={handleRoleChange}
+        />
 
        
-        <div className="w-full md:w-auto flex justify-end">
-          <button
-            onClick={() => {
-              setOpenPanel(true);
-              setFormType(null);
-            }}
-            className="w-full md:w-auto flex items-center justify-center gap-3
-              bg-blue-600 hover:bg-blue-700
-              text-white px-5 py-3 rounded-lg shadow-lg font-medium
-              transition-all duration-300"
-          >
-            <span className="text-lg font-bold">＋</span>
-            Agregar Usuario
-          </button>
-        </div>
+        <button
+          onClick={() => {
+            setOpenPanel(true);
+            setFormType(null);
+          }}
+          className="h-10 flex items-center justify-center gap-2 whitespace-nowrap min-w-max bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 dark:bg-gray-600 dark:bg-none dark:hover:bg-gray-800 text-white px-8 rounded-lg shadow-lg font-medium transition-all duration-300 hover:scale-105 active:scale-95"
+>
+
+          +Agregar Usuario
+        </button>
 
       </div>
 
       
-      <UserTable users={users} />
+      {loading && (
+        <div className="text-sm text-gray-500 px-2">
+          Cargando...
+        </div>
+      )}
 
-      
+      <UserTable
+        users={users}
+        page={page}
+        limit={limit}
+      />
+
+   
       <Pagination
         page={page}
         totalPages={totalPages}
         setPage={setPage}
       />
 
-     
+      
       <UserFormPanel
         open={openPanel}
         onClose={() => {
@@ -104,20 +108,6 @@ export default function TableUser() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

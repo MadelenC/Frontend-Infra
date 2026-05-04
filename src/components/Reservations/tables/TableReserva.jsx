@@ -5,130 +5,164 @@ import "react-toastify/dist/ReactToastify.css";
 import SearchBar from "../search/SearchBar";
 import ReservaTable from "./ReservaTable";
 import Pagination from "./Paginations";
-import AddReservaModal from "./../form/AddRerservaForm";
+import AddReservaModal from "../form/AddRerservaForm";
+import ReservaModal from "../form/ReservaModal";
 
 import { useReservaStore } from "../../../zustand/useReservationsStore";
 import { useUserStore } from "../../../zustand/userStore";
+import { useDestinoStore } from "../../../zustand/useDestinationsStore";
+import { useVehicleStore } from "../../../zustand/useVehicleStore";
 
 export default function TableReserva() {
   const {
     reservas,
     fetchReservas,
-    loading,
-    error,
     addReserva,
+    editReserva,
     page,
-    setPage,
     totalPages,
+    setPage,
   } = useReservaStore();
 
-  const { users, fetchUsers } = useUserStore();
+  const { fetchAllEncargados, fetchAllChoferes } = useUserStore();
+  const { fetchAllDestinos } = useDestinoStore();
+  const { fetchAllVehicles } = useVehicleStore(); 
 
   const [search, setSearch] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [selectedReserva, setSelectedReserva] = useState(null);
 
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
+  const [encargados, setEncargados] = useState([]);
+  const [choferes, setChoferes] = useState([]);
+  const [destinos, setDestinos] = useState([]);
+  const [vehiculos, setVehiculos] = useState([]); 
 
   useEffect(() => {
     fetchReservas();
   }, [page]);
 
- 
+  
+  useEffect(() => {
+    if (!(isAddOpen || isEditOpen)) return;
+
+    const loadData = async () => {
+      try {
+        const [enc, cho, dest, veh] = await Promise.all([
+          fetchAllEncargados(),
+          fetchAllChoferes(),
+          fetchAllDestinos(),
+          fetchAllVehicles(), 
+        ]);
+
+        setEncargados(enc);
+        setChoferes(cho);
+        setDestinos(dest);
+        setVehiculos(veh); 
+      } catch (err) {
+        console.error("Error cargando data:", err);
+      }
+    };
+
+    loadData();
+  }, [isAddOpen, isEditOpen]);
+
   const filtered = reservas.filter((r) =>
     (r.entidad || "").toLowerCase().includes(search.toLowerCase())
   );
 
-  const encargados =
-    users?.filter((u) => u.tipo === "encargado") || [];
-
   const handleSaveReserva = async (data) => {
-    setSaving(true);
-
     try {
-      const response = await addReserva(data);
-
-      if (!response?.ok) {
-        toast.error(response?.error || "Error al guardar");
-        return;
-      }
-
-      await fetchReservas();
-      toast.success("Reserva registrada correctamente");
-      setIsModalOpen(false);
-    } catch (error) {
-      toast.error("Error inesperado al guardar");
-    } finally {
-      setSaving(false);
+      await addReserva(data);
+      toast.success("Reserva creada");
+      setIsAddOpen(false);
+      fetchReservas();
+    } catch {
+      toast.error("Error al crear reserva");
     }
   };
 
-  if (loading) {
-    return (
-      <div className="p-4 text-center text-gray-600 dark:text-gray-300">
-        Cargando reservas...
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="p-4 text-center text-red-500">{error}</div>
-    );
-  }
+  const handleEditSave = async (data) => {
+    try {
+      await editReserva(selectedReserva.id, data);
+      toast.success("Reserva actualizada");
+      setIsEditOpen(false);
+      setSelectedReserva(null);
+      fetchReservas();
+    } catch {
+      toast.error("Error al actualizar reserva");
+    }
+  };
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-4">
+    <div className="overflow-hidden rounded-xl bg-white dark:bg-gray-900 border shadow p-4">
 
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer />
 
-      {/* HEADER */}
-      <div className="flex flex-col md:flex-row justify-between gap-3 mb-4">
+      
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-4">
 
-        <div className="w-full md:w-1/3">
-          <SearchBar search={search} setSearch={setSearch} />
-        </div>
+  
+  <div className="w-full md:w-auto">
+    <SearchBar search={search} setSearch={setSearch} />
+  </div>
 
-        <div className="flex gap-2">
+ 
+  <button
+    onClick={() => setIsAddOpen(true)}
+    className="
+      w-full md:w-auto
+      bg-blue-600 hover:bg-blue-700
+      text-white px-4 py-2 rounded-lg
+      transition
+    "
+  >
+    + Agregar Reserva
+  </button>
 
-          <button className="bg-orange-600 text-white px-4 h-10 rounded-lg">
-            Imprimir
-          </button>
+</div>
 
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-blue-600 text-white px-4 h-10 rounded-lg"
-          >
-            + Agregar Reserva
-          </button>
-
-        </div>
-      </div>
-
-      {/* TABLE */}
-      <ReservaTable reservas={filtered} />
-
-      {/* PAGINATION */}
-      <div className="flex justify-center mt-4">
-        <Pagination
-          page={page}
-          totalPages={totalPages}
-          setPage={setPage}
-        />
-      </div>
-
-      {/* MODAL */}
-      <AddReservaModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleSaveReserva}
-        encargados={encargados}
+      
+      <ReservaTable
+        reservas={filtered}
+        onEdit={(reserva) => {
+          setSelectedReserva(reserva);
+          setIsEditOpen(true);
+        }}
       />
 
+     
+      <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+
+     
+      {isAddOpen && (
+        <AddReservaModal
+          isOpen={true}
+          onClose={() => setIsAddOpen(false)}
+          onSave={handleSaveReserva}
+          encargados={encargados}
+          choferes={choferes}
+          vehiculos={vehiculos}   
+          destinos={destinos}
+        />
+      )}
+
+      {/* EDIT */}
+      {isEditOpen && selectedReserva && (
+        <ReservaModal
+          isOpen={true}
+          initialData={selectedReserva}
+          onClose={() => {
+            setIsEditOpen(false);
+            setSelectedReserva(null);
+          }}
+          onSave={handleEditSave}
+          encargados={encargados}
+          choferes={choferes}
+          vehiculos={vehiculos}   
+          destinos={destinos}
+        />
+      )}
     </div>
   );
 }

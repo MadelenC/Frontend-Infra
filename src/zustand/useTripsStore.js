@@ -11,17 +11,52 @@ export const useTripsStore = create((set, get) => ({
   loading: false,
   error: null,
 
-  // GET ALL
+  page: 1,
+  limit: 8,
+  totalPages: 1,
+
+  setPage: (page) => set({ page }),
+
   fetchTrips: async () => {
+    const { page, limit, loading } = get();
+
+    if (loading) return;
+
     set({ loading: true, error: null });
+
     try {
-      const data = await getTrips();
-      set({ trips: data, loading: false });
+      const res = await getTrips({ page, limit });
+
+      set({
+        trips: res.data,
+        totalPages: res.totalPages,
+        loading: false,
+      });
     } catch (err) {
       set({
-        error: err?.message || "Error al cargar viajes",
-        loading: false
+        error: err.message || "Error al cargar viajes",
+        loading: false,
       });
+    }
+  },
+   // DETALLE (PRO)
+  getTripById: async (id) => {
+    try {
+      set({ loadingTrip: true });
+
+      const data = await getTripByIdService(id);
+
+      set({
+        selectedTrip: data,
+        loadingTrip: false,
+      });
+
+      return data;
+    } catch (err) {
+      set({
+        loadingTrip: false,
+      });
+      return null;
     }
   },
 

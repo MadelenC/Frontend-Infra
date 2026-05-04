@@ -9,19 +9,20 @@ export default function EditUserPanel({ open, onClose, user }) {
 
   const entidades = useEntidadStore((state) => state.entidades);
   const fetchEntidades = useEntidadStore((state) => state.fetchEntidades);
+  const fetchUsers = useUserStore((state) => state.fetchUsers);
 
   useEffect(() => {
     if (open) {
-      fetchEntidades(); // Solo traemos entidades cuando se abre el panel
+      fetchEntidades(); 
     }
   }, [open, fetchEntidades]);
 
   if (!open) return null;
 
-  const handleUpdate = async (updatedData) => {
-    await updateUser(user.id, updatedData);
-    onClose();
-  };
+  const handleUpdate = async () => {
+  await fetchUsers(); // 🔥 refresca la tabla
+  onClose();
+};
 
   const handleDelete = async () => {
     if (window.confirm("¿Desea eliminar este usuario?")) {
@@ -32,16 +33,17 @@ export default function EditUserPanel({ open, onClose, user }) {
 
   return (
     <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-5">
-      <div className="w-full max-w-lg bg-white p-6 rounded-md shadow-lg relative max-h-[90vh] overflow-y-auto">
+      <div className="w-full max-w-lg bg-white p-6 rounded-md shadow-lg max-h-[90vh] overflow-y-auto relative">
         {/* Botón cerrar */}
-        <button
+       
+          <button
+          type="button"
           onClick={onClose}
           className="absolute top-3 right-3 text-gray-700 font-bold px-3 py-1 rounded hover:bg-gray-200"
           aria-label="Cerrar formulario"
         >
           X
         </button>
-
         <h2 className="text-xl font-bold mb-4">Editar Usuario</h2>
 
         <EditUserForm
@@ -49,6 +51,7 @@ export default function EditUserPanel({ open, onClose, user }) {
           entidades={entidades}
           onUpdate={handleUpdate}
           onDelete={handleDelete}
+          onClose={onClose}
         />
       </div>
     </div>

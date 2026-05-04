@@ -52,6 +52,22 @@ export const useVehicleStore = create((set, get) => ({
   page: 1,
   limit: 8,
   totalPages: 1,
+
+
+  fetchAllVehicles: async () => {
+  try {
+    const res = await getVehicles({
+      page: 1,
+      limit: 1000,
+      estado: ""
+    });
+
+    return res.data.map(mapVehicleFromApi);
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+},
  fetchVehicles: async () => {
   set({ loading: true, error: null });
 

@@ -49,6 +49,35 @@ fetchDestinos: async ( page, limit, departamento, search  ) => {
   }
 },
 
+//  TODOS LOS DESTINOS 
+  fetchAllDestinos: async () => {
+    try {
+      const res = await getDestinos({
+        page: 1,
+        limit: 1000, // 👈 trae todo
+        departamento: "",
+        search: "",
+      });
+
+      return res.data.map(d => ({
+        id: d.id,
+        departamentoInicio: d.dep_inicio,
+        departamentoFinal: d.dep_final,
+        origen: d.origen,
+        destino: d.destino,
+        ruta: d.ruta,
+        distancia: d.kilometraje,
+        tiempo: d.tiempo,
+        mapa: d.mapa ? { ...d.mapa } : { lat: -17.3935, lng: -66.1568 },
+      }));
+
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
+  },
+
+
   // Crear un destino
   addDestino: async (data) => {
     try {

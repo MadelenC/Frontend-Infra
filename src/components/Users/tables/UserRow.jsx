@@ -3,19 +3,19 @@ import { TableRow, TableCell } from "../../ui/table";
 import Badge from "../../ui/badge/Badge";
 import { FaEdit } from "react-icons/fa";
 
-export default function UserRow({ user, onEdit }) {
+export default function UserRow({ user, onEdit, index, page = 1, limit = 8}) {
   const badgeColor =
     user.tipo === "Administrador"
       ? "success"
       : user.tipo === "Empleado"
       ? "warning"
       : "info";
-
+  const globalIndex = (page - 1) * limit + index + 1;
   return (
     <TableRow className="border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
 
       <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 font-medium text-gray-700 dark:text-gray-400">
-        {user.id}
+        {globalIndex}
       </TableCell>
 
       <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-400">

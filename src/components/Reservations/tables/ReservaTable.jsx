@@ -1,13 +1,16 @@
 import React from "react";
 import ReservaRow from "./ReservaRow";
 
-export default function ReservaTable({ reservas }) {
+export default function ReservaTable({ reservas, onEdit }) {
+
   return (
     <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
 
       <table className="w-full border-collapse text-sm bg-white dark:bg-gray-900">
 
+        {/* HEADER */}
         <thead className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-900">
+
           <tr>
             {[
               "#",
@@ -28,12 +31,19 @@ export default function ReservaTable({ reservas }) {
               </th>
             ))}
           </tr>
+
         </thead>
 
+        {/* BODY */}
         <tbody>
+
           {reservas.length > 0 ? (
             reservas.map((reserva) => (
-              <ReservaRow key={reserva.id} reserva={reserva} />
+              <ReservaRow
+                key={reserva.id}
+                reserva={reserva}
+                onEdit={onEdit}  
+              />
             ))
           ) : (
             <tr>
@@ -45,6 +55,7 @@ export default function ReservaTable({ reservas }) {
               </td>
             </tr>
           )}
+
         </tbody>
 
       </table>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 
-// Icono del marcador
+
 const markerIcon = new L.Icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
   iconSize: [25, 41],
@@ -13,7 +13,7 @@ export default function MapSelector({ open, onClose, onSelectLocation, initialLo
   const [position, setPosition] = useState(initialLocation || { lat: -17.393, lng: -66.158 });
   const [title, setTitle] = useState("");
 
-  // Componente para manejar drag del marcador
+  
   function DraggableMarker() {
     const map = useMapEvents({
       click(e) {
@@ -60,7 +60,7 @@ export default function MapSelector({ open, onClose, onSelectLocation, initialLo
           </button>
         </div>
 
-        {/* Formulario y mapa */}
+        
         <div className="p-4 space-y-4">
           <div className="flex flex-col">
             <label className="text-sm font-semibold dark:text-gray-300">Título</label>
@@ -76,7 +76,7 @@ export default function MapSelector({ open, onClose, onSelectLocation, initialLo
           <MapContainer
             center={[position.lat, position.lng]}
             zoom={6}
-            style={{ height: "300px", width: "100%" }}
+            className="w-full h-48"
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <DraggableMarker />
@@ -106,7 +106,7 @@ export default function MapSelector({ open, onClose, onSelectLocation, initialLo
           </div>
         </div>
 
-        {/* Footer */}
+        
         <div className="flex justify-end p-4 border-t gap-2">
           <button
             onClick={handleSave}

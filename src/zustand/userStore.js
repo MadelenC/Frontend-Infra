@@ -22,17 +22,51 @@ export const useUserStore = create((set, get) => ({
   search: "",
   roleFilter: "",
 
-  fetchUsers: async () => {
+
+  
+
+
+
+  fetchAllChoferes: async () => {
+  try {
+    const res = await getUsers({
+      page: 1,
+      limit: 1000,
+      search: "",
+      role: "chofer",
+    });
+
+    return res.data;
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+},
+ fetchAllEncargados: async () => {
+  try {
+    const res = await getUsers({
+      page: 1,
+      limit: 1000, 
+      search: "",
+      role: "encargado",
+    });
+
+    return res.data;
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+},
+
+    fetchUsers: async (page, search, role) => {
     set({ loading: true, error: null });
 
     try {
-      const { page, limit, search, roleFilter } = get();
-
       const res = await getUsers({
         page,
-        limit,
+        limit: get().limit,
         search,
-        role: roleFilter,
+        role,
       });
 
       set({
@@ -49,20 +83,13 @@ export const useUserStore = create((set, get) => ({
     }
   },
 
-  setPage: (page) => {
-    set({ page });
-    get().fetchUsers();
-  },
+  
+  setPage: (page) => set({ page }),
 
-  setSearch: (term) => {
-    set({ search: term, page: 1 });
-    get().fetchUsers();
-  },
+  setSearch: (term) => set({ search: term, page: 1 }),
 
-  setRoleFilter: (role) => {
-    set({ roleFilter: role, page: 1 });
-    get().fetchUsers();
-  },
+  setRoleFilter: (role) => set({ roleFilter: role, page: 1 }),
+
 
   
   createUser: async (userData) => {

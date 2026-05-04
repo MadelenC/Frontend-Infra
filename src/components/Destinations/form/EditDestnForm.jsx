@@ -43,12 +43,12 @@ export default function EditDestForm({ destino, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-center overflow-auto bg-black/30 p-6 bg-black/40 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex justify-center overflow-auto p-6 bg-black/40 backdrop-blur-sm">
       <form
         onSubmit={handleSubmit}
-        className="relative mt-16 mb-16 bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[45vh] overflow-y-auto p-6 sm:p-8 dark:bg-gray-900 "
+        className="relative mt-16 mb-16 bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-y-auto p-6 sm:p-8 dark:bg-gray-900 "
           >
-            {/* Botón cerrar */}
+            
             <button
           onClick={onClose}
           className="absolute top-3 right-3 text-gray-700 font-bold px-3 py-1 rounded hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700"

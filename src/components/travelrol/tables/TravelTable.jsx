@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useRolTravelStore } from "../../../zustand/useRolTravelStore";
-import { useUserStore } from "../../../zustand/userStore";
 import TravelRow from "./TravelRow";
 import Pagination from "./Pagination";
 import SearchBar from "../search/SearchBar";
@@ -8,6 +7,8 @@ import AddDriverForm from "../form/AddDriverForm";
 import PrintTravel from "../tables/TableTravelPrint";
 import ListException from "../form/Excep/ListException";
 import { FaPlus, FaPrint } from "react-icons/fa";
+import { useExceptionsStore } from "../../../zustand/useExceptionsStore";
+
 
 export default function TravelTable() {
   const {
@@ -21,35 +22,23 @@ export default function TravelTable() {
     setPage,
   } = useRolTravelStore();
 
-  const { fetchUsers, getDrivers } = useUserStore();
+  
+  const { addException } = useExceptionsStore();
+  const {addRolTravel} = useRolTravelStore();
+  
 
   const [search, setSearch] = useState("");
   const [openPanel, setOpenPanel] = useState(false);
-  const [drivers, setDrivers] = useState([]);
+ 
   const [selectedTravel, setSelectedTravel] = useState(null);
   const [openExceptionsModal, setOpenExceptionsModal] = useState(false);
 
 
-  useEffect(() => {
-    fetchRolTravels();
-    fetchUsers();
-  }, []);
 
-  
-  useEffect(() => {
-    const loadDrivers = async () => {
-      const data = await getDrivers();
-      setDrivers(Array.isArray(data) ? data : []);
-    };
-
-    loadDrivers();
-  }, [getDrivers]);
-
+ useEffect(() => {
+  fetchRolTravels();
+}, []);
  
-  const availableDrivers = drivers.filter(
-    (driver) =>
-      !rolTravels.some((travel) => travel.chofer_id === driver.id)
-  );
 
   
   const filteredTravels = rolTravels.filter((v) => {
@@ -77,25 +66,26 @@ export default function TravelTable() {
 
   
   const handleAddDriver = async (data) => {
-    try {
-      const API_URL = import.meta.env.VITE_API_URL;
+  const res = await addRolTravel(data);
 
-      const response = await fetch(`${API_URL}/rolTravel`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+  if (res.ok) {
+    await fetchRolTravels();
+    setOpenPanel(false);
+  }
 
-      const result = await response.json();
+  return res;
+};
 
-      fetchRolTravels();
-      setOpenPanel(false);
+  const handleAddException = async (data) => {
+  const res = await addException(data);
 
-      return { ok: true, data: result };
-    } catch (err) {
-      return { ok: false, error: err.message };
-    }
-  };
+  if (res.ok) {
+    await fetchRolTravels();
+  }
+
+  return res;
+};
+
 
  
   if (loading) {
@@ -176,9 +166,10 @@ export default function TravelTable() {
                 <TravelRow
                   key={travel.id}
                   entitie={travel}
-                  drivers={drivers}
+                  
                   onViewExceptions={handleViewExceptions}
                   onDelete={handleDelete}
+                  onAddException={handleAddException}
                 />
               ))
             ) : (
@@ -212,8 +203,7 @@ export default function TravelTable() {
       {/* MODAL FORM */}
       {openPanel && (
         <AddDriverForm
-          choferes={availableDrivers}
-          choferesRegistrados={rolTravels.map(t => t.chofer_id)}
+          choferesRegistrados={rolTravels}
           onSubmit={handleAddDriver}
           setOpenPanel={setOpenPanel}
         />

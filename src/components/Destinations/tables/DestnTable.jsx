@@ -32,7 +32,7 @@ export default function DestTable() {
     "Pando",
   ];
 
-  // 🔥 SOLO BACKEND
+ 
   useEffect(() => {
     fetchDestinos(page, limit, departmentFilter, search);
   }, [page, departmentFilter, search]);
@@ -63,7 +63,7 @@ export default function DestTable() {
           <select
             value={departmentFilter}
             onChange={(e) => setDepartmentFilter(e.target.value)}
-            className="h-10 px-3 border rounded-md"
+            className="h-10 px-3 border rounded dark:bg-gray-500/40 dark:border-gray-200"
           >
             <option value="">Todos</option>
             {departments.map((d) => (

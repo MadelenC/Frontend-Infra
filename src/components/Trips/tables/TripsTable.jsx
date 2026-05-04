@@ -19,49 +19,82 @@ import { toast } from "react-toastify";
 
 export default function TripsTable({ externalTripId = null }) {
 
-  const { trips, fetchTrips } = useTripsStore();
-  const { users, fetchUsers } = useUserStore();
-  const { vehicles, fetchVehicles } = useVehicleStore();
-  const { destinos, fetchDestinos } = useDestinoStore();
+  const {
+    fetchTrips,
+    trips,
+    page,
+    totalPages,
+    setPage,
+    
+  } = useTripsStore();
 
-  const choferes = users.filter(u => u.tipo === "chofer");
-  const encargados = users.filter(u => u.tipo === "encargado");
+  const {
+    fetchAllEncargados,
+    fetchAllChoferes
+  } = useUserStore();
+
+  const { fetchAllVehicles } = useVehicleStore();
+  const { fetchDestinos, destinos } = useDestinoStore();
+
+  
+  const [encargados, setEncargados] = useState([]);
+  const [choferes, setChoferes] = useState([]);
+  const [vehiculos, setVehiculos] = useState([]);
 
   const [search, setSearch] = useState("");
   const [tipo, setTipo] = useState("");
-  const [page, setPage] = useState(1);
 
   const [modalType, setModalType] = useState(null);
   const [selectedTrip, setSelectedTrip] = useState(null);
 
-  const limit = 8;
+ 
+ useEffect(() => {
+  const init = async () => {
+    await fetchTrips();
+  };
+
+  init();
+}, []);
+
 
   useEffect(() => {
     fetchTrips();
-    fetchUsers();
-    fetchVehicles();
-    fetchDestinos();
-  }, []);
+  }, [page]);
 
   useEffect(() => setPage(1), [search, tipo]);
 
+ 
   const handleOpenModal = async (type, trip = null) => {
 
-    // 🔥 IMPORTANTE: si es detalle, recarga desde backend por ID
-    if (type === "detalle" && trip?.id) {
-      try {
-        const res = await fetch(`http://localhost:3000/api/viajes/${trip.id}`);
-        const data = await res.json();
-        setSelectedTrip(data);
-      } catch (err) {
-        toast.error("Error al cargar detalle del viaje");
-      }
-    } else {
-      setSelectedTrip(trip);
-    }
+  if (type === "cheque" || type === "caja"|| type === "add"|| type === "detalle") {
+    try {
+      const encargadosData = await fetchAllEncargados();
+      const choferesData = await fetchAllChoferes();
+      const vehiculosData = await fetchAllVehicles();
+      await fetchDestinos();
 
-    setModalType(type);
-  };
+      setEncargados(encargadosData || []);
+      setChoferes(choferesData || []);
+      setVehiculos(vehiculosData || []);
+    } catch (err) {
+      toast.error("Error al cargar datos del formulario");
+    }
+  }
+
+  if (type === "detalle" && trip?.id) {
+    try {
+      const res = await fetch(`http://localhost:3000/api/viajes/${trip.id}`);
+      const data = await res.json();
+      setSelectedTrip(data);
+    } catch (err) {
+      toast.error("Error al cargar detalle del viaje");
+    }
+  } else {
+    setSelectedTrip(trip);
+  }
+
+  setModalType(type);
+};
 
   const handleCloseModal = () => {
     setModalType(null);
@@ -76,6 +109,7 @@ export default function TripsTable({ externalTripId = null }) {
     useTripsStore.setState({ trips: updated });
   };
 
+  
   const filteredTrips = trips.filter(t => {
     const matchesSearch =
       t.entidad?.toLowerCase().includes(search.toLowerCase()) ||
@@ -89,13 +123,6 @@ export default function TripsTable({ externalTripId = null }) {
 
     return matchesSearch && matchesTipo && matchesId;
   });
-
-  const totalPages = Math.ceil(filteredTrips.length / limit);
-
-  const currentTrips = filteredTrips.slice(
-    (page - 1) * limit,
-    page * limit
-  );
 
   const SimpleModal = ({ title, children }) => (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -190,14 +217,13 @@ export default function TripsTable({ externalTripId = null }) {
           </thead>
 
           <tbody>
-            {currentTrips.length > 0 ? (
-              currentTrips.map(trip => (
+            {filteredTrips.length > 0 ? (
+              filteredTrips.map(trip => (
                 <TripsRow
                   key={trip.id}
                   trip={trip}
                   onOpenModal={handleOpenModal}
                   onCancelTrip={handleCancelTrip}
-                   
                 />
               ))
             ) : (
@@ -212,7 +238,7 @@ export default function TripsTable({ externalTripId = null }) {
         </table>
       </div>
 
-      {/* PAGINACIÓN */}
+      {/* PAGINACIÓN (BACKEND) */}
       <div className="flex justify-center mt-4">
         <Pagination
           page={page}
@@ -228,29 +254,9 @@ export default function TripsTable({ externalTripId = null }) {
           initialData={null}
           choferes={choferes}
           encargados={encargados}
-          vehiculos={vehicles}
+          vehiculos={vehiculos}
           destinos={destinos}
           onClose={handleCloseModal}
-          onSave={async (data) => {
-            try {
-              const res = await fetch("http://localhost:3000/api/viajes", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-              });
-
-              const result = await res.json();
-
-              if (!res.ok) throw new Error(result?.message);
-
-              toast.success("Viaje registrado correctamente!");
-              await fetchTrips();
-              handleCloseModal();
-
-            } catch (error) {
-              toast.error(error.message);
-            }
-          }}
         />
       )}
 
@@ -259,7 +265,7 @@ export default function TripsTable({ externalTripId = null }) {
           viajeData={selectedTrip}
           choferes={choferes}
           encargados={encargados}
-          vehiculos={vehicles}
+          vehiculos={vehiculos}
           onClose={handleCloseModal}
         />
       )}
@@ -270,17 +276,13 @@ export default function TripsTable({ externalTripId = null }) {
           onClose={handleCloseModal}
           choferes={choferes}
           encargados={encargados}
-          vehiculos={vehicles}
+          vehiculos={vehiculos}
         />
       )}
 
       {modalType === "declaratoria" && (
         <TripDeclarationForm
           onClose={handleCloseModal}
-          onSubmit={(data) => {
-            console.log("Declaratoria:", data);
-            handleCloseModal();
-          }}
         />
       )}
 

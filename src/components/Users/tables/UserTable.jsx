@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import UserRow from "./UserRow";
 import EditUserPanel from "../form/EditUserPanel";
 
-export default function UserTable({ users }) {
+export default function UserTable({ users, page = 1, limit = 8 }) {
   const [selectedUser, setSelectedUser] = useState(null);
 
   return (
@@ -15,7 +15,7 @@ export default function UserTable({ users }) {
 
             <tr>
               {[
-                "ID",
+                "#",
                 "Nombres",
                 "Apellidos",
                 "Cédula",
@@ -37,10 +37,13 @@ export default function UserTable({ users }) {
 
           <tbody>
             {users.length > 0 ? (
-              users.map((user) => (
+              users.map((user, index) => (
                 <UserRow
                   key={user.id}
                   user={user}
+                  index={index}
+                  page={page}
+                  limit={limit}
                   onEdit={(u) => setSelectedUser(u)}
                 />
               ))

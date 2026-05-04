@@ -1,37 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { useUserStore } from "../../../zustand/userStore";
 
 export default function AddDriverForm({
-  choferes = [],
+ 
   choferesRegistrados = [],
-  onSubmit, // Se espera que sea una función que maneja el registro de choferes
+  onSubmit, 
   setOpenPanel,
 }) {
-  const [choferId, setChoferId] = useState(""); // ID del chofer seleccionado
-  const [error, setError] = useState(""); // Para mostrar errores
+  const [choferId, setChoferId] = useState(""); 
+  const [error, setError] = useState(""); 
+
+  const fetchDrivers = useUserStore((state) => state.fetchDrivers);
+const getDrivers = useUserStore((state) => state.getDrivers);
+
+const [drivers, setDrivers] = useState([]);
 
   const inputBase =
     "p-2 border rounded text-sm w-full transition dark:bg-gray-200/40 dark:border-gray-200";
 
-  // Función que maneja el submit
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validación si no se seleccionó un chofer
+    
     if (!choferId) {
       setError("Debe seleccionar un chofer");
       toast.error("❌ Debe seleccionar un chofer");
       return;
     }
 
-    // Comprobamos si el chofer ya está registrado
     if (choferesRegistrados.some((c) => c.chofer_id === parseInt(choferId))) {
       setError("Este chofer ya está registrado");
       toast.warning("⚠️ Este chofer ya está registrado");
       return;
     }
 
-    setError(""); // Limpiamos el error si todo está correcto
+    setError("");
 
     const payload = {
       chofer_id: parseInt(choferId),
@@ -42,15 +47,15 @@ export default function AddDriverForm({
       fecha: new Date().toISOString(),
     };
 
-    // Intentamos registrar el chofer
+    
     try {
       const res = await onSubmit(payload);
 
-      // Verificamos si el registro fue exitoso
+      
       if (res?.ok || res === true) {
         toast.success("✅ Chofer registrado correctamente");
-        setChoferId(""); // Limpiamos el valor del select
-        setOpenPanel(false); // Cerramos el panel de registro
+        setChoferId(""); 
+        setOpenPanel(false); 
       } else {
         toast.error("❌ No se pudo registrar el chofer");
       }
@@ -59,11 +64,23 @@ export default function AddDriverForm({
     }
   };
 
+  useEffect(() => {
+  const loadDrivers = async () => {
+    await fetchDrivers();
+
+    const data = getDrivers();
+
+    setDrivers(Array.isArray(data) ? data : []);
+  };
+
+  loadDrivers();
+}, []);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
       <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6 relative dark:bg-gray-800 dark:text-gray-200">
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          {/* Botón de cerrar */}
+        
           <button
             type="button"
             onClick={() => setOpenPanel(false)} 
@@ -77,7 +94,7 @@ export default function AddDriverForm({
             Registrar Chofer al Rol de Viajes
           </h3>
 
-          {/* Selección del chofer */}
+          
           <div className="flex flex-col">
             <label className="text-gray-600 text-sm dark:text-gray-200">Chofer:</label>
             <select
@@ -87,8 +104,8 @@ export default function AddDriverForm({
             >
               <option value="">Seleccione un chofer</option>
 
-              {/* Mostramos la lista de choferes */}
-              {choferes.map((chofer) => {
+             
+              {drivers.map((chofer) => {
                 const yaRegistrado = choferesRegistrados.some(
                   (c) => c.chofer_id === chofer.id
                 );
@@ -99,8 +116,8 @@ export default function AddDriverForm({
                     value={chofer.id}
                     disabled={yaRegistrado} 
                     style={{
-                      color: yaRegistrado ? "#A9A9A9" : "black", // Gris para choferes ya registrados
-                      backgroundColor: yaRegistrado ? "#f8d7da" : "white", // Fondo rojo claro para choferes ya registrados
+                      color: yaRegistrado ? "#A9A9A9" : "black", 
+                      backgroundColor: yaRegistrado ? "#f8d7da" : "white", 
                     }}
                   >
                     {chofer.nombres} {chofer.apellidos}{" "}

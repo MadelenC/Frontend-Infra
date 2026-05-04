@@ -1,9 +1,12 @@
 import api from "../helpers/axiosClient";
 
 // Obtener todos los viajes (FULL)
-export const getTrips = async () => {
+export const getTrips = async ({ page, limit }) => {
   try {
-    const response = await api.get("/viajes");
+    const response = await api.get("/viajes", {
+      params: { page, limit },
+    });
+
     return response.data;
   } catch (err) {
     throw err.response?.data?.error || "Error al obtener los viajes";

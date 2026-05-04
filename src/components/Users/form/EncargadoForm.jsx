@@ -279,26 +279,25 @@ export default function EncargadoForm({ onSubmit, onClose }) {
 
       {/* BOTONES */}
       <div className="flex justify-center mt-4 gap-3">
-        {/* BOTON CANCELAR <button
-          type="button"
-          onClick={onClose}
-          className="px-4 py-2 bg-gray-400 text-white rounded"
-        >
-          Cancelar
-        </button>
-      */}
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded"
-        >
-          Registrar
-        </button>
-      </div>
+  <button
+    type="submit"
+    disabled={cedulaError}
+    className={`px-6 py-2 rounded-lg font-semibold text-white transition transform duration-200
+      shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2
+      ${
+        cedulaError
+          ? "bg-blue-300 cursor-not-allowed opacity-60"
+          : "bg-blue-600 hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98]"
+      }
+    `}
+  >
+    Registrar
+  </button>
+</div>
     </form>
   );
 }
 
-/* ================= AUTOCOMPLETE ================= */
 const AutocompleteMultiSelect = ({
   label,
   options,
@@ -340,12 +339,12 @@ const AutocompleteMultiSelect = ({
  return (
   <div className="flex flex-col relative gap-1 space-y-0.5" ref={ref}>
     
-    {/* LABEL */}
+ 
     <label className="text-xs font-medium text-gray-600 dark:text-gray-300">
       {label}
     </label>
 
-    {/* INPUT CONTENEDOR */}
+    
     <div
       onClick={() => setOpen(true)}
       className={`flex flex-wrap items-center gap-1 px-2 py-1.5 rounded-md border text-sm transition
@@ -356,7 +355,7 @@ const AutocompleteMultiSelect = ({
           : "border-gray-300 bg-white hover:border-gray-400 focus-within:ring-1 focus-within:ring-blue-500 focus-within:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500"
       }`}
     >
-      {/* CHIPS */}
+   
       {value.map((v, i) => (
         <span
           key={i}
@@ -368,7 +367,7 @@ const AutocompleteMultiSelect = ({
           <button
             type="button"
             onClick={(e) => {
-              e.stopPropagation(); // 🔥 evita cerrar el dropdown
+              e.stopPropagation(); 
               removeValue(v);
             }}
             className="hover:text-red-500"
@@ -378,7 +377,7 @@ const AutocompleteMultiSelect = ({
         </span>
       ))}
 
-      {/* INPUT */}
+      
       <input
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
