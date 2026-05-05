@@ -49,12 +49,12 @@ fetchDestinos: async ( page, limit, departamento, search  ) => {
   }
 },
 
-//  TODOS LOS DESTINOS 
+
   fetchAllDestinos: async () => {
     try {
       const res = await getDestinos({
         page: 1,
-        limit: 1000, // 👈 trae todo
+        limit: 1000,
         departamento: "",
         search: "",
       });

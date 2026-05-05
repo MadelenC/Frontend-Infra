@@ -161,7 +161,7 @@ export default function AddReservaModal({ isOpen, onClose, onSave, encargados = 
               <Error error={errors.encargado} />
             </Field>
 
-            {/* FECHAS */}
+      
             <div className="grid grid-cols-2 gap-4">
 
               <Field label="Fecha Inicial">
@@ -190,7 +190,7 @@ export default function AddReservaModal({ isOpen, onClose, onSave, encargados = 
 
             </div>
 
-            {/* CAMPOS */}
+     
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
               <Field label="Entidad">
@@ -229,7 +229,6 @@ export default function AddReservaModal({ isOpen, onClose, onSave, encargados = 
 
             </div>
 
-            {/* BOTONES */}
             <div className="flex justify-end gap-3 pt-4 border-t">
 
               <button

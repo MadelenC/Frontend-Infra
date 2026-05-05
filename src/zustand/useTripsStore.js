@@ -3,7 +3,8 @@ import {
   getTrips,
   createTrip,
   updateTrip,
-  deleteTrip
+  deleteTrip,
+  getTripById
 } from "../services/TripsService";
 
 export const useTripsStore = create((set, get) => ({
@@ -39,7 +40,7 @@ export const useTripsStore = create((set, get) => ({
       });
     }
   },
-   // DETALLE (PRO)
+   
   getTripById: async (id) => {
     try {
       set({ loadingTrip: true });
@@ -60,7 +61,7 @@ export const useTripsStore = create((set, get) => ({
     }
   },
 
-  // CREATE FULL VIAJE
+  
   addTrip: async (data) => {
     try {
       const newTrip = await createTrip(data);
@@ -78,7 +79,7 @@ export const useTripsStore = create((set, get) => ({
     }
   },
 
-  // UPDATE FULL VIAJE
+  
   editTrip: async (id, data) => {
     try {
       const updated = await updateTrip(id, data);
@@ -98,7 +99,7 @@ export const useTripsStore = create((set, get) => ({
     }
   },
 
-  // DELETE FULL VIAJE
+
   removeTrip: async (id) => {
     try {
       await deleteTrip(id);

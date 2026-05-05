@@ -24,7 +24,7 @@ export default function TableTrips({ trips, onOpenModal, onCancelTrip }) {
             ].map((head) => (
               <th
                 key={head}
-                className="border border-gray-700 px-3 py-2 text-left font-semibold text-gray-300"
+                className="border border-gray-700 px-3 py-2 text-left font-semibold text-gray-300 dark:text-gray-200"
               >
                 {head}
               </th>

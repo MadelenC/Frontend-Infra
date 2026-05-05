@@ -22,7 +22,7 @@ export default function CheckTripForm({
     encargado: "",
     fecha: "",
 
-    // COMBUSTIBLE INPUTS (3)
+    
     division1: "",
     combustibleTotal: "",
     precioLitro: "",
@@ -54,9 +54,7 @@ export default function CheckTripForm({
     casilla4: true,
   });
 
-  // ======================
-  // HANDLERS
-  // ======================
+ 
   const handleChange = (field, value) => {
     setForm((prev) => ({
       ...prev,
@@ -81,10 +79,7 @@ export default function CheckTripForm({
     }));
   };
 
-  // ======================
-  // 🔥 COMBUSTIBLE (TU LÓGICA FINAL)
-  // ======================
-
+  
  
 
 const baseCombustible = 1160;
@@ -94,19 +89,17 @@ const division1 = parseFloat(form.division1) || 0; // gasolina/diesel
 const combustibleTotal = parseFloat(form.combustibleTotal) || 0; // cantidad
 const precioLitro = parseFloat(form.precioLitro) || 0;
 
-// cálculo: 1160 / gasolina
+
 const combustible1 =
   division1 > 0 ? baseCombustible / division1 : 0;
 
-// cálculo: total Bs
+
 const costoTotal =
   combustibleTotal > 0 && precioLitro > 0
     ? combustibleTotal * precioLitro
     : 0;
 
-  // ======================
-  // OTROS TOTALES
-  // ======================
+  
 
   const peajesTotal = form.peajes.reduce(
     (sum, p) => sum + Number(p.nro || 0) * Number(p.precio || 0),
@@ -148,7 +141,7 @@ const costoTotal =
     0
   );
 
-  // 🔥 FIX: sin variable inexistente "combustible"
+  
   let totalA =
  
     peajesTotal +
@@ -163,9 +156,7 @@ const costoTotal =
 
   const diferencia = totalA - totalB;
 
-  // ======================
-  // PAYLOAD
-  // ======================
+  
   const buildPayload = () => ({
     vehiculo: form.vehiculo,
     chofer: form.chofer,
@@ -173,7 +164,7 @@ const costoTotal =
     entidad: data?.entidad || "",
     fecha_sa: form.fecha,
 
-    // COMBUSTIBLE
+
     total1: String(baseCombustible),
       division1: String(division1),
       combustible1: String(combustible1),
