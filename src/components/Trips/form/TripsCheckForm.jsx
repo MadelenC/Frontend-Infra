@@ -85,8 +85,8 @@ export default function CheckTripForm({
 const baseCombustible = 1160;
 
 // inputs
-const division1 = parseFloat(form.division1) || 0; // gasolina/diesel
-const combustibleTotal = parseFloat(form.combustibleTotal) || 0; // cantidad
+const division1 = parseFloat(form.division1) || 0; 
+const combustibleTotal = parseFloat(form.combustibleTotal) || 0; 
 const precioLitro = parseFloat(form.precioLitro) || 0;
 
 

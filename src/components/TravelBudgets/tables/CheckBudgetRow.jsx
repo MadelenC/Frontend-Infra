@@ -41,7 +41,7 @@ export default function CheckBudgetRow({ budget, index, onEdit }) {
       </TableCell>
 
       {/* Entidad */}
-      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2">
+      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 dark:text-gray-300">
         <Badge
           size="sm"
           color={badgeColor}

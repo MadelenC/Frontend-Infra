@@ -90,44 +90,47 @@ export default function TripsTable({ externalTripId = null }) {
     try {
       const res = await fetch(`http://localhost:3000/api/viajes/${trip.id}`);
       const data = await res.json();
+
       console.log("DATA API:", data);
-      const mappedData = {
-  ...data,
 
+      const formattedForForms = {
+        ...data,
 
-  tipoViaje: data.tipo || "",
-  pasajeros: data.pasajeros || "",
-  inicio: data.fecha_inicial || "",
-  final: data.fecha_final || "",
-  entidad: data.entidad || "",
-  dias: data.dias || "",
-  objetivo: data.objetivo || "",
+        // alias para formularios
+        tipoViaje: data.tipo || "",
+        inicio: data.fecha_inicial || "",
+        final: data.fecha_final || "",
 
+        chofer: data.choferes || [],
+        encargado: data.encargados || [],
+        vehiculo: data.vehiculos || [],
 
-  chofer: data.choferes || [],
-  encargado: data.encargados || [],
-  vehiculo: data.vehiculos || [],
+        
+        destinos: data.destinos || [], 
+        destinosForm:
+          data.destinos?.map(d => ({
+            id: d.id,
+            nombre: `(${d.dep_inicio}) ${d.origen} → (${d.dep_final}) ${d.destino}`,
+            km: d.distancia || ""
+          })) || []
+          
+      };
+      console.log(data.destinos)
 
+      console.log("FORMATTED:", formattedForForms);
 
-  destinos: data.destinos?.map(d => ({
-    id: d.id,
-    nombre: `(${d.departamentoInicio}) ${d.origen} → (${d.departamentoFinal}) ${d.destino}`,
-    km: d.distancia || ""
-  })) || []
-};
+      setSelectedTrip(formattedForForms);
 
-console.log("MAPPED DATA:", mappedData);
+      setSelectedTrip(formattedForForms);
+          } catch (err) {
+            toast.error("Error al cargar detalle del viaje");
+          }
+        } else {
+          setSelectedTrip(trip);
+        }
 
-setSelectedTrip(mappedData);
-    } catch (err) {
-      toast.error("Error al cargar detalle del viaje");
-    }
-  } else {
-    setSelectedTrip(trip);
-  }
-
-  setModalType(type);
-};
+        setModalType(type);
+      };
 
   const handleCloseModal = () => {
     setModalType(null);
@@ -355,21 +358,21 @@ setSelectedTrip(mappedData);
           onClose={handleCloseModal}
            onSave={async (data) => {
 
-      const res = await editTrip(selectedTrip.id, data);
+          const res = await editTrip(selectedTrip.id, data);
 
-      if (res.ok) {
-        toast.success("Viaje actualizado correctamente");
-        fetchTrips();  
-        handleCloseModal();
-      } else {
-        toast.error("Error al actualizar viaje");
-        console.error(res.error);
-      }
+          if (res.ok) {
+            toast.success("Viaje actualizado correctamente");
+            fetchTrips();  
+            handleCloseModal();
+          } else {
+            toast.error("Error al actualizar viaje");
+            console.error(res.error);
+          }
 
-    }}
-        />
-      )}
+        }}
+            />
+          )}
 
-    </div>
-  );
+        </div>
+      );
 }

@@ -118,7 +118,7 @@ export default function TripsRow({ trip, onOpenModal, onCancelTrip }) {
                   onClick={() => toggleMenu("presupuesto")}
                   className="w-full text-xs px-2 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200
                              dark:bg-blue-900 dark:text-blue-200 dark:hover:bg-blue-800
-                             flex items-center gap-1"
+                             flex items-center gap-1 "
                 >
                   <FaMoneyBill size={10} />
                   Presupuesto
@@ -126,7 +126,7 @@ export default function TripsRow({ trip, onOpenModal, onCancelTrip }) {
 
                 {openMenu === "presupuesto" && (
                   <div className="absolute right-0 mt-1 w-32 bg-white dark:bg-gray-900
-                                  border dark:border-gray-700 rounded shadow-md z-10 text-xs dark:bg-gray-400">
+                                  border dark:border-gray-700 rounded shadow-md z-10 text-xs dark:bg-gray-300">
 
                     <button
                       onClick={() => {
