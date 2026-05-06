@@ -21,7 +21,6 @@ export default function DatosForm({
     >
       <div className="grid grid-cols-2 gap-4 mt-2">
 
-        {/* VEHÍCULO */}
         <div>
           <label className="block mb-1 text-sm font-semibold dark:text-gray-300">
             Vehículo :
@@ -68,7 +67,7 @@ export default function DatosForm({
           )}
         </div>
 
-        {/* CHOFER */}
+        
         <div>
           <label className="block mb-1 text-sm font-semibold dark:text-gray-300">
             Chofer *
@@ -115,7 +114,7 @@ export default function DatosForm({
           )}
         </div>
 
-        {/* ENCARGADO */}
+       
         <div>
           <label className="block mb-1 text-sm font-semibold dark:text-gray-300">
             Encargado:
@@ -162,7 +161,6 @@ export default function DatosForm({
           )}
         </div>
 
-        {/* FECHA */}
         <Input
           label="Fecha *"
           type="date"

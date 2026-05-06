@@ -15,7 +15,6 @@ export default function Combustible({
   
 }) {
 
-  // 🔥 seguridad para evitar NaN o crash
   const safeCombustible =
     Number.isFinite(combustible) ? combustible : 0;
 
@@ -30,7 +29,7 @@ export default function Combustible({
     >
       <div className="grid grid-cols-3 gap-4 mt-2 dark:text-gray-300">
 
-         {/* 1. GASOLINA / DIESEL */}
+        
         <Input
           label="Gasolina/Diesel (L)"
           type="number"
@@ -40,14 +39,14 @@ export default function Combustible({
           error={errors.division1}
         />
 
-        {/* 2. COMBUSTIBLE CALCULADO */}
+       
         <Input
           label="Combustible (calculado)"
           value={safeCombustible.toFixed(2)}
           readOnly
         />
 
-        {/* 3. COMBUSTIBLE TOTAL */}
+        
         <Input
           label="Combustible total"
           type="number"
@@ -56,7 +55,6 @@ export default function Combustible({
           onBlur={(v) => handleBlur("combustibleTotal", v)}
         />
 
-        {/* 4. PRECIO */}
         <Input
           label="Precio (Bs/L)"
           type="number"
@@ -66,14 +64,14 @@ export default function Combustible({
           error={errors.precioLitro}
         />
 
-        {/* 5. COSTO TOTAL */}
+       
         <Input
           label="Costo total"
           value={safeCosto.toFixed(2)}
           readOnly
         />
 
-        {/* HORA SALIDA */}
+        
         <Input
           label="Hora salida *"
           type="time"
@@ -83,7 +81,7 @@ export default function Combustible({
           error={errors.horaSalida}
         />
 
-        {/* HORA LLEGADA */}
+        
         <Input
           label="Hora llegada *"
           type="time"
@@ -93,28 +91,26 @@ export default function Combustible({
           error={errors.horaLlegada}
         />
 
-        {/* MATERIA */}
         <Input
           label="Materia"
           value={form?.materia || ""}
           onChange={(v) => handleChange("materia", v)}
         />
 
-        {/* DOCENTES */}
+        
         <Input
           label="Docentes"
           value={form?.docentes || ""}
           onChange={(v) => handleChange("docentes", v)}
         />
 
-        {/* SIGLA */}
+     
         <Input
           label="Sigla"
           value={form?.sigla || ""}
           onChange={(v) => handleChange("sigla", v)}
         />
 
-        {/* NOTA */}
         <Input
           label="Nota"
           value={form?.nota || ""}

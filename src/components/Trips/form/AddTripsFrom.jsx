@@ -61,7 +61,7 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
     const { name, value } = e.target;
     setFormData((f) => ({ ...f, [name]: value }));
 
-    // Clear error on change
+
     if (errors[name]) {
       setErrors((errs) => ({ ...errs, [name]: "" }));
     }
@@ -188,6 +188,7 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
 
     destinos: formData.destinos.map(d => ({
       id: d.id,
+      km:d.km
     })),
 
     vehiculos: formData.vehiculo.map(v => ({

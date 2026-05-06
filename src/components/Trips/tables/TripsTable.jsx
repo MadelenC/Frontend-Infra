@@ -275,6 +275,7 @@ export default function TripsTable({ externalTripId = null }) {
           data={selectedTrip}
           onClose={handleCloseModal}
           choferes={choferes}
+          destinos={destinos}
           encargados={encargados}
           vehiculos={vehiculos}
         />

@@ -21,7 +21,7 @@ export default function Transport({
     >
       <div className="grid grid-cols-2 gap-4 mt-2 dark:text-gray-300">
 
-        {/* TRANSPORTE */}
+       
         {form.transporte.map((t, i) => (
           <div
             key={i}
@@ -91,7 +91,7 @@ export default function Transport({
           </div>
         ))}
 
-        {/* BOTÓN AGREGAR */}
+       
         <button
           onClick={() =>
             addArrayItem(
@@ -108,7 +108,7 @@ export default function Transport({
           +
         </button>
 
-        {/* FLETE */}
+      
         <div className="col-span-2">
           <h4 className="font-semibold mb-2">
             Uso del flete
@@ -167,7 +167,7 @@ export default function Transport({
           ))}
         </div>
 
-        {/* TOTAL B */}
+     
         <div className="col-span-2">
           <label className="font-semibold">
             Total (B)
@@ -180,7 +180,7 @@ export default function Transport({
           />
         </div>
 
-        {/* DIFERENCIA */}
+       
         <div className="col-span-2">
           <label className="font-semibold">
             Diferencia (A - B)

@@ -80,7 +80,7 @@ export default function TripDetailView({ data, onClose }) {
           </table>
         </div>
 
-        {/* DESTINOS (CORREGIDO) */}
+      
         <div className="border rounded p-3 dark:border-gray-700">
           <h3 className="font-semibold mb-2 dark:text-white">Destinos</h3>
 
@@ -133,7 +133,7 @@ export default function TripDetailView({ data, onClose }) {
           </table>
         </div>
 
-        {/* BOTÓN */}
+  
         <div className="flex justify-end">
           <button
             onClick={onClose}

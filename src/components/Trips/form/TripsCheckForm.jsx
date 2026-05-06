@@ -13,7 +13,15 @@ export default function CheckTripForm({
   choferes,
   encargados,
   vehiculos,
+  destinos,
 }) {
+
+const km_total =
+  (data?.destinos || []).reduce((sum, d) => {
+    const destinoCompleto = destinos?.find(x => x.id === d.id);
+    return sum + Number(destinoCompleto?.distancia || 0);
+  }, 0) + Number(data?.kmAdicional || 0);
+
   const { addBudget } = useTravelBudgetsStore();
 
   const [form, setForm] = useState(() => ({
@@ -22,7 +30,7 @@ export default function CheckTripForm({
     encargado: "",
     fecha: "",
 
-    // COMBUSTIBLE INPUTS (3)
+    
     division1: "",
     combustibleTotal: "",
     precioLitro: "",
@@ -54,9 +62,7 @@ export default function CheckTripForm({
     casilla4: true,
   });
 
-  // ======================
-  // HANDLERS
-  // ======================
+  
   const handleChange = (field, value) => {
     setForm((prev) => ({
       ...prev,
@@ -81,32 +87,26 @@ export default function CheckTripForm({
     }));
   };
 
-  // ======================
-  // 🔥 COMBUSTIBLE (TU LÓGICA FINAL)
-  // ======================
+ 
 
  
 
 const baseCombustible = 1160;
 
-// inputs
-const division1 = parseFloat(form.division1) || 0; // gasolina/diesel
-const combustibleTotal = parseFloat(form.combustibleTotal) || 0; // cantidad
+const division1 = parseFloat(form.division1) || 0; 
+const combustibleTotal = parseFloat(form.combustibleTotal) || 0; 
 const precioLitro = parseFloat(form.precioLitro) || 0;
 
-// cálculo: 1160 / gasolina
 const combustible1 =
   division1 > 0 ? baseCombustible / division1 : 0;
 
-// cálculo: total Bs
+
 const costoTotal =
   combustibleTotal > 0 && precioLitro > 0
     ? combustibleTotal * precioLitro
     : 0;
 
-  // ======================
-  // OTROS TOTALES
-  // ======================
+
 
   const peajesTotal = form.peajes.reduce(
     (sum, p) => sum + Number(p.nro || 0) * Number(p.precio || 0),
@@ -148,7 +148,6 @@ const costoTotal =
     0
   );
 
-  // 🔥 FIX: sin variable inexistente "combustible"
   let totalA =
  
     peajesTotal +
@@ -163,9 +162,7 @@ const costoTotal =
 
   const diferencia = totalA - totalB;
 
-  // ======================
-  // PAYLOAD
-  // ======================
+ 
   const buildPayload = () => ({
     vehiculo: form.vehiculo,
     chofer: form.chofer,
@@ -236,7 +233,7 @@ const costoTotal =
       (form.transporte[1]?.costo || 0)
     ),
 
-    // FLETE
+    
     p3: String(form.flete[0]?.vueltas || 0),
     c3: String(form.flete[0]?.costo || 0),
     t3: String(fleteTotal),
@@ -267,7 +264,7 @@ const costoTotal =
         </button>
 
         <h2 className="text-2xl font-bold text-center dark:text-gray-200">
-          Presupuesto - {data?.entidad}
+          Presupuesto - {data?.entidad} ({km_total} km)
         </h2>
 
         <DatosForm

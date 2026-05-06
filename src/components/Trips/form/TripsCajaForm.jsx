@@ -20,7 +20,7 @@ export default function TripsCajaForm({
     objetivo: "",
   });
 
-  // Inicializar correctamente con IDs
+
   useEffect(() => {
     if (!viajeData) return;
 

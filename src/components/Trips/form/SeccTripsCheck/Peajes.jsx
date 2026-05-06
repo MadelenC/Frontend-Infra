@@ -26,7 +26,7 @@ export default function Peajes({
     >
       <div className="grid grid-cols-2 gap-4 mt-2 dark:text-gray-300">
 
-        {/* PEAJES */}
+        
         <ArrayInput
           title="Peajes ida y vuelta"
          
@@ -42,7 +42,7 @@ export default function Peajes({
           total={formatBs(peajesTotal)}
         />
 
-        {/* VIÁTICOS PROVINCIA */}
+       
         <ArrayInput
           title="Viáticos provincia"
           array={form.viaticosProvincia}
@@ -57,7 +57,7 @@ export default function Peajes({
           total={formatBs(viaticosProvinciaTotal)}
         />
 
-        {/* VIÁTICOS FRONTERA */}
+        
         <ArrayInput
           title="Viáticos frontera"
           array={form.viaticosFrontera}
@@ -72,7 +72,7 @@ export default function Peajes({
           total={formatBs(viaticosFronteraTotal)}
         />
 
-        {/* VIÁTICOS CIUDAD */}
+        
         <ArrayInput
           title="Viáticos ciudad"
           array={form.viaticosCiudad}
@@ -89,7 +89,7 @@ export default function Peajes({
           )}
         />
 
-        {/* MANTENIMIENTO */}
+      
         <ArrayInput
           title="Mantenimiento vehicular"
           array={form.mantenimiento}
@@ -104,7 +104,7 @@ export default function Peajes({
           total={formatBs(mantenimientoTotal)}
         />
 
-        {/* GARAJE */}
+      
         <ArrayInput
           title="Garaje vehicular"
           array={form.garaje}
@@ -119,7 +119,7 @@ export default function Peajes({
           total={formatBs(garajeTotal)}
         />
 
-        {/* TOTAL */}
+        
         <div className="col-span-2">
           <label className="font-semibold">
             Total (A)
