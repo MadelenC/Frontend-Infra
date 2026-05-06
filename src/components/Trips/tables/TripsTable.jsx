@@ -122,6 +122,7 @@ export default function TripsTable({ externalTripId = null }) {
       setSelectedTrip(formattedForForms);
 
       setSelectedTrip(formattedForForms);
+      
           } catch (err) {
             toast.error("Error al cargar detalle del viaje");
           }
@@ -130,9 +131,9 @@ export default function TripsTable({ externalTripId = null }) {
         }
 
         setModalType(type);
-      };
+ };
 
-  const handleCloseModal = () => {
+    const handleCloseModal = () => {
     setModalType(null);
     setSelectedTrip(null);
   };
@@ -323,7 +324,7 @@ export default function TripsTable({ externalTripId = null }) {
           data={selectedTrip}
           onClose={handleCloseModal}
           choferes={choferes}
-          destinos={destinos}
+          destinos={allDestinos}
           encargados={encargados}
           vehiculos={vehiculos}
         />

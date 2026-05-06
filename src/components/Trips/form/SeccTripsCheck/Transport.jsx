@@ -22,7 +22,7 @@ export default function Transport({
       <div className="grid grid-cols-2 gap-4 mt-2 dark:text-gray-300">
 
        
-        {form.transporte.map((t, i) => (
+        {(form.transporte ||[]).map((t, i) => (
           <div
             key={i}
             className="border p-3 rounded space-y-2 relative"
@@ -114,7 +114,7 @@ export default function Transport({
             Uso del flete
           </h4>
 
-          {form.flete.map((f, i) => (
+          {(form.flete || []).map((f, i) => (
             <div
               key={i}
               className="flex gap-2"

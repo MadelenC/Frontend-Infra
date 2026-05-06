@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
 import DatosForm from "./SeccTripsCheck/DatosForm";
@@ -24,11 +24,13 @@ const km_total =
 
   const { addBudget } = useTravelBudgetsStore();
 
-  const [form, setForm] = useState(() => ({
-    vehiculo: data?.vehiculo || "",
-    chofer: data?.chofer || "",
-    encargado: "",
-    fecha: "",
+ const [form, setForm] = useState(() => ({
+ vehiculo: [],
+  chofer: [],
+  encargado: [],
+  fecha: "",
+  fecha: "",
+  
 
     
     division1: "",
@@ -61,6 +63,22 @@ const km_total =
     casilla3: true,
     casilla4: true,
   });
+
+
+  useEffect(() => {
+    console.log("DATA LLEGA:", data);
+  console.log("VEHICULOS:", data?.vehiculos);
+  console.log("CHOFERES:", data?.choferes);
+  console.log("ENCARGADOS:", data?.encargados);
+  if (!data) return;
+
+ setForm({
+  vehiculo: data?.vehiculos?.map(v => v.id) || [],
+  chofer: data?.choferes?.map(c => c.id) || [],
+  encargado: data?.encargados?.map(e => e.id) || [],
+  fecha: "",
+});
+}, [data]);
 
  
   const handleChange = (field, value) => {
@@ -108,42 +126,42 @@ const costoTotal =
 
   
 
-  const peajesTotal = form.peajes.reduce(
+  const peajesTotal = (form.peajes || []).reduce(
     (sum, p) => sum + Number(p.nro || 0) * Number(p.precio || 0),
     0
   );
 
-  const viaticosCiudadTotal = form.viaticosCiudad.reduce(
+  const viaticosCiudadTotal =  (form.viaticosCiudad || []).reduce(
     (sum, v) => sum + Number(v.dias || 0) * Number(v.precio || 0),
     0
   );
 
-  const viaticosProvinciaTotal = form.viaticosProvincia.reduce(
+  const viaticosProvinciaTotal = (form.viaticosProvincia || []).reduce(
     (sum, v) => sum + Number(v._v || 0) * Number(v._p || 0),
     0
   );
 
-  const viaticosFronteraTotal = form.viaticosFrontera.reduce(
+  const viaticosFronteraTotal = (form.viaticosFrontera || []).reduce(
     (sum, v) => sum + Number(v._v || 0) * Number(v._p || 0),
     0
   );
 
-  const mantenimientoTotal = form.mantenimiento.reduce(
+  const mantenimientoTotal = (form.mantenimiento|| []).reduce(
     (sum, m) => sum + Number(m._v || 0) * Number(m._p || 0),
     0
   );
 
-  const garajeTotal = form.garaje.reduce(
+  const garajeTotal = (form.garaje|| []).reduce(
     (sum, g) => sum + Number(g._v || 0) * Number(g._p || 0),
     0
   );
 
-  const transporteTotal = form.transporte.reduce(
+  const transporteTotal = (form.transporte || []).reduce(
     (sum, t) => sum + Number(t.personas || 0) * Number(t.costo || 0),
     0
   );
 
-  const fleteTotal = form.flete.reduce(
+  const fleteTotal = (form.flete || []).reduce(
     (sum, f) => sum + Number(f.vueltas || 0) * Number(f.costo || 0),
     0
   );
