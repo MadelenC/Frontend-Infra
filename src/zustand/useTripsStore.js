@@ -3,13 +3,16 @@ import {
   getTrips,
   createTrip,
   updateTrip,
-  deleteTrip
+  deleteTrip,
+  getTripById
 } from "../services/TripsService";
 
 export const useTripsStore = create((set, get) => ({
   trips: [],
   loading: false,
+  loadingTrip: false,
   error: null,
+  selectedTrip: null,
 
   page: 1,
   limit: 8,
@@ -17,6 +20,7 @@ export const useTripsStore = create((set, get) => ({
 
   setPage: (page) => set({ page }),
 
+  
   fetchTrips: async () => {
     const { page, limit, loading } = get();
 
@@ -39,12 +43,13 @@ export const useTripsStore = create((set, get) => ({
       });
     }
   },
-   // DETALLE (PRO)
+
+  
   getTripById: async (id) => {
     try {
       set({ loadingTrip: true });
 
-      const data = await getTripByIdService(id);
+      const data = await getTripById(id);
 
       set({
         selectedTrip: data,
@@ -55,12 +60,13 @@ export const useTripsStore = create((set, get) => ({
     } catch (err) {
       set({
         loadingTrip: false,
+        error: err.message || "Error al obtener viaje"
       });
       return null;
     }
   },
 
-  // CREATE FULL VIAJE
+
   addTrip: async (data) => {
     try {
       const newTrip = await createTrip(data);
@@ -78,7 +84,7 @@ export const useTripsStore = create((set, get) => ({
     }
   },
 
-  // UPDATE FULL VIAJE
+
   editTrip: async (id, data) => {
     try {
       const updated = await updateTrip(id, data);
@@ -98,7 +104,7 @@ export const useTripsStore = create((set, get) => ({
     }
   },
 
-  // DELETE FULL VIAJE
+  // 📌 ELIMINAR
   removeTrip: async (id) => {
     try {
       await deleteTrip(id);

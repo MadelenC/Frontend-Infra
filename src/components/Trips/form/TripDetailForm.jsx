@@ -80,7 +80,7 @@ export default function TripDetailView({ data, onClose }) {
           </table>
         </div>
 
-      
+        {/* DESTINOS */}
         <div className="border rounded p-3 dark:border-gray-700">
           <h3 className="font-semibold mb-2 dark:text-white">Destinos</h3>
 
@@ -92,7 +92,7 @@ export default function TripDetailView({ data, onClose }) {
                   <React.Fragment key={i}>
                     <tr>
                       <td><b>Depto Inicio:</b></td>
-                      <td>{d.dep_inicio}</td>
+                      <td>{d.dep_inicio || "_"}</td>
                     </tr>
 
                     <tr>
@@ -112,7 +112,7 @@ export default function TripDetailView({ data, onClose }) {
 
                     <tr>
                       <td><b>Depto Final:</b></td>
-                      <td>{d.dep_final}</td>
+                      <td>{d.dep_final ||"_"}</td>
                     </tr>
 
                     <tr>

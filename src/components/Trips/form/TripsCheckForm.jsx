@@ -62,7 +62,7 @@ const km_total =
     casilla4: true,
   });
 
-  
+ 
   const handleChange = (field, value) => {
     setForm((prev) => ({
       ...prev,
@@ -87,12 +87,12 @@ const km_total =
     }));
   };
 
- 
-
+  
  
 
 const baseCombustible = 1160;
 
+// inputs
 const division1 = parseFloat(form.division1) || 0; 
 const combustibleTotal = parseFloat(form.combustibleTotal) || 0; 
 const precioLitro = parseFloat(form.precioLitro) || 0;
@@ -106,7 +106,7 @@ const costoTotal =
     ? combustibleTotal * precioLitro
     : 0;
 
-
+  
 
   const peajesTotal = form.peajes.reduce(
     (sum, p) => sum + Number(p.nro || 0) * Number(p.precio || 0),
@@ -148,6 +148,7 @@ const costoTotal =
     0
   );
 
+  
   let totalA =
  
     peajesTotal +
@@ -162,7 +163,7 @@ const costoTotal =
 
   const diferencia = totalA - totalB;
 
- 
+  
   const buildPayload = () => ({
     vehiculo: form.vehiculo,
     chofer: form.chofer,
@@ -170,7 +171,7 @@ const costoTotal =
     entidad: data?.entidad || "",
     fecha_sa: form.fecha,
 
-    // COMBUSTIBLE
+
     total1: String(baseCombustible),
       division1: String(division1),
       combustible1: String(combustible1),

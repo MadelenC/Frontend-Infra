@@ -7,6 +7,7 @@ import CheckTripForm from "../form/TripsCheckForm";
 import TripsCajaForm from "../form/TripsCajaForm";
 import TripDeclarationForm from "../form/TripDeclarationForm";
 import TripDetailForm from "../form/TripDetailForm";
+import EditTripsForm from "../form/Cancel/EditTripForm";
 
 import { FiFileText, FiBarChart2, FiPlus } from "react-icons/fi";
 
@@ -25,6 +26,8 @@ export default function TripsTable({ externalTripId = null }) {
     page,
     totalPages,
     setPage,
+    addTrip, 
+    editTrip
     
   } = useTripsStore();
 
@@ -34,7 +37,8 @@ export default function TripsTable({ externalTripId = null }) {
   } = useUserStore();
 
   const { fetchAllVehicles } = useVehicleStore();
-  const { fetchDestinos, destinos } = useDestinoStore();
+ const { fetchAllDestinos } = useDestinoStore();
+ const [allDestinos, setAllDestinos] = useState([]);
 
   
   const [encargados, setEncargados] = useState([]);
@@ -66,12 +70,13 @@ export default function TripsTable({ externalTripId = null }) {
  
   const handleOpenModal = async (type, trip = null) => {
 
-  if (type === "cheque" || type === "caja"|| type === "add"|| type === "detalle") {
+  if (type === "cheque" || type === "caja"|| type === "add"|| type === "detalle" || type === "edit") {
     try {
       const encargadosData = await fetchAllEncargados();
       const choferesData = await fetchAllChoferes();
       const vehiculosData = await fetchAllVehicles();
-      await fetchDestinos();
+      const destinosData = await fetchAllDestinos();
+        setAllDestinos(destinosData);
 
       setEncargados(encargadosData || []);
       setChoferes(choferesData || []);
@@ -81,20 +86,51 @@ export default function TripsTable({ externalTripId = null }) {
     }
   }
 
-  if (type === "detalle" && trip?.id) {
+  if ((type === "detalle" || type === "edit") && trip?.id){
     try {
       const res = await fetch(`http://localhost:3000/api/viajes/${trip.id}`);
       const data = await res.json();
-      setSelectedTrip(data);
-    } catch (err) {
-      toast.error("Error al cargar detalle del viaje");
-    }
-  } else {
-    setSelectedTrip(trip);
-  }
 
-  setModalType(type);
-};
+      console.log("DATA API:", data);
+
+      const formattedForForms = {
+        ...data,
+
+        // alias para formularios
+        tipoViaje: data.tipo || "",
+        inicio: data.fecha_inicial || "",
+        final: data.fecha_final || "",
+
+        chofer: data.choferes || [],
+        encargado: data.encargados || [],
+        vehiculo: data.vehiculos || [],
+
+        
+        destinos: data.destinos || [], 
+        destinosForm:
+          data.destinos?.map(d => ({
+            id: d.id,
+            nombre: `(${d.dep_inicio}) ${d.origen} → (${d.dep_final}) ${d.destino}`,
+            km: d.distancia || ""
+          })) || []
+          
+      };
+      console.log(data.destinos)
+
+      console.log("FORMATTED:", formattedForForms);
+
+      setSelectedTrip(formattedForForms);
+
+      setSelectedTrip(formattedForForms);
+          } catch (err) {
+            toast.error("Error al cargar detalle del viaje");
+          }
+        } else {
+          setSelectedTrip(trip);
+        }
+
+        setModalType(type);
+      };
 
   const handleCloseModal = () => {
     setModalType(null);
@@ -211,7 +247,7 @@ export default function TripsTable({ externalTripId = null }) {
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
               {["#", "Entidad", "Tipo", "Objetivo", "Días", "Pasajeros", "Inicio", "Fin", "Estado", "Acciones"].map(h => (
-                <th key={h} className="px-3 py-2 border">{h}</th>
+                <th key={h} className="px-3 py-2 border dark:text-gray-200">{h}</th>
               ))}
             </tr>
           </thead>
@@ -255,8 +291,20 @@ export default function TripsTable({ externalTripId = null }) {
           choferes={choferes}
           encargados={encargados}
           vehiculos={vehiculos}
-          destinos={destinos}
+          destinos={allDestinos}
           onClose={handleCloseModal}
+          onSave={async (data) => {
+            const res = await addTrip(data);
+
+            if (res.ok) {
+              toast.success("Viaje registrado");
+              fetchTrips(); 
+              handleCloseModal();
+            } else {
+              toast.error("Error al guardar");
+              console.error(res.error);
+            }
+          }}
         />
       )}
 
@@ -300,6 +348,32 @@ export default function TripsTable({ externalTripId = null }) {
         />
       )}
 
-    </div>
-  );
+      {modalType === "edit" && (
+        <EditTripsForm
+          isOpen={true}
+          initialData={selectedTrip} 
+          choferes={choferes}
+          encargados={encargados}
+          vehiculos={vehiculos}
+          destinos={allDestinos}
+          onClose={handleCloseModal}
+           onSave={async (data) => {
+
+          const res = await editTrip(selectedTrip.id, data);
+
+          if (res.ok) {
+            toast.success("Viaje actualizado correctamente");
+            fetchTrips();  
+            handleCloseModal();
+          } else {
+            toast.error("Error al actualizar viaje");
+            console.error(res.error);
+          }
+
+        }}
+            />
+          )}
+
+        </div>
+      );
 }
