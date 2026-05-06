@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { toast } from "react-toastify";
+import { calcularKmTotal } from "../../../utils/KmUtils";
 
 export default function AddTripsModal({ initialData, isOpen, onClose, onSave, choferes, encargados, vehiculos, destinos }) {
   const [formData, setFormData] = useState({
@@ -37,9 +38,13 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
 
       setFormData({
         destinos:
-          initialData.destinos?.length
-            ? initialData.destinos.map((d) => ({ nombre: d.nombre || "", km: d.km || "" }))
-            : [{ nombre: "", km: "" }],
+        initialData.destinos?.length
+          ? initialData.destinos.map((d) => ({
+              id: d.id,
+              nombre: d.nombre || "",
+              km: Number(d.km ?? d.distancia ?? 0), 
+            }))
+          : [{ nombre: "", km: "" }],
         kmAdicional: initialData.kmAdicional || "",
         tipoViaje: initialData.tipoViaje || "",
         pasajeros: initialData.pasajeros || "",
@@ -140,11 +145,10 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
     }
   };
 
-  const calcularTotalKm = () => {
-    let total = Number(formData.kmAdicional || 0);
-    formData.destinos.forEach((d) => { total += Number(d.km || 0); });
-    return total;
-  };
+    const totalKm = calcularKmTotal(
+      formData.destinos,
+      formData.kmAdicional
+    );
 
   const validate = () => {
     const newErrors = {};
@@ -176,7 +180,10 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
     toast.error("Por favor complete los campos obligatorios en rojo.");
     return;
   }
-
+const totalKm = calcularKmTotal(
+  formData.destinos,
+  formData.kmAdicional
+);
   const dataToSend = {
     tipo: formData.tipoViaje,
     entidad: formData.entidad,
@@ -190,6 +197,13 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
       id: d.id,
       km:d.km
     })),
+
+      kmAdicional: Number(formData.kmAdicional) || 0, 
+      kmTotal: totalKm, 
+
+      vehiculos: formData.vehiculo.map(v => ({
+        id: v.value
+      })),
 
     vehiculos: formData.vehiculo.map(v => ({
       id: v.value
@@ -214,6 +228,8 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
   const choferOptions = choferes?.map(c => ({ value: c.id, label: `${c.nombres} ${c.apellidos}` })) || [];
   const vehiculoOptions = vehiculos?.map(v => ({ value: v.id, label: `${v.tipog} ${v.placa}` })) || [];
   const encargadoOptions = encargados?.map(u => ({ value: u.id, label: `${u.nombres} ${u.apellidos}` })) || [];
+
+  
 
   return (
     <>
@@ -353,7 +369,7 @@ export default function AddTripsModal({ initialData, isOpen, onClose, onSave, ch
                 />
                 <input
                   type="text"
-                  value={calcularTotalKm()}
+                  value={totalKm}
                   readOnly
                   className="w-28 border px-3 py-1.5 rounded bg-gray-100 font-semibold text-sm dark:bg-gray-200/40 dark:border-gray-200"
                 />

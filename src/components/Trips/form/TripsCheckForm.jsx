@@ -5,7 +5,12 @@ import DatosForm from "./SeccTripsCheck/DatosForm";
 import Combustible from "./SeccTripsCheck/Combustible";
 import Peajes from "./SeccTripsCheck/Peajes";
 import Transport from "./SeccTripsCheck/Transport";
+
+import { calcularKmTotal } from "../../../utils/kmUtils";
+import { useMemo } from "react";
+
 import { useTravelBudgetsStore } from "../../../zustand/useTravelBudgetsStore";
+import { useTripsStore } from "../../../zustand/useTripsStore";
 
 export default function CheckTripForm({
   data,
@@ -14,25 +19,52 @@ export default function CheckTripForm({
   encargados,
   vehiculos,
   destinos,
+
 }) {
 
-const km_total =
-  (data?.destinos || []).reduce((sum, d) => {
-    const destinoCompleto = destinos?.find(x => x.id === d.id);
-    return sum + Number(destinoCompleto?.distancia || 0);
-  }, 0) + Number(data?.kmAdicional || 0);
+  const [collapsed, setCollapsed] = useState({
+  casilla1: true,
+  casilla2: true,
+  casilla3: true,
+  casilla4: true,
+});
 
+
+  const [errors, setErrors] = useState({});
   const { addBudget } = useTravelBudgetsStore();
+  const { getTripById, selectedTrip, loadingTrip } = useTripsStore();
 
- const [form, setForm] = useState(() => ({
- vehiculo: [],
-  chofer: [],
-  encargado: [],
-  fecha: "",
-  fecha: "",
-  
 
-    
+ useEffect(() => {
+  if (data?.id) {
+    getTripById(data.id);
+  }
+}, [data?.id]);
+
+  useEffect(() => {
+  if (selectedTrip) {
+    console.log("DESTINOS BACKEND:", selectedTrip.destinos);
+    console.log("KM ADICIONAL:", selectedTrip?.kmAdicional);
+  }
+}, [selectedTrip]);
+
+
+const kmTotal = useMemo(() => {
+  if (!selectedTrip?.destinos) return 0;
+
+  return selectedTrip.destinos.reduce((acc, d) => {
+    return acc + Number(d.kilometraje || 0);
+  }, 0);
+}, [selectedTrip]);
+
+
+
+  const [form, setForm] = useState({
+    vehiculo: [],
+    chofer: [],
+    encargado: [],
+    fecha: "",
+
     division1: "",
     combustibleTotal: "",
     precioLitro: "",
@@ -54,35 +86,31 @@ const km_total =
 
     transporte: [{ ruta: "", personas: "", costo: "" }],
     flete: [{ vueltas: "", costo: "" }],
-  }));
-
-  const [errors] = useState({});
-  const [collapsed, setCollapsed] = useState({
-    casilla1: true,
-    casilla2: true,
-    casilla3: true,
-    casilla4: true,
   });
 
 
   useEffect(() => {
-    console.log("DATA LLEGA:", data);
-  console.log("VEHICULOS:", data?.vehiculos);
-  console.log("CHOFERES:", data?.choferes);
-  console.log("ENCARGADOS:", data?.encargados);
-  if (!data) return;
+  if (!selectedTrip) return;
 
- setForm({
-  vehiculo: data?.vehiculos?.map(v => v.id) || [],
-  chofer: data?.choferes?.map(c => c.id) || [],
-  encargado: data?.encargados?.map(e => e.id) || [],
-  fecha: "",
-});
-}, [data]);
+  setForm((prev) => {
+    const newForm = {
+      ...prev,
+      vehiculo: selectedTrip.vehiculos?.map(v => v.id) || [],
+      chofer: selectedTrip.choferes?.map(c => c.id) || [],
+      encargado: selectedTrip.encargados?.map(e => e.id) || [],
+    };
 
- 
+    const same =
+      JSON.stringify(prev.vehiculo) === JSON.stringify(newForm.vehiculo) &&
+      JSON.stringify(prev.chofer) === JSON.stringify(newForm.chofer) &&
+      JSON.stringify(prev.encargado) === JSON.stringify(newForm.encargado);
+
+    return same ? prev : newForm;
+  });
+}, [selectedTrip]);
+
   const handleChange = (field, value) => {
-    setForm((prev) => ({
+    setForm(prev => ({
       ...prev,
       [field]: value,
     }));
@@ -92,175 +120,105 @@ const km_total =
     const arr = [...form[field]];
     arr[index][key] = value;
 
-    setForm((prev) => ({
+    setForm(prev => ({
       ...prev,
       [field]: arr,
     }));
   };
 
   const addArrayItem = (field, template) => {
-    setForm((prev) => ({
+    setForm(prev => ({
       ...prev,
       [field]: [...prev[field], template],
     }));
   };
 
-  
- 
 
-const baseCombustible = 1160;
+  const baseCombustible = 1160;
 
-// inputs
-const division1 = parseFloat(form.division1) || 0; 
-const combustibleTotal = parseFloat(form.combustibleTotal) || 0; 
-const precioLitro = parseFloat(form.precioLitro) || 0;
+  const division1 = parseFloat(form.division1) || 0;
+  const combustibleTotal = parseFloat(form.combustibleTotal) || 0;
+  const precioLitro = parseFloat(form.precioLitro) || 0;
 
-const combustible1 =
-  division1 > 0 ? baseCombustible / division1 : 0;
+  const combustible1 =
+    division1 > 0 ? baseCombustible / division1 : 0;
 
+  const costoTotal =
+    combustibleTotal > 0 && precioLitro > 0
+      ? combustibleTotal * precioLitro
+      : 0;
 
-const costoTotal =
-  combustibleTotal > 0 && precioLitro > 0
-    ? combustibleTotal * precioLitro
-    : 0;
-
-  
-
-  const peajesTotal = (form.peajes || []).reduce(
+  const peajesTotal = form.peajes.reduce(
     (sum, p) => sum + Number(p.nro || 0) * Number(p.precio || 0),
     0
   );
 
-  const viaticosCiudadTotal =  (form.viaticosCiudad || []).reduce(
+  const viaticosCiudadTotal = form.viaticosCiudad.reduce(
     (sum, v) => sum + Number(v.dias || 0) * Number(v.precio || 0),
     0
   );
 
-  const viaticosProvinciaTotal = (form.viaticosProvincia || []).reduce(
+  const viaticosProvinciaTotal = form.viaticosProvincia.reduce(
     (sum, v) => sum + Number(v._v || 0) * Number(v._p || 0),
     0
   );
 
-  const viaticosFronteraTotal = (form.viaticosFrontera || []).reduce(
+  const viaticosFronteraTotal = form.viaticosFrontera.reduce(
     (sum, v) => sum + Number(v._v || 0) * Number(v._p || 0),
     0
   );
 
-  const mantenimientoTotal = (form.mantenimiento|| []).reduce(
+  const mantenimientoTotal = form.mantenimiento.reduce(
     (sum, m) => sum + Number(m._v || 0) * Number(m._p || 0),
     0
   );
 
-  const garajeTotal = (form.garaje|| []).reduce(
+  const garajeTotal = form.garaje.reduce(
     (sum, g) => sum + Number(g._v || 0) * Number(g._p || 0),
     0
   );
 
-  const transporteTotal = (form.transporte || []).reduce(
+  const transporteTotal = form.transporte.reduce(
     (sum, t) => sum + Number(t.personas || 0) * Number(t.costo || 0),
     0
   );
 
-  const fleteTotal = (form.flete || []).reduce(
+  const fleteTotal = form.flete.reduce(
     (sum, f) => sum + Number(f.vueltas || 0) * Number(f.costo || 0),
     0
   );
 
-  
   let totalA =
- 
     peajesTotal +
     viaticosCiudadTotal +
     viaticosProvinciaTotal +
     viaticosFronteraTotal +
     mantenimientoTotal +
-    garajeTotal;
+    garajeTotal +
+    costoTotal;
 
-    totalA = totalA + costoTotal; 
   const totalB = transporteTotal + fleteTotal;
 
   const diferencia = totalA - totalB;
 
-  
   const buildPayload = () => ({
     vehiculo: form.vehiculo,
     chofer: form.chofer,
     encargado: form.encargado,
-    entidad: data?.entidad || "",
+    entidad: selectedTrip?.entidad || "",
     fecha_sa: form.fecha,
 
-
     total1: String(baseCombustible),
-      division1: String(division1),
-      combustible1: String(combustible1),
-      cantidad1: String(combustibleTotal),
-      precio1: String(precioLitro),
-      total1C: String(costoTotal),
-
-    // VIATICOS
-    cantidad2: String(form.viaticosCiudad[0]?.dias || 0),
-    precio2: String(form.viaticosCiudad[0]?.precio || 0),
-    total2VC: String(viaticosCiudadTotal),
-
-    cantidad3: String(form.viaticosProvincia[0]?._v || 0),
-    precio3: String(form.viaticosProvincia[0]?._p || 0),
-    total3VP: String(viaticosProvinciaTotal),
-
-    cantidad4: String(form.viaticosFrontera[0]?._v || 0),
-    precio4: String(form.viaticosFrontera[0]?._p || 0),
-    total4VF: String(viaticosFronteraTotal),
-
-    // PEAJES
-    cantidad5: String(form.peajes[0]?.nro || 0),
-    precio5: String(form.peajes[0]?.precio || 0),
-    total5P: String(peajesTotal),
-
-    // MANTENIMIENTO
-    cantidad6: String(form.mantenimiento[0]?._v || 0),
-    precio6: String(form.mantenimiento[0]?._p || 0),
-    total6M: String(mantenimientoTotal),
-
-    // GARAJE
-    cantidad7: String(form.garaje[0]?._v || 0),
-    precio7: String(form.garaje[0]?._p || 0),
-    total7G: String(garajeTotal),
+    division1: String(division1),
+    combustible1: String(combustible1),
+    cantidad1: String(combustibleTotal),
+    precio1: String(precioLitro),
+    total1C: String(costoTotal),
 
     total8T: String(totalA),
-
-    materia: form.materia,
-    sigla: form.sigla,
-    ndocentes: form.docentes,
-    hsalida: form.horaSalida,
-    hllegada: form.horaLlegada,
-    nota: form.nota,
-    responsable: form.encargado,
-
-    // TRANSPORTE
-    p1: String(form.transporte[0]?.personas || 0),
-    r1: form.transporte[0]?.ruta || "",
-    c1: String(form.transporte[0]?.costo || 0),
-    t1: String(
-      (form.transporte[0]?.personas || 0) *
-      (form.transporte[0]?.costo || 0)
-    ),
-
-    p2: String(form.transporte[1]?.personas || 0),
-    r2: form.transporte[1]?.ruta || "",
-    c2: String(form.transporte[1]?.costo || 0),
-    t2: String(
-      (form.transporte[1]?.personas || 0) *
-      (form.transporte[1]?.costo || 0)
-    ),
-
-    
-    p3: String(form.flete[0]?.vueltas || 0),
-    c3: String(form.flete[0]?.costo || 0),
-    t3: String(fleteTotal),
-
-    tt: String(totalA),
     diferencia: String(diferencia),
 
-    viaje: { id: data?.id },
+    viaje: { id: selectedTrip?.id },
   });
 
   const handleUpdate = async () => {
@@ -274,16 +232,21 @@ const costoTotal =
     }
   };
 
+ if (!selectedTrip) {
+  return <div className="p-10 text-center">Cargando viaje...</div>;
+}
+  
+
   return (
-    <div className="fixed inset-0 flex justify-center items-start pt-10 z-50 overflow-y-auto bg-black/40 backdrop-blur-sm">
-      <div className="bg-white dark:bg-gray-800 w-[95%] md:w-[80%] p-6 rounded-xl space-y-6 relative">
+     <div className="fixed inset-0 flex justify-center items-start pt-10 z-50 overflow-y-auto bg-black/40 backdrop-blur-sm">
+    <div className="bg-white dark:bg-gray-800 w-[95%] md:w-[80%] p-6 rounded-xl space-y-6 relative shadow-xl">
 
         <button onClick={onClose} className="absolute top-3 right-3 font-bold px-3 py-1">
           X
         </button>
 
         <h2 className="text-2xl font-bold text-center dark:text-gray-200">
-          Presupuesto - {data?.entidad} ({km_total} km)
+          Presupuesto - {data?.entidad} {kmTotal}
         </h2>
 
         <DatosForm

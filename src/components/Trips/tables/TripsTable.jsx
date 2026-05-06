@@ -96,7 +96,6 @@ export default function TripsTable({ externalTripId = null }) {
       const formattedForForms = {
         ...data,
 
-        // alias para formularios
         tipoViaje: data.tipo || "",
         inicio: data.fecha_inicial || "",
         final: data.fecha_final || "",
