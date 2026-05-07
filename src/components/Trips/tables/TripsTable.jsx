@@ -107,11 +107,17 @@ export default function TripsTable({ externalTripId = null }) {
         
         destinos: data.destinos || [], 
         destinosForm:
-          data.destinos?.map(d => ({
-            id: d.id,
-            nombre: `(${d.dep_inicio}) ${d.origen} → (${d.dep_final}) ${d.destino}`,
-            km: d.distancia || ""
-          })) || []
+           data.data?.map(d => ({
+              id: d.id,
+              dep_inicio: d.dep_inicio,
+              origen: d.origen,
+              destino: d.destino,
+              dep_final: d.dep_final,
+              ruta: d.ruta,
+              kilometraje: d.kilometraje,
+              nombre: `(${d.dep_inicio}) ${d.origen} → (${d.dep_final}) ${d.destino}`,
+              km: d.kilometraje || ""
+                    })) || []
           
       };
       console.log(data.destinos)
@@ -137,13 +143,25 @@ export default function TripsTable({ externalTripId = null }) {
     setSelectedTrip(null);
   };
 
-  const handleCancelTrip = (id) => {
-    const updated = trips.map(t =>
-      t.id === id ? { ...t, estado: "Cancelado" } : t
-    );
+  const handleCancelTrip = async (id) => {
 
-    useTripsStore.setState({ trips: updated });
-  };
+  try {
+
+    await editTrip(id, {
+      estado: "cancelado"
+    });
+
+    await fetchTrips();
+
+    toast.success("Viaje cancelado");
+
+  } catch (error) {
+
+    toast.error("Error al cancelar viaje");
+    console.error(error);
+
+  }
+};
 
   
   const filteredTrips = trips.filter(t => {

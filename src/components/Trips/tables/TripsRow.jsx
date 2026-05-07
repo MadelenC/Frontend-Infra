@@ -17,11 +17,11 @@ export default function TripsRow({ trip, onOpenModal, onCancelTrip }) {
   const [openMenu, setOpenMenu] = useState(null);
 
   const badgeColor =
-    trip.estado === "Activo"
+    trip.estado === "activo"
       ? "success"
-      : trip.estado === "Pendiente"
+      : trip.estado === "pendiente"
       ? "warning"
-      : trip.estado === "Cancelado"
+      : trip.estado === "cancelado"
       ? "danger"
       : "gray";
 
@@ -33,7 +33,7 @@ export default function TripsRow({ trip, onOpenModal, onCancelTrip }) {
     <tr
       className={`border border-gray-200 dark:border-gray-700 transition-colors
         ${
-          trip.estado === "Cancelado"
+          trip.estado === "cancelado"
             ? "bg-red-100 dark:bg-red-900/40 hover:bg-red-200 dark:hover:bg-red-900/60"
             : "hover:bg-gray-50 dark:hover:bg-gray-800"
         }`}
@@ -82,7 +82,7 @@ export default function TripsRow({ trip, onOpenModal, onCancelTrip }) {
       <TableCell className="border px-3 py-2 relative dark:border-gray-700">
         <div className="flex flex-col gap-1">
 
-          {trip.estado === "Cancelado" ? (
+          {trip.estado === "cancelado" ? (
             //  CUANDO ESTÁ CANCELADO
             <>
               <button

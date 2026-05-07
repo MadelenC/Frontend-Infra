@@ -50,12 +50,12 @@ export default function CheckTripForm({
 
 
 const kmTotal = useMemo(() => {
-  if (!selectedTrip?.destinos) return 0;
+  if (!selectedTrip?.rutas) return 0;
 
-  return selectedTrip.destinos.reduce((acc, d) => {
-    return acc + Number(d.kilometraje || 0);
+  return selectedTrip.rutas.reduce((acc, r) => {
+    return acc + Number(r.total || 0);
   }, 0);
-}, [selectedTrip]);
+}, [selectedTrip?.rutas]);
 
 
 
@@ -134,20 +134,23 @@ const kmTotal = useMemo(() => {
   };
 
 
-  const baseCombustible = 1160;
+
 
   const division1 = parseFloat(form.division1) || 0;
   const combustibleTotal = parseFloat(form.combustibleTotal) || 0;
   const precioLitro = parseFloat(form.precioLitro) || 0;
 
-  const combustible1 =
-    division1 > 0 ? baseCombustible / division1 : 0;
+const combustible1 =
+  division1 > 0 && kmTotal > 0
+    ? kmTotal / division1
+    : 0;
 
   const costoTotal =
     combustibleTotal > 0 && precioLitro > 0
       ? combustibleTotal * precioLitro
       : 0;
 
+    
   const peajesTotal = form.peajes.reduce(
     (sum, p) => sum + Number(p.nro || 0) * Number(p.precio || 0),
     0
@@ -208,7 +211,7 @@ const kmTotal = useMemo(() => {
     entidad: selectedTrip?.entidad || "",
     fecha_sa: form.fecha,
 
-    total1: String(baseCombustible),
+    
     division1: String(division1),
     combustible1: String(combustible1),
     cantidad1: String(combustibleTotal),
@@ -246,7 +249,7 @@ const kmTotal = useMemo(() => {
         </button>
 
         <h2 className="text-2xl font-bold text-center dark:text-gray-200">
-          Presupuesto - {data?.entidad} {kmTotal}
+          Presupuesto - {data?.entidad} con km de : {kmTotal}
         </h2>
 
         <DatosForm

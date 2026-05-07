@@ -104,7 +104,7 @@ export const useTripsStore = create((set, get) => ({
     }
   },
 
-  // 📌 ELIMINAR
+
   removeTrip: async (id) => {
     try {
       await deleteTrip(id);

@@ -22,7 +22,7 @@ export default function EditTripsForm({ initialData, isOpen, onClose, onSave, ch
   const [errors, setErrors] = useState({});
   const [showAllDestinos, setShowAllDestinos] = useState([]);
 
-  useEffect(() => {
+ useEffect(() => {
   if (initialData && destinos?.length) {
 
     const formatLocalDateTime = (d) => {
@@ -32,23 +32,37 @@ export default function EditTripsForm({ initialData, isOpen, onClose, onSave, ch
       return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
     };
 
+    // ✅ 1. PRIMERO DECLARA ruta
+    const ruta = initialData.rutas?.[0] || {};
+
+    // ✅ 2. DESPUÉS usa ruta en el map
     const destinosFormateados = initialData.destinos?.length
-      ? initialData.destinos.map((d) => {
+      ? initialData.destinos.map((d, index) => {
+
           const destinoCompleto = destinos.find(x => x.id === d.id);
+
+          let km = "";
+
+          if (index === 0) km = ruta?.kilome || "";
+          if (index === 1) km = ruta?.k1 || "";
+          if (index === 2) km = ruta?.k2 || "";
+          if (index === 3) km = ruta?.k3 || "";
+          if (index === 4) km = ruta?.k4 || "";
+          if (index === 5) km = ruta?.k5 || "";
 
           return {
             id: d.id,
             nombre: destinoCompleto
               ? `(${destinoCompleto.departamentoInicio}) ${destinoCompleto.origen} → (${destinoCompleto.departamentoFinal}) ${destinoCompleto.destino}`
               : "Destino no encontrado",
-            km: destinoCompleto?.distancia || ""
+            km
           };
         })
       : [{ nombre: "", km: "" }];
 
     setFormData({
       destinos: destinosFormateados,
-      kmAdicional: initialData.kmAdicional || "",
+      kmAdicional: ruta.adicional ?? "",
       tipoViaje: initialData.tipoViaje || "",
       pasajeros: initialData.pasajeros || "",
       inicio: formatLocalDateTime(initialData.fecha_inicial),
@@ -203,9 +217,14 @@ export default function EditTripsForm({ initialData, isOpen, onClose, onSave, ch
     fecha_inicial: formData.inicio,
     fecha_final: formData.final,
 
+    kmAdicional: formData.kmAdicional,
+    kmTotal: calcularTotalKm(),
+
     destinos: formData.destinos.map(d => ({
       id: d.id,
+      km: d.km
     })),
+   
 
     vehiculos: formData.vehiculo.map(v => ({
       id: v.value
