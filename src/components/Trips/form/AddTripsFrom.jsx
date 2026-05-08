@@ -205,11 +205,15 @@ const totalKm = calcularKmTotal(
         id: v.value
       })),
 
-   
-
-    usuarios: [
-      ...formData.chofer.map(c => ({ id: c.value })),
-      ...formData.encargado.map(u => ({ id: u.value }))
+      usuarios: [
+      ...formData.chofer.map(c => ({
+        id: c.value,
+        tipo: "chofer"
+      })),
+      ...formData.encargado.map(e => ({
+        id: e.value,
+        tipo: "encargado"
+      }))
     ]
   };
 

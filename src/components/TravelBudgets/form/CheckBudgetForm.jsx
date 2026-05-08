@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect  } from "react";
 import { toast } from "react-toastify";
 
 import DatosForm from "./SeccEdChek/Datos";
@@ -6,7 +6,7 @@ import Combustible from "./SeccEdChek/Combustible";
 import Peajes from "./SeccEdChek/Peajes";
 import Transport from "./SeccEdChek/Transport";
 
-export default function CheckTripForm({
+export default function EditCheckTripForm({
   data,
   onClose,
   choferes,
@@ -15,43 +15,185 @@ export default function CheckTripForm({
 }) {
   
   const [form, setForm] = useState({
-    vehiculo: data?.vehiculo || "",
-    chofer: data?.chofer || "",
-    encargado: "",
-    fecha: "",
+   vehiculo: data?.vehiculo?.id
+  ? String(data.vehiculo.id)
+  : "",
 
-    litros: "",
-    precioLitro: "",
-    horaSalida: "",
-    horaLlegada: "",
+chofer: data?.chofer?.id
+  ? String(data.chofer.id)
+  : "",
 
-    materia: "",
-    docentes: "",
-    sigla: "",
-    nota: "",
+encargado: data?.encargado?.id
+  ? String(data.encargado.id)
+  : "",
 
-    peajes: [{ nro: "", precio: "" }],
-    viaticosProvincia: [{ _v: "", _p: "" }],
-    viaticosFrontera: [{ _v: "", _p: "" }],
-    viaticosCiudad: [{ dias: "", precio: "" }],
-    mantenimiento: [{ _v: "", _p: "" }],
-    garaje: [{ _v: "", _p: "" }],
+  fecha: data?.fecha_sa || "",
+
+  litros: data?.cantidad1 || "",
+  precioLitro: data?.precio1 || "",
+  horaSalida: data?.hsalida || "",
+  horaLlegada: data?.hllegada || "",
+
+  materia: data?.materia || "",
+  docentes: data?.ndocentes || "",
+  sigla: data?.sigla || "",
+  nota: data?.nota || "",
+
+  peajes: [
+    {
+      nro: data?.cantidad5 || "",
+      precio: data?.precio5 || "",
+    },
+  ],
+
+  viaticosProvincia: [
+    {
+      _v: data?.cantidad3 || "",
+      _p: data?.precio3 || "",
+    },
+  ],
+
+  viaticosFrontera: [
+    {
+      _v: data?.cantidad4 || "",
+      _p: data?.precio4 || "",
+    },
+  ],
+
+  viaticosCiudad: [
+    {
+      dias: data?.cantidad2 || "",
+      precio: data?.precio2 || "",
+    },
+  ],
+
+  mantenimiento: [
+    {
+      _v: data?.cantidad6 || "",
+      _p: data?.precio6 || "",
+    },
+  ],
+
+  garaje: [
+    {
+      _v: data?.cantidad7 || "",
+      _p: data?.precio7 || "",
+    },
+  ],
+
+  transporte: [
+    {
+      ruta: data?.r1 || "",
+      personas: data?.p1 || "",
+      costo: data?.c1 || "",
+    },
+
+    {
+      ruta: data?.r2 || "",
+      personas: data?.p2 || "",
+      costo: data?.c2 || "",
+    },
+  ],
+
+  flete: [
+    {
+      vueltas: data?.p3 || "",
+      costo: data?.c3 || "",
+    },
+  ],
+});
+useEffect(() => {
+  if (!data) return;
+
+  setForm({
+   vehiculo: data?.vehiculo?.id
+  ? String(data.vehiculo.id)
+  : "",
+
+chofer: data?.chofer?.id
+  ? String(data.chofer.id)
+  : "",
+
+encargado: data?.encargado?.id
+  ? String(data.encargado.id)
+  : "",
+    fecha: data?.fecha_sa || "",
+
+    litros: data?.cantidad1 || "",
+    precioLitro: data?.precio1 || "",
+    horaSalida: data?.hsalida || "",
+    horaLlegada: data?.hllegada || "",
+
+    materia: data?.materia || "",
+    docentes: data?.ndocentes || "",
+    sigla: data?.sigla || "",
+    nota: data?.nota || "",
+
+    peajes: [
+      {
+        nro: data?.cantidad5 || "",
+        precio: data?.precio5 || "",
+      },
+    ],
+
+    viaticosProvincia: [
+      {
+        _v: data?.cantidad3 || "",
+        _p: data?.precio3 || "",
+      },
+    ],
+
+    viaticosFrontera: [
+      {
+        _v: data?.cantidad4 || "",
+        _p: data?.precio4 || "",
+      },
+    ],
+
+    viaticosCiudad: [
+      {
+        dias: data?.cantidad2 || "",
+        precio: data?.precio2 || "",
+      },
+    ],
+
+    mantenimiento: [
+      {
+        _v: data?.cantidad6 || "",
+        _p: data?.precio6 || "",
+      },
+    ],
+
+    garaje: [
+      {
+        _v: data?.cantidad7 || "",
+        _p: data?.precio7 || "",
+      },
+    ],
 
     transporte: [
       {
-        ruta: "",
-        personas: "",
-        costo: "",
+        ruta: data?.r1 || "",
+        personas: data?.p1 || "",
+        costo: data?.c1 || "",
+      },
+
+      {
+        ruta: data?.r2 || "",
+        personas: data?.p2 || "",
+        costo: data?.c2 || "",
       },
     ],
 
     flete: [
       {
-        vueltas: "",
-        costo: "",
+        vueltas: data?.p3 || "",
+        costo: data?.c3 || "",
       },
     ],
   });
+}, [data]); 
+console.log(data);
 
   
   const [errors, setErrors] = useState({});
@@ -139,9 +281,7 @@ export default function CheckTripForm({
     }));
   };
 
-  // =========================
-  // CÁLCULOS
-  // =========================
+  
 
   const combustible = (
     Number(form.litros || 0) *

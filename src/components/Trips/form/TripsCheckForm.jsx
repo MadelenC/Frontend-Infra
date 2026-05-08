@@ -210,13 +210,16 @@ const combustible1 =
 
   const diferencia = totalA - totalB;
 
-  console.log("FORM VEHICULO:", form.vehiculo);
-console.log("SELECTED TRIP:", selectedTrip);
+ 
+
+console.log("CHOFERES:", selectedTrip?.choferes);
+console.log("VEHICULOS:", selectedTrip?.vehiculos);
+console.log("ENCARGADOS:", selectedTrip?.encargados);
 
  const buildPayload = () => ({
- vehiculos: selectedTrip.vehiculos?.map(v => v.id) || [],
-choferes: selectedTrip.choferes?.map(c => c.id) || [],
-encargados: selectedTrip.encargados?.map(e => e.id) || [],
+vehiculo: selectedTrip.vehiculos?.[0]?.id,
+chofer: selectedTrip.choferes?.[0]?.id,
+encargado: selectedTrip.encargados?.[0]?.id,
 
 
   entidad: selectedTrip?.entidad || "",

@@ -53,9 +53,9 @@ export default function DatosForm({
 
             {vehiculos?.map((v, i) => (
               <option
-                key={i}
-                value={`${v.tipog} ${v.placa}`}
-              >
+                key={v.id}
+                value={String(v.id)}
+                >
                 {v.tipog} - {v.placa}
               </option>
             ))}
@@ -100,8 +100,8 @@ export default function DatosForm({
 
             {choferes?.map((c, i) => (
               <option
-                key={i}
-                value={`${c.nombres} ${c.apellidos}`}
+                key={c.id}
+                value={String(c.id)}
               >
                 {c.nombres} {c.apellidos}
               </option>
@@ -147,8 +147,8 @@ export default function DatosForm({
 
             {encargados?.map((e, i) => (
               <option
-                key={i}
-                value={`${e.nombres} ${e.apellidos}`}
+                key={e.id}
+                value={String(e.id)}
               >
                 {e.nombres} {e.apellidos}
               </option>

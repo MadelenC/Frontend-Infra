@@ -34,27 +34,16 @@ export default function TableCheckBudget() {
 
   const enrichedBudgets = (budgets || []).map((b) => {
 
-  const choferId = Number(b.chofer);
-  const vehiculoId = Number(b.vehiculo);
-
-  const choferData = users.find(
-    (u) => Number(u.id) === choferId
-  );
-
-  const vehiculoData = vehicles.find(
-    (v) => Number(v.id) === vehiculoId
-  );
-
   return {
     ...b,
 
-    choferNombre: choferData
-      ? `${choferData.nombres} ${choferData.apellidos}`
-      : `Sin chofer (${b.chofer})`,
+    choferNombre: b.chofer
+      ? `${b.chofer.nombres} ${b.chofer.apellidos}`
+      : "Sin chofer",
 
-    vehiculoNombre: vehiculoData
-      ? vehiculoData.placa
-      : `Sin vehículo (${b.vehiculo})`,
+    vehiculoNombre: b.vehiculo
+      ? `${b.vehiculo.tipog} - ${b.vehiculo.placa}`
+      : "Sin vehículo",
   };
 });
 
