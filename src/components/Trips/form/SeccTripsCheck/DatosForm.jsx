@@ -5,7 +5,7 @@ import Section from "../../../common/Section";
 export default function DatosForm({
   form,
   collapsed,
-    toggle,
+  toggle,
   handleChange,
   vehiculos = [],
   choferes = [],
@@ -29,45 +29,96 @@ export default function DatosForm({
 
   return (
     <Section
-          title="3️⃣ Datos"
-          collapsed={collapsed}
-          toggle={toggle}
-        >
-    <div className="grid grid-cols-2 gap-4 mt-2 dark:text-gray-300">
+      title="3️⃣ Datos"
+      collapsed={collapsed}
+      toggle={toggle}
+    >
+      <div className="grid grid-cols-2 gap-4 mt-2 dark:text-gray-300">
 
-      <Select
-        isMulti
-        options={vehiculoOptions}
-        value={vehiculoOptions.filter(opt => form.vehiculo.includes(opt.value))}
-        onChange={(selected) =>
-          handleChange("vehiculo", selected.map(s => s.value))
-        }
-        placeholder="Seleccionar vehículos"
-      />
+        {/* VEHICULOS */}
+        <div>
+          <label className="block mb-1 font-medium">
+            Vehículos
+          </label>
 
-      <Select
-        isMulti
-        options={choferOptions}
-        value={choferOptions.filter(opt => form.chofer.includes(opt.value))}
-        onChange={(selected) =>
-          handleChange("chofer", selected.map(s => s.value))
-        }
-        placeholder="Seleccionar chofer"
-      />
+          <Select
+            isMulti
+            options={vehiculoOptions}
+            value={vehiculoOptions.filter(opt =>
+              form.vehiculo.includes(opt.value)
+            )}
+            onChange={(selected) =>
+              handleChange(
+                "vehiculo",
+                selected.map(s => s.value)
+              )
+            }
+            placeholder="Seleccionar vehículos"
+          />
+        </div>
 
-      <Select
-        isMulti
-        options={encargadoOptions}
-        value={encargadoOptions.filter(opt => form.encargado.includes(opt.value))}
-        onChange={(selected) =>
-          handleChange("encargado", selected.map(s => s.value))
-        }
-        placeholder="Seleccionar encargado"
-      />
-        
+        {/* CHOFER */}
+        <div>
+          <label className="block mb-1 font-medium">
+            Chofer
+          </label>
 
+          <Select
+            isMulti
+            options={choferOptions}
+            value={choferOptions.filter(opt =>
+              form.chofer.includes(opt.value)
+            )}
+            onChange={(selected) =>
+              handleChange(
+                "chofer",
+                selected.map(s => s.value)
+              )
+            }
+            placeholder="Seleccionar chofer"
+          />
+        </div>
 
-    </div>
+        {/* ENCARGADO */}
+        <div>
+          <label className="block mb-1 font-medium">
+            Encargado
+          </label>
+
+          <Select
+            isMulti
+            options={encargadoOptions}
+            value={encargadoOptions.filter(opt =>
+              form.encargado.includes(opt.value)
+            )}
+            onChange={(selected) =>
+              handleChange(
+                "encargado",
+                selected.map(s => s.value)
+              )
+            }
+            placeholder="Seleccionar encargado"
+          />
+        </div>
+
+        {/* FECHA */}
+        <div>
+          <label className="block mb-1 font-medium">
+            Fecha
+          </label>
+
+          <input
+            type="date"
+            value={form.fecha || ""}
+            onChange={(e) =>
+              handleChange("fecha", e.target.value)
+            }
+            className="w-full border rounded-lg px-3 py-2
+            dark:bg-gray-700 dark:border-gray-600"
+          />
+        </div>
+
+      </div>
     </Section>
   );
 }

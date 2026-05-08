@@ -11,6 +11,7 @@ import { useMemo } from "react";
 
 import { useTravelBudgetsStore } from "../../../zustand/useTravelBudgetsStore";
 import { useTripsStore } from "../../../zustand/useTripsStore";
+import { useAuthStore } from "../../../zustand/AuthUsers";
 
 export default function CheckTripForm({
   data,
@@ -32,6 +33,7 @@ export default function CheckTripForm({
 
   const [errors, setErrors] = useState({});
   const { addBudget } = useTravelBudgetsStore();
+  const { user } = useAuthStore();
   const { getTripById, selectedTrip, loadingTrip } = useTripsStore();
 
 
@@ -84,7 +86,10 @@ const kmTotal = useMemo(() => {
     mantenimiento: [{ _v: "", _p: "" }],
     garaje: [{ _v: "", _p: "" }],
 
-    transporte: [{ ruta: "", personas: "", costo: "" }],
+      transporte: [
+    { ruta: "", personas: "", costo: "" },
+    { ruta: "", personas: "", costo: "" },
+  ],
     flete: [{ vueltas: "", costo: "" }],
   });
 
@@ -98,6 +103,7 @@ const kmTotal = useMemo(() => {
       vehiculo: selectedTrip.vehiculos?.map(v => v.id) || [],
       chofer: selectedTrip.choferes?.map(c => c.id) || [],
       encargado: selectedTrip.encargados?.map(e => e.id) || [],
+      fecha: selectedTrip.fecha_inicial || "",
     };
 
     const same =
@@ -204,25 +210,99 @@ const combustible1 =
 
   const diferencia = totalA - totalB;
 
-  const buildPayload = () => ({
-    vehiculo: form.vehiculo,
-    chofer: form.chofer,
-    encargado: form.encargado,
-    entidad: selectedTrip?.entidad || "",
-    fecha_sa: form.fecha,
+  console.log("FORM VEHICULO:", form.vehiculo);
+console.log("SELECTED TRIP:", selectedTrip);
 
-    
-    division1: String(division1),
-    combustible1: String(combustible1),
-    cantidad1: String(combustibleTotal),
-    precio1: String(precioLitro),
-    total1C: String(costoTotal),
+ const buildPayload = () => ({
+ vehiculos: selectedTrip.vehiculos?.map(v => v.id) || [],
+choferes: selectedTrip.choferes?.map(c => c.id) || [],
+encargados: selectedTrip.encargados?.map(e => e.id) || [],
 
-    total8T: String(totalA),
-    diferencia: String(diferencia),
 
-    viaje: { id: selectedTrip?.id },
-  });
+  entidad: selectedTrip?.entidad || "",
+  fecha_sa: form.fecha,
+
+  // COMBUSTIBLE
+  division1: String(division1),
+  combustible1: String(combustible1),
+  cantidad1: String(combustibleTotal),
+  carta1: "Combustible",
+  precio1: String(precioLitro),
+  total1C: String(costoTotal),
+
+  // VIATICOS CIUDAD
+  cantidad2: String(form.viaticosCiudad?.[0]?.dias || 0),
+  precio2: String(form.viaticosCiudad?.[0]?.precio || 0),
+  total2VC: String(viaticosCiudadTotal),
+
+  // VIATICOS PROVINCIA
+  cantidad3: String(form.viaticosProvincia?.[0]?._v || 0),
+  precio3: String(form.viaticosProvincia?.[0]?._p || 0),
+  total3VP: String(viaticosProvinciaTotal),
+
+  // VIATICOS FRONTERA
+  cantidad4: String(form.viaticosFrontera?.[0]?._v || 0),
+  precio4: String(form.viaticosFrontera?.[0]?._p || 0),
+  total4VF: String(viaticosFronteraTotal),
+
+  // PEAJES
+  cantidad5: String(form.peajes?.[0]?.nro || 0),
+  precio5: String(form.peajes?.[0]?.precio || 0),
+  total5P: String(peajesTotal),
+
+  // MANTENIMIENTO
+  cantidad6: String(form.mantenimiento?.[0]?._v || 0),
+  precio6: String(form.mantenimiento?.[0]?._p || 0),
+  total6M: String(mantenimientoTotal),
+
+  // GARAJE
+  cantidad7: String(form.garaje?.[0]?._v || 0),
+  precio7: String(form.garaje?.[0]?._p || 0),
+  total7G: String(garajeTotal),
+
+  // TOTAL A
+  total8T: String(totalA),
+
+  responsable: `${user?.nombres || ""} ${user?.apellidos || ""}`,
+
+  materia: form.materia || "",
+  sigla: form.sigla || "",
+  ndocentes: form.docentes || "",
+
+  hsalida: form.horaSalida || "",
+  hllegada: form.horaLlegada || "",
+  
+
+  // TRANSPORTE
+  p1: String(form.transporte?.[0]?.personas || 0),
+  r1: form.transporte?.[0]?.ruta || "",
+  c1: String(form.transporte?.[0]?.costo || 0),
+  t1: String(transporteTotal),
+
+  // SEGUNDA CASILLA OBLIGATORIA
+  p2: String(form.transporte?.[1]?.personas || 0),
+  r2: form.transporte?.[1]?.ruta || "",
+  c2: String(form.transporte?.[1]?.costo || 0),
+  t2: String(
+    (Number(form.transporte?.[1]?.personas || 0)) *
+    (Number(form.transporte?.[1]?.costo || 0))
+  ),
+
+  // FLETE
+  p3: String(form.flete?.[0]?.vueltas || 0),
+  c3: String(form.flete?.[0]?.costo || 0),
+  t3: String(fleteTotal),
+
+  // TOTAL B
+  tt: String(totalB),
+
+  // DIFERENCIA
+  diferencia: String(diferencia),
+
+  nota: form.nota || "",
+
+  viaje_id: selectedTrip?.id,
+});
 
   const handleUpdate = async () => {
     const res = await addBudget(buildPayload());

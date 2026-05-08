@@ -13,15 +13,15 @@ import {
   FaTimes,
 } from "react-icons/fa";
 
-export default function TripsRow({ trip, onOpenModal, onCancelTrip }) {
+export default function TripsRow({ trip, onOpenModal, onCancelTrip,onDeleteTrip }) {
   const [openMenu, setOpenMenu] = useState(null);
-
+  const estado = trip.estado?.toLowerCase();
   const badgeColor =
-    trip.estado === "activo"
+    estado === "activo"
       ? "success"
-      : trip.estado === "pendiente"
+      : estado === "pendiente"
       ? "warning"
-      : trip.estado === "cancelado"
+      : estado === "cancelado"
       ? "danger"
       : "gray";
 
@@ -33,7 +33,7 @@ export default function TripsRow({ trip, onOpenModal, onCancelTrip }) {
     <tr
       className={`border border-gray-200 dark:border-gray-700 transition-colors
         ${
-          trip.estado === "cancelado"
+          estado === "cancelado"
             ? "bg-red-100 dark:bg-red-900/40 hover:bg-red-200 dark:hover:bg-red-900/60"
             : "hover:bg-gray-50 dark:hover:bg-gray-800"
         }`}
@@ -82,7 +82,7 @@ export default function TripsRow({ trip, onOpenModal, onCancelTrip }) {
       <TableCell className="border px-3 py-2 relative dark:border-gray-700">
         <div className="flex flex-col gap-1">
 
-          {trip.estado === "cancelado" ? (
+          {estado === "cancelado" ? (
             //  CUANDO ESTÁ CANCELADO
             <>
               <button
@@ -102,7 +102,7 @@ export default function TripsRow({ trip, onOpenModal, onCancelTrip }) {
               </button>
 
               <button
-                onClick={() => alert("Aquí eliminar")}
+                onClick={() => onDeleteTrip(trip.id)}
                 className="w-full text-xs px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 flex items-center gap-1"
               >
                 <FaTrash size={10} />
@@ -125,7 +125,7 @@ export default function TripsRow({ trip, onOpenModal, onCancelTrip }) {
                 </button>
 
                 {openMenu === "presupuesto" && (
-                  <div className="absolute right-0 mt-1 w-32 bg-white dark:bg-gray-900
+                  <div className="absolute right-0 mt-1 w-32 bg-white 
                                   border dark:border-gray-700 rounded shadow-md z-10 text-xs dark:bg-gray-300">
 
                     <button
@@ -189,7 +189,9 @@ export default function TripsRow({ trip, onOpenModal, onCancelTrip }) {
                       Imprimir
                     </button>
 
-                    <button className="flex items-center gap-1 w-full text-left px-2 py-1 text-red-600
+                    <button
+                      onClick={() => onDeleteTrip(trip.id)}
+                     className="flex items-center gap-1 w-full text-left px-2 py-1 text-red-600
                                        hover:bg-gray-100 dark:hover:bg-gray-800">
                       <FaTrash size={10} />
                       Eliminar

@@ -33,20 +33,30 @@ export default function TableCheckBudget() {
   const encargados = users.filter(u => u.tipo === "encargado");
 
   const enrichedBudgets = (budgets || []).map((b) => {
-    const choferData = users.find((u) => u.id == b.chofer);
-    const vehiculoData = vehicles.find((v) => v.id == b.vehiculo);
 
-    return {
-      ...b,
-      choferNombre: choferData
-        ? `${choferData.nombres} ${choferData.apellidos}`
-        : "Sin chofer",
+  const choferId = Number(b.chofer);
+  const vehiculoId = Number(b.vehiculo);
 
-      vehiculoNombre: vehiculoData
-        ? vehiculoData.placa
-        : "Sin vehículo",
-    };
-  });
+  const choferData = users.find(
+    (u) => Number(u.id) === choferId
+  );
+
+  const vehiculoData = vehicles.find(
+    (v) => Number(v.id) === vehiculoId
+  );
+
+  return {
+    ...b,
+
+    choferNombre: choferData
+      ? `${choferData.nombres} ${choferData.apellidos}`
+      : `Sin chofer (${b.chofer})`,
+
+    vehiculoNombre: vehiculoData
+      ? vehiculoData.placa
+      : `Sin vehículo (${b.vehiculo})`,
+  };
+});
 
   const filteredBudgets = enrichedBudgets.filter((b) =>
     Object.values(b).some(

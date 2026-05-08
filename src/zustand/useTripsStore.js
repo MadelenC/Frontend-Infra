@@ -4,7 +4,8 @@ import {
   createTrip,
   updateTrip,
   deleteTrip,
-  getTripById
+  getTripById,
+  cancelTrip
 } from "../services/TripsService";
 
 export const useTripsStore = create((set, get) => ({
@@ -120,5 +121,30 @@ export const useTripsStore = create((set, get) => ({
         error: err?.message || "Error al eliminar viaje"
       };
     }
+  },
+  
+  cancelTrip: async (id) => {
+
+  try {
+
+    const updated = await cancelTrip(id);
+
+    set((state) => ({
+      trips: state.trips.map((t) =>
+        t.id === id ? updated : t
+      )
+    }));
+
+    return { ok: true };
+
+  } catch (err) {
+
+    return {
+      ok: false,
+      error: err.message
+    };
+
   }
+
+},
 }));

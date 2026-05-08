@@ -27,7 +27,9 @@ export default function TripsTable({ externalTripId = null }) {
     totalPages,
     setPage,
     addTrip, 
-    editTrip
+    editTrip,
+    cancelTrip,
+    removeTrip,
     
   } = useTripsStore();
 
@@ -143,27 +145,64 @@ export default function TripsTable({ externalTripId = null }) {
     setSelectedTrip(null);
   };
 
-  const handleCancelTrip = async (id) => {
+ const handleCancelTrip = async (id) => {
 
   try {
 
-    await editTrip(id, {
-      estado: "cancelado"
-    });
+    const res = await cancelTrip(id);
 
-    await fetchTrips();
+    if (res.ok) {
 
-    toast.success("Viaje cancelado");
+      await fetchTrips();
+
+      toast.success("Viaje cancelado");
+
+    }
 
   } catch (error) {
 
     toast.error("Error al cancelar viaje");
+
     console.error(error);
 
   }
+
 };
 
-  
+const handleDeleteTrip = async (id) => {
+
+  const confirmDelete = window.confirm(
+    "¿Seguro que deseas eliminar este viaje?"
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+
+    const res = await removeTrip(id);
+
+    if (res.ok) {
+
+      toast.success("Viaje eliminado");
+
+      await fetchTrips();
+
+    } else {
+
+      toast.error(res.error);
+
+    }
+
+  } catch (error) {
+
+    console.error(error);
+
+    toast.error("Error al eliminar viaje");
+
+  }
+
+};
+
   const filteredTrips = trips.filter(t => {
     const matchesSearch =
       t.entidad?.toLowerCase().includes(search.toLowerCase()) ||
@@ -278,6 +317,7 @@ export default function TripsTable({ externalTripId = null }) {
                   trip={trip}
                   onOpenModal={handleOpenModal}
                   onCancelTrip={handleCancelTrip}
+                  onDeleteTrip={handleDeleteTrip}
                 />
               ))
             ) : (

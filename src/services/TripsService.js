@@ -52,3 +52,22 @@ export const deleteTrip = async (id) => {
     throw err.response?.data?.error || "Error al eliminar el viaje";
   }
 };
+
+
+export const cancelTrip = async (id) => {
+
+  const res = await fetch(
+    `http://localhost:3000/api/viajes/${id}/cancelar`,
+    {
+      method: "PATCH",
+    }
+  );
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message);
+  }
+
+  return data;
+};
