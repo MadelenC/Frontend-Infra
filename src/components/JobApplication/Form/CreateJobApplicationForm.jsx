@@ -145,7 +145,7 @@ export default function CreateJobApplicationForm({
             />
           </div>
 
-          {/* ACCESORIOS (CON CREACIÓN) */}
+     
           <div>
             <label className="block mb-1 font-semibold dark:text-gray-200">
               Accesorios
