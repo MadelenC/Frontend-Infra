@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { useAuthStore } from "../../../zustand/AuthUsers";
+
 
 export default function CreateJobForm({ isOpen, onClose, onSave, application }) {
   const [formData, setFormData] = useState({
@@ -13,12 +15,14 @@ export default function CreateJobForm({ isOpen, onClose, onSave, application }) 
     observacion: "",
   });
 
+ 
+  const { user } = useAuthStore();
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
 
   const today = new Date().toISOString().split("T")[0];
 
-  // 🔴 VALIDACIONES
+  //  VALIDACIONES
   const validateField = (name, value) => {
     let error = "";
 
@@ -65,7 +69,7 @@ export default function CreateJobForm({ isOpen, onClose, onSave, application }) 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    validateField(name, value); // tiempo real
+    validateField(name, value); 
   };
 
   const handleBlur = (e) => {
@@ -83,12 +87,26 @@ export default function CreateJobForm({ isOpen, onClose, onSave, application }) 
       return;
     }
 
+    if (!user?.id) {
+    toast.error("Usuario no autenticado");
+    return;
+  }
+
+
     setSaving(true);
 
-    const payload = {
-      applicationId: application.id,
-      ...formData,
-    };
+   const payload = {
+  solicitud_id: application.id,
+  fecha: formData.fechaTrabajo,
+  cantidad: Number(formData.cantidad),
+  unidad: formData.nombrePieza,
+  trabajo: formData.trabajoRealizado,
+  marca: formData.marca,
+  codigo: formData.codigo,
+  observacion: formData.observacion,
+  kilometraje: Number(formData.kilometraje),
+  insertador: `${user?.nombres || ""} ${user?.apellidos || ""}`.trim(),
+};
 
     const response = await onSave(payload);
     setSaving(false);

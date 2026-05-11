@@ -9,6 +9,9 @@ import { useJobApplicationStore } from "../../../zustand/useJobApplicationStore"
 import { useVehicleStore } from "../../../zustand/useVehicleStore";
 import { useAccessoriesStore } from "../../../zustand/useAccessoriesStore";
 import { useUserStore } from "../../../zustand/userStore"; 
+import { useMechanicsStore } from "../../../zustand/useMechanicsStore";
+import { useMaterialOrderStore } from "../../../zustand/useMaterialOrderStore";
+ 
 
 export default function ApplicationTable() {
   const {
@@ -17,6 +20,9 @@ export default function ApplicationTable() {
     addApplication,
     editApplication,
   } = useJobApplicationStore();
+
+  const { addMechanic } = useMechanicsStore();
+  const { addRequest, fetchRequests } = useMaterialOrderStore();
 
   const { vehicles, fetchVehicles } = useVehicleStore();
   const { accessories, fetchAccessories } = useAccessoriesStore();
@@ -210,19 +216,35 @@ export default function ApplicationTable() {
           onClose={handleCloseJobForm}
           application={selectedJobApplication}
           onSave={async (data) => {
-            setJobFormOpen(false);
-            return { ok: true };
+            const res = await addMechanic(data);
+
+            if (res.ok) {
+              fetchApplications(); 
+              setJobFormOpen(false);
+            }
+
+            return res;
           }}
+
+          
         />
+        
       )}
 
       {materialRequestOpen && selectedMaterialApplication && (
         <MaterialRequestForm
           isOpen={materialRequestOpen}
           onClose={handleCloseMaterialRequestForm}
+           application={selectedMaterialApplication} 
           onSave={async (data) => {
-            setMaterialRequestOpen(false);
-            return { ok: true };
+            const res = await addRequest(data);
+
+            if (res.ok) {
+              fetchRequests();
+              setMaterialRequestOpen(false);
+            }
+
+            return res;
           }}
         />
       )}

@@ -1,8 +1,16 @@
 import api from "../helpers/axiosClient";
 
-export const getTripReports = async () => {
+
+export const getTripReports = async ({
+  page = 1,
+  limit = 8,
+  search = "",
+} = {}) => {
   try {
-    const response = await api.get("/informe_viajes");
+    const response = await api.get("/informe_viajes", {
+      params: { page, limit, search },
+    });
+
     return response.data;
   } catch (err) {
     throw err.response?.data?.message || "Error al obtener los informes de viajes";

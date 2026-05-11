@@ -1,6 +1,6 @@
 import api from "../helpers/axiosClient";
 
-// 🔹 Traer todas las solicitudes
+// Traer todas las solicitudes
 export const getApplications = async () => {
   try {
     const response = await api.get("/solicitudes");
@@ -10,7 +10,7 @@ export const getApplications = async () => {
   }
 };
 
-// 🔹 Traer una solicitud por ID
+// Traer una solicitud por ID
 export const getApplicationById = async (id) => {
   try {
     const response = await api.get(`/solicitudes/${id}`);
@@ -20,7 +20,7 @@ export const getApplicationById = async (id) => {
   }
 };
 
-// 🔹 Crear una solicitud
+// Crear una solicitud
 export const createApplication = async (data) => {
   try {
     const response = await api.post("/solicitudes", data);
@@ -30,7 +30,7 @@ export const createApplication = async (data) => {
   }
 };
 
-// 🔹 Actualizar una solicitud
+//Actualizar una solicitud
 export const updateApplication = async (id, data) => {
   try {
     const response = await api.put(`/solicitudes/${id}`, data);
@@ -40,7 +40,7 @@ export const updateApplication = async (id, data) => {
   }
 };
 
-// 🔹 Eliminar una solicitud
+// Eliminar una solicitud
 export const deleteApplication = async (id) => {
   try {
     const response = await api.delete(`/solicitudes/${id}`);

@@ -15,9 +15,16 @@ export const useAuthStore = create(
         setToken: (token) => set({ token }),
 
         // Limpiar sesión
-        logout: () => {
-          set({ user: null, token: null });
-        },
+       // 🔥 NUEVO: actualizar solo campos del usuario
+        updateUser: (data) =>
+          set({
+            user: {
+              ...get().user,
+              ...data,
+            },
+          }),
+
+        logout: () => set({ user: null, token: null }),
       }),
       {
         name: "auth-storage",

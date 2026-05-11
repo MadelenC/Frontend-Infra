@@ -9,6 +9,7 @@ import { useVehicleStore } from "../../../zustand/useVehicleStore";
 import { useAccessoriesStore } from "../../../zustand/useAccessoriesStore";
 import { useUserStore } from "../../../zustand/userStore";
 import CreateJobApplicationForm from "../Form/CreateJobApplicationForm";
+import EditJobApplicationForm from "../Form/EditJobAplicationForm";
 
 export default function JobApplicationTable() {
   const {
@@ -18,10 +19,21 @@ export default function JobApplicationTable() {
     editApplication,
   } = useJobApplicationStore();
 
-  const { vehicles, fetchVehicles } = useVehicleStore();
+  const {
+  choferes = [],
+  fetchAllChoferes
+} = useUserStore();
+
+const {
+  vehicles = [],
+  fetchAllVehicles
+} = useVehicleStore();
+
+  
   const { accessories, fetchAccessories } = useAccessoriesStore();
   console.log("accessories:", accessories);
-  const { users, fetchUsers } = useUserStore();
+ 
+  
 
   const [chofer, setChofer] = useState("");
   const [vehiculo, setVehiculo] = useState("");
@@ -35,9 +47,9 @@ export default function JobApplicationTable() {
 
   useEffect(() => {
     fetchApplications();
-    fetchVehicles();
+    fetchAllVehicles();
     fetchAccessories();
-    fetchUsers();
+      fetchAllChoferes();
   }, []);
 
   useEffect(() => setPage(1), [search, chofer, vehiculo]);
@@ -48,8 +60,12 @@ export default function JobApplicationTable() {
 
   const handleEdit = (app) => {
     setSelectedApplication(app);
-    setEditOpen(true);
+    setModalType("edit"); 
   };
+  const handleCloseModal = () => {
+  setModalType(null);
+  setSelectedApplication(null);
+};
 
   const handleCloseEdit = () => {
     setEditOpen(false);
@@ -71,8 +87,7 @@ export default function JobApplicationTable() {
     return res;
   };
 
-  const choferes =
-    users?.filter(u => u.tipo && u.tipo.toLowerCase() === "chofer") || [];
+  
 
   const filtered = applications.filter((a) => {
     const choferNombre = a.chofer
@@ -215,6 +230,18 @@ export default function JobApplicationTable() {
           onSave={handleSaveCreate}
           vehiculos={vehicles}
           accesorios={accessories}
+        />
+      )}
+
+       {/* EDIT MODAL  */}
+      {modalType === "edit" && selectedApplication && (
+        <EditJobApplicationForm
+          isOpen={true}
+          onClose={handleCloseModal}
+          onSave={handleSaveEdit}
+          vehiculos={vehicles}
+          accesorios={accessories}
+          initialData={selectedApplication}
         />
       )}
 

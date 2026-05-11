@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useAuthStore } from "../../../zustand/AuthUsers";
+import { toast } from "react-toastify";
 
 const unidadMedidaOptions = [
   "Nulo",
@@ -12,7 +14,7 @@ const unidadMedidaOptions = [
   "Pliego",
 ];
 
-export default function MaterialRequestForm({ isOpen, onClose, onSave }) {
+export default function MaterialRequestForm({ isOpen, onClose, onSave, application }) {
   const [kmActual, setKmActual] = useState("");
   const [items, setItems] = useState([
     { cantidad: "", unidad: "Nulo", descripcion: "" },
@@ -21,6 +23,8 @@ export default function MaterialRequestForm({ isOpen, onClose, onSave }) {
   const [observaciones, setObservaciones] = useState("");
   const [vehiculoIDH, setVehiculoIDH] = useState("");
   const [saving, setSaving] = useState(false);
+
+  const user = useAuthStore((state) => state.user);
 
   if (!isOpen) return null;
 
@@ -40,20 +44,41 @@ export default function MaterialRequestForm({ isOpen, onClose, onSave }) {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSaving(true);
-    const payload = {
-      kmActual,
-      items,
-      justificacion,
-      observaciones,
-      vehiculoIDH,
-    };
-    const res = await onSave(payload);
-    setSaving(false);
-    if (res?.ok) onClose();
-    else alert(res?.error || "Error al guardar la petición");
+  e.preventDefault();
+  setSaving(true);
+
+  const payload = {
+    km: kmActual,
+    justificacion,
+    observacion: observaciones,
+    respuestas: "", 
+    conteo: items.length,
+    idh: vehiculoIDH,
+    insertador: user ? `${user.nombres} ${user.apellidos}` : null,
+     solicitud: {
+  id: application?.id
+}
   };
+
+  items.forEach((item, index) => {
+    const i = index + 1;
+
+    payload[`cantidad${i}`] = item.cantidad;
+    payload[`medida${i}`] = item.unidad;
+    payload[`descripcion${i}`] = item.descripcion;
+  });
+
+  const res = await onSave(payload);
+
+  setSaving(false);
+
+  if (res?.ok) {
+  toast.success("✅ Petición registrada correctamente");
+  onClose();
+} else {
+  toast.error(res?.error || "❌ Error al guardar la petición");
+}
+};
 
   return (
     <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-5">

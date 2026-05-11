@@ -8,12 +8,19 @@ import PrintTravel from "../tables/TableTravelPrint";
 import ListException from "../form/Excep/ListException";
 import { FaPlus, FaPrint } from "react-icons/fa";
 import { useExceptionsStore } from "../../../zustand/useExceptionsStore";
+import {
+  PDFDownloadLink,
+} from "@react-pdf/renderer";
+
+import RoleTravelPDF
+from "../../../components/Pdf/TravelRol/TravelRolPDF";
 
 
 export default function TravelTable() {
   const {
     rolTravels,
     fetchRolTravels,
+    fetchAllRolTravels,
     removeRolTravel,
     loading,
     error,
@@ -25,6 +32,7 @@ export default function TravelTable() {
   
   const { addException } = useExceptionsStore();
   const {addRolTravel} = useRolTravelStore();
+  const [allTravels, setAllTravels] = useState([]);
   
 
   const [search, setSearch] = useState("");
@@ -36,7 +44,19 @@ export default function TravelTable() {
 
 
  useEffect(() => {
+
   fetchRolTravels();
+
+  const loadAllTravels = async () => {
+
+    const data = await fetchAllRolTravels();
+
+    setAllTravels(data);
+
+  };
+
+  loadAllTravels();
+
 }, []);
  
 
@@ -122,13 +142,36 @@ export default function TravelTable() {
           >
             <FaPlus size={14} /> Agregar Chofer
           </button>
+<PDFDownloadLink
+    document={
+      <RoleTravelPDF
+        travels={allTravels}
+      />
+    }
+    fileName="rol-viajes.pdf"
+  >
+    {({ loading }) => (
 
-          <button
-            onClick={() => window.print()}
-            className="flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-5 py-3 rounded-lg shadow"
-          >
-            <FaPrint size={18} />
-          </button>
+      <button
+        className="
+        flex items-center justify-center gap-2
+        bg-red-600 hover:bg-red-700
+        text-white
+        px-5 py-3
+        rounded-lg
+        shadow
+        "
+      >
+        <FaPrint size={18} />
+
+        {loading
+          ? "Generando..."
+          : "Descargar PDF"}
+
+      </button>
+
+    )}
+  </PDFDownloadLink>
 
         </div>
       </div>
@@ -209,10 +252,7 @@ export default function TravelTable() {
         />
       )}
 
-      {/* PRINT */}
-      <div className="hidden print:block">
-        <PrintTravel travels={rolTravels} />
-      </div>
+     
 
     </div>
   );

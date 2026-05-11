@@ -18,6 +18,11 @@ import { useDestinoStore } from "../../../zustand/useDestinationsStore";
 
 import { toast } from "react-toastify";
 
+import { PDFDownloadLink } from "@react-pdf/renderer";
+
+import TripsReportPDF from "../../../components/Pdf/TripPDF/TripPDF";
+
+
 export default function TripsTable({ externalTripId = null }) {
 
   const {
@@ -276,13 +281,38 @@ const handleDeleteTrip = async (id) => {
             Declaratoria
           </button>
 
-          <button
-            onClick={() => handleOpenModal("informe")}
-            className="flex items-center gap-2 bg-gray-600 hover:bg-gray-500 text-white px-3 h-10 rounded-md"
-          >
-            <FiBarChart2 />
-            Informe
-          </button>
+          <PDFDownloadLink
+  document={
+    <TripsReportPDF
+      trips={filteredTrips}
+    />
+  }
+  fileName="reporte-viajes.pdf"
+>
+
+  {({ loading }) => (
+
+    <button
+      className="
+      flex items-center gap-2
+      bg-red-600 hover:bg-red-700
+      text-white
+      px-4 h-10
+      rounded-md
+      "
+    >
+
+      <FiFileText />
+
+      {loading
+        ? "Generando..."
+        : "PDF"}
+
+    </button>
+
+  )}
+
+</PDFDownloadLink>
 
           {!externalTripId && (
             <button

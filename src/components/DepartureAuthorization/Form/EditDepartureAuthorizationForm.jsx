@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 export default function EditDepartureAuthorizationForm({
   isOpen,
@@ -20,7 +21,7 @@ export default function EditDepartureAuthorizationForm({
 
   const [saving, setSaving] = useState(false);
 
-  // 🔥 CARGA DATOS PARA EDIT
+
   useEffect(() => {
     if (!isOpen || !initialData) return;
 
@@ -58,9 +59,13 @@ export default function EditDepartureAuthorizationForm({
     setSaving(false);
 
     if (!response?.ok) {
-      alert(response?.error || "Error al actualizar");
+      toast.error(response?.error || "Error al actualizar");
     } else {
-      onClose();
+      toast.success("Autorización actualizada correctamente");
+
+      setTimeout(() => {
+        onClose();
+      }, 500);
     }
   };
 

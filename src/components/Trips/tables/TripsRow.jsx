@@ -83,7 +83,7 @@ export default function TripsRow({ trip, onOpenModal, onCancelTrip,onDeleteTrip 
         <div className="flex flex-col gap-1">
 
           {estado === "cancelado" ? (
-            //  CUANDO ESTÁ CANCELADO
+            
             <>
               <button
                 onClick={() => onOpenModal("edit", trip)}

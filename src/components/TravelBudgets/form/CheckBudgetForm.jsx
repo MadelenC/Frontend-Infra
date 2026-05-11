@@ -5,6 +5,7 @@ import DatosForm from "./SeccEdChek/Datos";
 import Combustible from "./SeccEdChek/Combustible";
 import Peajes from "./SeccEdChek/Peajes";
 import Transport from "./SeccEdChek/Transport";
+import { useTravelBudgetsStore } from "../../../zustand/useTravelBudgetsStore";
 
 export default function EditCheckTripForm({
   data,
@@ -13,19 +14,21 @@ export default function EditCheckTripForm({
   encargados,
   vehiculos,
 }) {
+
+  const { editBudget } = useTravelBudgetsStore();
   
   const [form, setForm] = useState({
-   vehiculo: data?.vehiculo?.id
-  ? String(data.vehiculo.id)
-  : "",
+   vehiculo: String(
+  data?.vehiculo?.id || data?.vehiculo || ""
+),
 
-chofer: data?.chofer?.id
-  ? String(data.chofer.id)
-  : "",
+chofer: String(
+  data?.chofer?.id || data?.chofer || ""
+),
 
-encargado: data?.encargado?.id
-  ? String(data.encargado.id)
-  : "",
+encargado: String(
+  data?.encargado?.id || data?.encargado || ""
+),
 
   fecha: data?.fecha_sa || "",
 
@@ -106,17 +109,17 @@ useEffect(() => {
   if (!data) return;
 
   setForm({
-   vehiculo: data?.vehiculo?.id
-  ? String(data.vehiculo.id)
-  : "",
+   vehiculo: String(
+  data?.vehiculo?.id || data?.vehiculo || ""
+),
 
-chofer: data?.chofer?.id
-  ? String(data.chofer.id)
-  : "",
+chofer: String(
+  data?.chofer?.id || data?.chofer || ""
+),
 
-encargado: data?.encargado?.id
-  ? String(data.encargado.id)
-  : "",
+encargado: String(
+  data?.encargado?.id || data?.encargado || ""
+),
     fecha: data?.fecha_sa || "",
 
     litros: data?.cantidad1 || "",
@@ -345,22 +348,23 @@ console.log(data);
     `${Number(value).toFixed(2)} Bs.`;
 
   
-  const handleUpdate = () => {
-    toast.success(
-      "Registro actualizado"
-    );
+  const handleUpdate = async () => {
+  try {
+    const res = await editBudget(data.id, form);
 
-    console.log(form);
-
-    if (
-      typeof data?.onUpdate ===
-      "function"
-    ) {
-      data.onUpdate(form);
+    if (!res.ok) {
+      toast.error(res.error || "Error al actualizar");
+      return;
     }
 
+    toast.success("Registro actualizado");
+
     onClose();
-  };
+  } catch (error) {
+    console.error(error);
+    toast.error("Error inesperado al actualizar");
+  }
+};
 
   const handleDelete = () => {
     if (

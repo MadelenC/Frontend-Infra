@@ -11,7 +11,7 @@ export const useDepartureAuthorizationStore = create((set, get) => ({
   loading: false,
   error: null,
 
-  // 🔹 Traer todas las salidas
+ 
   fetchDepartures: async () => {
     set({ loading: true, error: null });
     try {
@@ -46,7 +46,7 @@ export const useDepartureAuthorizationStore = create((set, get) => ({
     }
   },
 
-  // 🔹 Crear salida
+  
   addDeparture: async (data) => {
     try {
       const newDeparture = await createDeparture(data);
@@ -70,7 +70,7 @@ export const useDepartureAuthorizationStore = create((set, get) => ({
     }
   },
 
-  // 🔹 Editar salida
+ 
   editDeparture: async (id, data) => {
     try {
       const payload = {
@@ -108,7 +108,7 @@ export const useDepartureAuthorizationStore = create((set, get) => ({
     }
   },
 
-  // 🔹 Eliminar salida
+  // Eliminar salida
   removeDeparture: async (id) => {
     try {
       await deleteDeparture(id);

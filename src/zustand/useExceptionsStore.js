@@ -11,14 +11,14 @@ export const useExceptionsStore = create((set, get) => ({
   loading: false,
   error: null,
 
-  // 🔹 Obtener todas las excepciones
+ 
   fetchExceptions: async () => {
     set({ loading: true, error: null });
     try {
       const data = await getExceptions();
 
       set({
-        exceptions: data, // 👈 guardamos tal como viene
+        exceptions: data, 
         loading: false,
       });
     } catch (err) {
@@ -29,7 +29,7 @@ export const useExceptionsStore = create((set, get) => ({
     }
   },
 
-  // 🔹 Crear excepción
+
   addException: async (data) => {
     try {
       const newException = await createException(data);
@@ -44,7 +44,7 @@ export const useExceptionsStore = create((set, get) => ({
     }
   },
 
-  // 🔹 Editar excepción
+
   editException: async (id, data) => {
     try {
       const updated = await updateException(id, data);
@@ -61,7 +61,7 @@ export const useExceptionsStore = create((set, get) => ({
     }
   },
 
-  // 🔹 Eliminar excepción
+
   removeException: async (id) => {
     try {
       await deleteException(id);

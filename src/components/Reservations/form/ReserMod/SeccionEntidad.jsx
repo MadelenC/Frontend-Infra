@@ -47,9 +47,24 @@ function SeccionEntidad({ formData, handleChange, errors }) {
         )}
       </div>
 
+      {/* DIAS */}
+      <div>
+        <label className="block text-sm font-semibold mb-1 dark:text-gray-200">
+          Días de viaje
+        </label>
+
+        <input
+          type="text"
+          name="dias"
+          value={formData.dias || ""}
+          onChange={handleChange}
+          className="w-full border px-3 py-1.5 rounded-md text-sm bg-gray-100 dark:bg-gray-700 dark:text-gray-200"
+        />
+      </div>
+
     </div>
   );
 }
 
-// 🔥 AQUÍ ESTÁ EL MEMO
+
 export default React.memo(SeccionEntidad);

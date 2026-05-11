@@ -5,7 +5,7 @@ export default function SearchBarEntitie({ search, setSearch }) {
     <div className="flex flex-col md:flex-row justify-start mb-4 gap-2 items-center">
       <input
         type="text"
-        placeholder="Buscar"
+        placeholder="Buscar por entidad"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className="h-10 w-70 px-4 text-sm rounded-md border shadow-sm transition

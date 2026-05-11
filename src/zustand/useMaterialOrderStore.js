@@ -148,7 +148,7 @@ export const useMaterialOrderStore = create((set, get) => ({
     }
   },
 
-  // 🔹 Crear petición
+  //  Crear petición
   addRequest: async (data) => {
     try {
       const newRequest = await createRequest(data);
@@ -161,7 +161,7 @@ export const useMaterialOrderStore = create((set, get) => ({
     }
   },
 
-  // 🔹 Editar petición
+
   editRequest: async (id, data) => {
     try {
       const updated = await updateRequest(id, data);
@@ -178,7 +178,7 @@ export const useMaterialOrderStore = create((set, get) => ({
     }
   },
 
-  // 🔹 Eliminar petición
+ 
   removeRequest: async (id) => {
     try {
       await deleteRequest(id);
@@ -193,10 +193,10 @@ export const useMaterialOrderStore = create((set, get) => ({
     }
   },
 
-  // 🔹 Limpiar selección actual
+  
   clearCurrentRequest: () => set({ currentRequest: null }),
 
-  // 🔹 Reset total del store
+ 
   reset: () =>
     set({
       requests: [],

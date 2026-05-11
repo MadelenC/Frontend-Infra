@@ -2,9 +2,12 @@
 import api from "../helpers/axiosClient.js";
 
 // Traer todos los presupuestos
-export const getBudgets = async () => {
+export const getBudgets = async ({ page, limit, search }) => {
   try {
-    const response = await api.get("/presupuestos");
+    const response = await api.get("/presupuestos", {
+      params: { page, limit, search },
+    });
+
     return response.data;
   } catch (err) {
     throw err.response?.data?.message || "Error al obtener presupuestos";
@@ -44,7 +47,7 @@ export const updateBudget = async (id, data) => {
 // Eliminar presupuesto
 export const deleteBudget = async (id) => {
   try {
-    const response = await api.delete(`/presupuestos${id}`);
+    const response = await api.delete(`/presupuestos/${id}`);
     return response.data;
   } catch (err) {
     throw err.response?.data?.message || "Error al eliminar presupuesto";

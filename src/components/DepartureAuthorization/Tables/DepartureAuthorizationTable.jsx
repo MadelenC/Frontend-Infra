@@ -20,24 +20,35 @@ export default function DepartureAuthorizationTable({ externalDepartureId = null
     editDeparture,
   } = useDepartureAuthorizationStore();
 
-  const { users, fetchUsers } = useUserStore();
-  const { vehicles, fetchVehicles } = useVehicleStore();
+  
+const { fetchAllChoferes } = useUserStore();
+const { fetchAllVehicles } = useVehicleStore();
 
-  const choferes = users.filter(u => u.tipo === "chofer");
+  //const choferes = users.filter(u => u.tipo === "chofer");
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [modalType, setModalType] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
   const [selectedDeparture, setSelectedDeparture] = useState(null);
+  const [allChoferes, setAllChoferes] = useState([]);
+const [allVehicles, setAllVehicles] = useState([]);
 
   const limit = 8;
 
-  useEffect(() => {
-    fetchDepartures();
-    fetchUsers();
-    fetchVehicles();
-  }, []);
+useEffect(() => {
+  fetchDepartures();
+
+  const loadData = async () => {
+    const choferesData = await fetchAllChoferes();
+    const vehiculosData = await fetchAllVehicles();
+
+    setAllChoferes(choferesData);
+    setAllVehicles(vehiculosData);
+  };
+
+  loadData();
+}, []);
 
   useEffect(() => setPage(1), [search]);
 
@@ -59,14 +70,22 @@ export default function DepartureAuthorizationTable({ externalDepartureId = null
     return res;
   };
 
-  const handleSaveEdit = async (data) => {
-    const res = await editDeparture(selectedDeparture.id, data);
-    if (res?.ok) {
-      fetchDepartures();
-      alert("✅ Actualizacion Exitosa");
-    }
-    return res;
-  };
+ const handleSaveEdit = async (data) => {
+
+  const res = await editDeparture(
+    selectedDeparture.id,
+    data
+  );
+
+  if (res?.ok) {
+
+    await fetchDepartures();
+
+    alert("✅ Actualizacion Exitosa");
+  }
+
+  return res;
+};
 
   const filtered = departures.filter(d => {
     const searchLower = search.toLowerCase();
@@ -167,8 +186,8 @@ export default function DepartureAuthorizationTable({ externalDepartureId = null
           isOpen={modalType === "add"}
           onClose={() => setModalType(null)}
           onSave={handleSaveCreate}
-          choferes={choferes}
-          vehiculos={vehicles}
+          choferes={allChoferes}
+          vehiculos={allVehicles}
         />
       )}
 
@@ -178,8 +197,8 @@ export default function DepartureAuthorizationTable({ externalDepartureId = null
           isOpen={editOpen}
           onClose={handleCloseEdit}
           onSave={handleSaveEdit}
-          choferes={choferes}
-          vehiculos={vehicles}
+          choferes={allChoferes}
+          vehiculos={allVehicles}
           initialData={selectedDeparture}
         />
       )}

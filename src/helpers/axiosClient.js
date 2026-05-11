@@ -8,6 +8,7 @@ const api = axios.create({
 // Interceptor: agrega token automáticamente
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
+   console.log("🔥 TOKEN EN INTERCEPTOR:", token);
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });

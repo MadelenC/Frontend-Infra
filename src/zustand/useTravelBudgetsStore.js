@@ -1,66 +1,103 @@
-// src/store/userTravelBudgetsStore.js
 import { create } from "zustand";
+
 import {
   getBudgets,
   createBudget,
   updateBudget,
-  deleteBudget
+  deleteBudget,
 } from "../services/TravelBudgetsService.js";
+let debounceTimer = null;
 
 export const useTravelBudgetsStore = create((set, get) => ({
   budgets: [],
   loading: false,
   error: null,
 
-  // Traer todos los presupuestos
+  page: 1,
+  limit: 8,
+  search: "",
+  totalPages: 1,
+
+  // Traer presupuestos
   fetchBudgets: async () => {
     set({ loading: true, error: null });
+
     try {
-      const data = await getBudgets();
+      const { page, limit, search } = get();
 
-      // 🔥 ORDENAR POR ID DESCENDENTE (último registro primero)
-      const sorted = (data || []).sort((a, b) => b.id - a.id);
+      const data = await getBudgets({
+        page,
+        limit,
+        search,
+      });
 
-      set({ budgets: sorted, loading: false });
+      set({
+        budgets: data.data,
+        totalPages: data.totalPages,
+        loading: false,
+      });
     } catch (err) {
-      set({ error: err.message || err, loading: false });
+      set({
+        error: err.message || err,
+        loading: false,
+      });
     }
   },
 
-  // Crear un nuevo presupuesto
+  setPage: (page) => set({ page }),
+
+   // 🔥 SEARCH CON DEBOUNCE
+  setSearch: (search) =>
+  set({
+    search,
+    page: 1,
+  }),
+
+  // Crear
   addBudget: async (data) => {
     try {
-      const newBudget = await createBudget(data);
-      set({
-        budgets: [newBudget, ...get().budgets] // 🔥 agregamos al inicio para mantener orden
-      });
+      await createBudget(data);
+
+      await get().fetchBudgets();
+
       return { ok: true };
     } catch (err) {
-      return { ok: false, error: err.message || err };
+      return {
+        ok: false,
+        error: err.message || err,
+      };
     }
   },
 
-  // Editar un presupuesto existente
+  // Editar
   editBudget: async (id, data) => {
     try {
-      const updated = await updateBudget(id, data);
-      set({
-        budgets: get().budgets.map((b) => (b.id === id ? updated : b))
-      });
+      await updateBudget(id, data);
+
+      await get().fetchBudgets();
+
       return { ok: true };
     } catch (err) {
-      return { ok: false, error: err.message || err };
+      return {
+        ok: false,
+        error: err.message || err,
+      };
     }
   },
 
-  // Eliminar un presupuesto
+  // Eliminar
   removeBudget: async (id) => {
     try {
       await deleteBudget(id);
-      set({ budgets: get().budgets.filter((b) => b.id !== id) });
+
+      await get().fetchBudgets();
+
       return { ok: true };
     } catch (err) {
-      return { ok: false, error: err.message || err };
+      return {
+        ok: false,
+        error: err.message || err,
+      };
     }
-  }
+  },
 }));

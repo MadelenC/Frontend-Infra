@@ -27,36 +27,56 @@ export const useUserStore = create((set, get) => ({
 
 
 
-  fetchAllChoferes: async () => {
-  try {
-    const res = await getUsers({
-      page: 1,
-      limit: 1000,
-      search: "",
-      role: "chofer",
-    });
+   fetchAllChoferes: async () => {
+    try {
+      const res = await getUsers({
+        page: 1,
+        limit: 1000,
+        search: "",
+        role: "chofer",
+      });
 
-    return res.data;
-  } catch (err) {
-    console.error(err);
-    return [];
-  }
-},
- fetchAllEncargados: async () => {
-  try {
-    const res = await getUsers({
-      page: 1,
-      limit: 1000, 
-      search: "",
-      role: "encargado",
-    });
+      set({
+        choferes: res.data,
+      });
 
-    return res.data;
-  } catch (err) {
-    console.error(err);
-    return [];
-  }
-},
+      return res.data;
+
+    } catch (err) {
+      console.error(err);
+
+      set({
+        choferes: [],
+      });
+
+      return [];
+    }
+  },
+  fetchAllEncargados: async () => {
+    try {
+      const res = await getUsers({
+        page: 1,
+        limit: 1000,
+        search: "",
+        role: "encargado",
+      });
+
+      set({
+        encargados: res.data,
+      });
+
+      return res.data;
+
+    } catch (err) {
+      console.error(err);
+
+      set({
+        encargados: [],
+      });
+
+      return [];
+    }
+  },
 
     fetchUsers: async (page, search, role) => {
     set({ loading: true, error: null });

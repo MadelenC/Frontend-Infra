@@ -5,7 +5,8 @@ import {
   updateTrip,
   deleteTrip,
   getTripById,
-  cancelTrip
+  cancelTrip,
+   getAllTrips,
 } from "../services/TripsService";
 
 export const useTripsStore = create((set, get) => ({
@@ -43,6 +44,24 @@ export const useTripsStore = create((set, get) => ({
         loading: false,
       });
     }
+  },
+
+  fetchAllTrips: async () => {
+
+    try {
+
+      const data = await getAllTrips();
+
+      return data;
+
+    } catch (err) {
+
+      console.error(err);
+
+      return [];
+
+    }
+
   },
 
   

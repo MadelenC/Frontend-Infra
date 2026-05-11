@@ -53,8 +53,7 @@ export const useVehicleStore = create((set, get) => ({
   limit: 8,
   totalPages: 1,
 
-
-  fetchAllVehicles: async () => {
+fetchAllVehicles: async () => {
   try {
     const res = await getVehicles({
       page: 1,
@@ -62,9 +61,21 @@ export const useVehicleStore = create((set, get) => ({
       estado: ""
     });
 
-    return res.data.map(mapVehicleFromApi);
+    const allVehicles = res.data.map(mapVehicleFromApi);
+
+    set({
+      vehicles: allVehicles
+    });
+
+    return allVehicles;
+
   } catch (err) {
     console.error(err);
+
+    set({
+      vehicles: []
+    });
+
     return [];
   }
 },

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+
 import CheckBudgetTable from "./CheckBudgetTable";
 import CheckBudgetSearch from "../search/SearchBar";
 import Pagination from "./Pagination";
@@ -9,85 +10,143 @@ import { useUserStore } from "../../../zustand/userStore";
 import { useVehicleStore } from "../../../zustand/useVehicleStore";
 
 export default function TableCheckBudget() {
-  const { budgets, fetchBudgets } = useTravelBudgetsStore();
-  const { users, fetchUsers } = useUserStore();
-  const { vehicles, fetchVehicles } = useVehicleStore();
 
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
+  const {
+    budgets,
+    fetchBudgets,
+    loading,
+    error,
+    page,
+    setPage,
+    totalPages,
+    search,
+    setSearch,
+  } = useTravelBudgetsStore();
+
+  const {
+    fetchAllChoferes,
+    fetchAllEncargados,
+  } = useUserStore();
+
+  const {
+    fetchAllVehicles,
+  } = useVehicleStore();
+
+  
+  const [searchLocal, setSearchLocal] = useState("");
+
   const [openForm, setOpenForm] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState(null);
-  const limit = 8;
+
+  const [choferes, setChoferes] = useState([]);
+  const [encargados, setEncargados] = useState([]);
+  const [vehiculos, setVehiculos] = useState([]);
+
 
   useEffect(() => {
     fetchBudgets();
-    fetchUsers();
-    fetchVehicles();
+  }, [page]);
+
+  
+  useEffect(() => {
+    const loadData = async () => {
+
+      const drivers = await fetchAllChoferes();
+      const managers = await fetchAllEncargados();
+      const allVehicles = await fetchAllVehicles();
+
+      setChoferes(drivers);
+      setEncargados(managers);
+      setVehiculos(allVehicles);
+    };
+
+    loadData();
+
   }, []);
 
   useEffect(() => {
+  const delay = setTimeout(() => {
+    setSearch(searchLocal); 
     setPage(1);
-  }, [search]);
+  }, 400);
 
-  const choferes = users.filter(u => u.tipo === "chofer");
-  const encargados = users.filter(u => u.tipo === "encargado");
+  return () => clearTimeout(delay);
+}, [searchLocal]);
 
+ 
+
+  // ENRIQUECER DATOS
   const enrichedBudgets = (budgets || []).map((b) => {
+    return {
+      ...b,
 
-  return {
-    ...b,
+      choferNombre: b.chofer
+        ? `${b.chofer.nombres} ${b.chofer.apellidos}`
+        : "Sin chofer",
 
-    choferNombre: b.chofer
-      ? `${b.chofer.nombres} ${b.chofer.apellidos}`
-      : "Sin chofer",
+      vehiculoNombre: b.vehiculo
+        ? `${b.vehiculo.tipog} - ${b.vehiculo.placa}`
+        : "Sin vehículo",
+    };
+  });
 
-    vehiculoNombre: b.vehiculo
-      ? `${b.vehiculo.tipog} - ${b.vehiculo.placa}`
-      : "Sin vehículo",
-  };
-});
+  // LOADING
+  if (loading) {
+    return (
+      <div className="p-4 text-center">
+        Cargando presupuestos...
+      </div>
+    );
+  }
 
-  const filteredBudgets = enrichedBudgets.filter((b) =>
-    Object.values(b).some(
-      (v) => v && String(v).toLowerCase().includes(search.toLowerCase())
-    )
-  );
-
-  const totalPages = Math.ceil(filteredBudgets.length / limit);
-  const currentData = filteredBudgets.slice((page - 1) * limit, page * limit);
+  // ERROR
+  if (error) {
+    return (
+      <div className="p-4 text-center text-red-500">
+        {error}
+      </div>
+    );
+  }
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4">
-      
+
+      {/* SEARCH */}
       <div className="h-10 w-64 mb-4">
-        <CheckBudgetSearch search={search} setSearch={setSearch} />
+        <CheckBudgetSearch
+          search={searchLocal}
+          setSearch={setSearchLocal}
+        />
       </div>
 
-      <CheckBudgetTable 
-        budgets={currentData} 
+      {/* TABLE */}
+      <CheckBudgetTable
+        budgets={enrichedBudgets}
         onEdit={(budget) => {
           setSelectedBudget(budget);
           setOpenForm(true);
         }}
       />
 
-      {totalPages > 1 && (
+      {/* PAGINATION */}
+      {budgets.length > 0 && (
         <div className="flex justify-center mt-4">
-          <Pagination 
-            page={page} 
-            totalPages={totalPages} 
-            setPage={setPage} 
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            setPage={setPage}
           />
         </div>
       )}
 
+      {/* MODAL */}
       {openForm && (
-        <CheckBudgetForm 
-          data={selectedBudget} 
+        <CheckBudgetForm
+          data={selectedBudget}
           onClose={() => setOpenForm(false)}
           choferes={choferes}
           encargados={encargados}
-          vehiculos={vehicles}
+          vehiculos={vehiculos}
         />
       )}
     </div>

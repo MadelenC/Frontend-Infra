@@ -11,13 +11,13 @@ export const useInstitutionStore = create((set, get) => ({
   loading: false,
   error: null,
 
-  // 🔹 Obtener todas las instituciones
+
   fetchInstitutions: async () => {
     set({ loading: true, error: null });
     try {
       const data = await getInstitutions();
 
-      // 🔹 Mapeamos para mantener id y nombre
+     
       const mapped = data.map(inst => ({
         id: inst.id,
         nombre: inst.nombre,
@@ -29,7 +29,7 @@ export const useInstitutionStore = create((set, get) => ({
     }
   },
 
-  // 🔹 Crear institución
+ 
   addInstitution: async (data) => {
     try {
       const newInstitution = await createInstitution(data);
@@ -44,7 +44,7 @@ export const useInstitutionStore = create((set, get) => ({
     }
   },
 
-  // 🔹 Actualizar institución
+  
   editInstitution: async (id, data) => {
     try {
       const updated = await updateInstitution(id, data);
@@ -61,7 +61,6 @@ export const useInstitutionStore = create((set, get) => ({
     }
   },
 
-  // 🔹 Eliminar institución
   removeInstitution: async (id) => {
     try {
       await deleteInstitution(id);

@@ -11,7 +11,7 @@ export const useJobApplicationStore = create((set, get) => ({
   loading: false,
   error: null,
 
-  // 🔹 Obtener todas las solicitudes
+  //  Obtener todas las solicitudes
   fetchApplications: async () => {
     set({ loading: true, error: null });
     try {
@@ -22,7 +22,7 @@ export const useJobApplicationStore = create((set, get) => ({
         chofer: a.chofer,
         descripcion: a.descripsoli,
         fecha: a.fecha,
-        vehiculo: a.vehiculo, // relación
+        vehiculo: a.vehiculo,
         accesorios: a.accesorios || [],
         createdAt: a.created_at,
         updatedAt: a.updated_at,
@@ -34,7 +34,7 @@ export const useJobApplicationStore = create((set, get) => ({
     }
   },
 
-  // 🔹 Crear solicitud
+//Crear solicitud
   addApplication: async (data) => {
     try {
       const newApp = await createApplication(data);
@@ -63,9 +63,11 @@ export const useJobApplicationStore = create((set, get) => ({
     try {
       const payload = {
         chofer: data.chofer,
-        descripsoli: data.descripcion,
+        descripsoli: data.descripsoli ?? data.descripcion,
         fecha: data.fecha,
-        vehiculo_id: data.vehiculo_id, // importante si envías ID
+        vehiculo_id: data.vehiculo_id,
+        accesorio_ids: data.accesorio_ids || [],          
+        nuevos_accesorios: data.nuevos_accesorios || [],  
       };
 
       const updated = await updateApplication(id, payload);

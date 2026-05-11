@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 const getCurrentTime = () => {
   const now = new Date();
-  return now.toTimeString().slice(0, 5); // HH:mm
+  return now.toTimeString().slice(0, 5); 
 };
 
 export default function CreateDepartureAuthorizationForm({

@@ -25,7 +25,7 @@ export const useRepaymentStore = create((set, get) => ({
         detalle: d.detalle,
         insertador: d.insertador,
         mecanico: d.mecanico ? { ...d.mecanico } : null,
-          // 🚨 AQUÍ ESTÁ EL FIX REAL
+          
         vehiculo: d.solicitud?.vehiculo
           ? { ...d.solicitud.vehiculo }
           : null,
@@ -40,7 +40,7 @@ export const useRepaymentStore = create((set, get) => ({
     }
   },
 
-  // Crear devolución
+
   addRepayment: async (data) => {
     try {
       const newRepayment = await createRepayment(data);
@@ -63,7 +63,7 @@ export const useRepaymentStore = create((set, get) => ({
     }
   },
 
-  // Editar devolución
+
   editRepayment: async (id, data) => {
     try {
       const updated = await updateRepayment(id, data);
@@ -88,7 +88,7 @@ export const useRepaymentStore = create((set, get) => ({
     }
   },
 
-  // Eliminar devolución
+
   removeRepayment: async (id) => {
     try {
       await deleteRepayment(id);

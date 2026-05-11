@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { toast } from "react-toastify";
 import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
 
 export default function CreateJobApplicationForm({
   isOpen,
@@ -10,8 +11,9 @@ export default function CreateJobApplicationForm({
   accesorios = [],
 }) {
   const [formData, setFormData] = useState({
-    vehiculo_id: "",
+    vehiculo_id: null,
     accesorio_ids: [],
+    nuevos_accesorios: [],
     descripcion: "",
   });
 
@@ -21,80 +23,59 @@ export default function CreateJobApplicationForm({
     if (!isOpen) return;
 
     setFormData({
-      vehiculo_id: "",
+      vehiculo_id: null,
       accesorio_ids: [],
+      nuevos_accesorios: [],
       descripcion: "",
     });
   }, [isOpen]);
+
+  const vehiculoOptions = useMemo(
+    () =>
+      vehiculos.map((v) => ({
+        value: v.id,
+        label: `${v.tipog || ""} - ${v.placa || ""}`,
+      })),
+    [vehiculos]
+  );
+
+  const accesorioOptions = useMemo(
+    () =>
+      accesorios.map((a) => ({
+        value: a.id,
+        label: a.solicitud1,
+      })),
+    [accesorios]
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const desc = formData.descripcion?.trim();
 
-    // 🚗 VALIDACIÓN VEHÍCULO
     if (!formData.vehiculo_id) {
       toast.error("Seleccione un vehículo 🚗");
       return;
     }
 
-    // ⚙️ VALIDACIÓN ACCESORIOS (MULTI)
-    if (!formData.accesorio_ids.length) {
-      toast.error("Seleccione al menos un accesorio ⚙️");
-      return;
-    }
-
-    // 📝 VALIDACIÓN DESCRIPCIÓN
     if (!desc) {
       toast.error("Ingrese una descripción 📝");
       return;
     }
 
-    if (desc.length < 10) {
-      toast.error("La descripción debe tener al menos 10 caracteres");
-      return;
-    }
-
-    if (desc.length > 300) {
-      toast.error("La descripción no puede superar 300 caracteres");
-      return;
-    }
-
-    if (/^\d+$/.test(desc)) {
-      toast.error("La descripción no puede ser solo números");
-      return;
-    }
-
-    if (/^(.)\1+$/.test(desc)) {
-      toast.error("Descripción no válida");
-      return;
-    }
-
-    if (/(.)\1{4,}/.test(desc)) {
-      toast.error("Texto inválido en descripción");
-      return;
-    }
-
-    if (/^[^aeiouAEIOU]{8,}$/.test(desc)) {
-      toast.error("Descripción no válida");
-      return;
-    }
-
-    // 📤 PAYLOAD FINAL (BACKEND COMPATIBLE)
     const payload = {
       vehiculo_id: Number(formData.vehiculo_id),
       accesorio_ids: formData.accesorio_ids.map(Number),
+      nuevos_accesorios: formData.nuevos_accesorios,
       descripsoli: desc,
     };
 
-    console.log("📤 Payload a enviar:", payload);
+    console.log("📤 Payload:", payload);
 
     try {
       setSaving(true);
 
       const response = await onSave(payload);
-
-      console.log("📥 Response:", response);
 
       if (!response?.ok) {
         toast.error(response?.error || "Error al guardar ❌");
@@ -142,7 +123,7 @@ export default function CreateJobApplicationForm({
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
 
-          {/* VEHICULO */}
+          {/* VEHÍCULO */}
           <div>
             <label className="block mb-1 font-semibold dark:text-gray-200">
               Movilidad
@@ -150,54 +131,58 @@ export default function CreateJobApplicationForm({
 
             <Select
               styles={selectStyles}
-              options={vehiculos.map(v => ({
-                value: v.id,
-                label: `${v.tipog || ""} - ${v.placa || ""}`,
-              }))}
-              value={
-                vehiculos
-                  .map(v => ({
-                    value: v.id,
-                    label: `${v.tipog || ""} - ${v.placa || ""}`,
-                  }))
-                  .find(opt => opt.value === formData.vehiculo_id) || null
-              }
+              options={vehiculoOptions}
+              value={vehiculoOptions.find(
+                (opt) => opt.value === formData.vehiculo_id
+              )}
               onChange={(selected) =>
                 setFormData((p) => ({
                   ...p,
-                  vehiculo_id: selected?.value || "",
+                  vehiculo_id: selected?.value || null,
                 }))
               }
               placeholder="Seleccione vehículo"
             />
           </div>
 
-          {/* ACCESORIOS MULTI */}
+          {/* ACCESORIOS (CON CREACIÓN) */}
           <div>
             <label className="block mb-1 font-semibold dark:text-gray-200">
               Accesorios
             </label>
 
-            <Select
+            <CreatableSelect
               isMulti
               styles={selectStyles}
-              options={accesorios.map(a => ({
-                value: a.id,
-                label: a.solicitud1,
-              }))}
-              value={accesorios
-                .filter(a => formData.accesorio_ids.includes(a.id))
-                .map(a => ({
-                  value: a.id,
-                  label: a.solicitud1,
-                }))}
-              onChange={(selected) =>
+              options={accesorioOptions}
+              value={[
+                ...accesorioOptions.filter((a) =>
+                  formData.accesorio_ids.includes(a.value)
+                ),
+                ...formData.nuevos_accesorios.map((text) => ({
+                  value: text,
+                  label: text,
+                })),
+              ]}
+              onChange={(selected) => {
+                const existing = [];
+                const created = [];
+
+                selected?.forEach((item) => {
+                  if (item.__isNew__) {
+                    created.push(item.value || item.label);
+                  } else {
+                    existing.push(item.value);
+                  }
+                });
+
                 setFormData((p) => ({
                   ...p,
-                  accesorio_ids: selected ? selected.map(s => s.value) : [],
-                }))
-              }
-              placeholder="Seleccione accesorios"
+                  accesorio_ids: existing,
+                  nuevos_accesorios: created,
+                }));
+              }}
+              placeholder="Escribe o selecciona accesorios"
             />
           </div>
 

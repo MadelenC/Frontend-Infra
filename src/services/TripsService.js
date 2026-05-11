@@ -33,7 +33,7 @@ export const createTrip = async (data) => {
   }
 };
 
-// Actualizar viaje completo (FULL)
+
 export const updateTrip = async (id, data) => {
   try {
     const response = await api.put(`/viajes/${id}`, data);
@@ -43,7 +43,7 @@ export const updateTrip = async (id, data) => {
   }
 };
 
-// Eliminar viaje completo (FULL)
+
 export const deleteTrip = async (id) => {
   try {
     const response = await api.delete(`/viajes/${id}`);
@@ -70,4 +70,21 @@ export const cancelTrip = async (id) => {
   }
 
   return data;
+};
+
+export const getAllTrips = async () => {
+
+  try {
+
+    const response = await api.get("/viajes/all");
+
+    return response.data;
+
+  } catch (err) {
+
+    throw err.response?.data?.error ||
+      "Error al obtener todos los viajes";
+
+  }
+
 };

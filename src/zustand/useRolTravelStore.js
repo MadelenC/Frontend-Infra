@@ -54,6 +54,48 @@ export const useRolTravelStore = create((set, get) => ({
     }
   },
 
+
+  fetchAllRolTravels: async () => {
+  try {
+
+    const res = await getRolTravels({
+      page: 1,
+      limit: 99999,
+    });
+
+    const mapped = res.data.map((v, index) => ({
+      id: v.id,
+
+      displayId: index + 1,
+
+      chofer:
+        v.user?.nombres + " " + v.user?.apellidos ||
+        "Desconocido",
+
+      chofer_id: v.user?.id,
+
+      tipoA: v.tipoa,
+      tipoB: v.tipob,
+      tipoC: v.tipoc,
+
+      cantidad: v.cantidad,
+
+      fecha: v.fecha,
+
+      exceptions: v.exceptions || [],
+    }));
+
+    return mapped;
+
+  } catch (err) {
+
+    console.error(err);
+
+    return [];
+
+  }
+},
+
   setPage: (page) => {
     set({ page });
     get().fetchRolTravels();

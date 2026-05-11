@@ -45,6 +45,8 @@ import RepaymentHome from "./pages/RepaymentOfMaterial/RepaymentHome";
 
 import Home from "./pages/Home";
 
+import Profile from "./pages/profile/Profile";
+
 export default function App() {
   return (
     <Router>
@@ -76,6 +78,15 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             }
           />

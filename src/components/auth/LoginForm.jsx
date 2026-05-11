@@ -33,8 +33,13 @@ export default function LoginForm() {
     try {
       const res = await loginService(formData);
 
+      console.log("LOGIN RESPONSE COMPLETO:", res);
+      console.log("TOKEN:", res.token);
+
       setUser(res.user);
       setToken(res.token);
+
+      localStorage.setItem("token", res.token); //guarda token
 
       console.log("MODULE:", module);
 

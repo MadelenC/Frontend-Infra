@@ -11,7 +11,7 @@ export const useMechanicsStore = create((set, get) => ({
   loading: false,
   error: null,
 
-  // Obtener todos los mecánicos
+
   fetchMechanics: async () => {
     set({ loading: true, error: null });
     try {
@@ -38,7 +38,7 @@ export const useMechanicsStore = create((set, get) => ({
     }
   },
 
-  // Crear un mecánico
+ 
   addMechanic: async (data) => {
     try {
       const newMechanic = await createMechanic(data);
@@ -65,7 +65,7 @@ export const useMechanicsStore = create((set, get) => ({
     }
   },
 
-  // Editar un mecánico
+  
   editMechanic: async (id, data) => {
     try {
       const updated = await updateMechanic(id, data);
@@ -94,7 +94,7 @@ export const useMechanicsStore = create((set, get) => ({
     }
   },
 
-  // Eliminar un mecánico
+ 
   removeMechanic: async (id) => {
     try {
       await deleteMechanic(id);

@@ -13,6 +13,8 @@ import { useUserStore } from "../../../zustand/userStore";
 import { useDestinoStore } from "../../../zustand/useDestinationsStore";
 import { useVehicleStore } from "../../../zustand/useVehicleStore";
 
+import { useTripsStore } from "../../../zustand/useTripsStore";
+
 export default function TableReserva() {
   const {
     reservas,
@@ -23,10 +25,12 @@ export default function TableReserva() {
     totalPages,
     setPage,
   } = useReservaStore();
+  
 
   const { fetchAllEncargados, fetchAllChoferes } = useUserStore();
   const { fetchAllDestinos } = useDestinoStore();
   const { fetchAllVehicles } = useVehicleStore(); 
+  const addTrip = useTripsStore((state) => state.addTrip);
 
   const [search, setSearch] = useState("");
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -82,17 +86,38 @@ export default function TableReserva() {
     }
   };
 
-  const handleEditSave = async (data) => {
-    try {
-      await editReserva(selectedReserva.id, data);
-      toast.success("Reserva actualizada");
-      setIsEditOpen(false);
-      setSelectedReserva(null);
-      fetchReservas();
-    } catch {
-      toast.error("Error al actualizar reserva");
-    }
+  const handleEditSave = async (formData) => {
+
+  const payload = {
+    tipo: formData.tipoViaje,
+    entidad: formData.entidad,
+    objetivo: formData.objetivo,
+    pasajeros: formData.pasajeros,
+    fecha_inicial: formData.inicio,
+    fecha_final: formData.final,
+    dias: formData.dias,
+
+    estado: "pendiente",
+
+    reserva: selectedReserva.id,
+
+    destinos: formData.destinos,
+    chofer: formData.chofer,
+    vehiculo: formData.vehiculo,
+    encargado: formData.encargado,
   };
+
+  const res = await addTrip(payload);
+
+  if (!res.ok) {
+    toast.error(res.error);
+    return;
+  }
+
+  toast.success("Viaje creado desde reserva");
+  setIsEditOpen(false);
+  setSelectedReserva(null);
+};
 
   return (
     <div className="overflow-hidden rounded-xl bg-white dark:bg-gray-900 border shadow p-4">

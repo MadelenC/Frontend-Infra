@@ -1,155 +1,134 @@
-import { useState, useEffect, useMemo } from "react";
-
-import TableTripReport from "./TableTripReport";
+import { useEffect, useState, useMemo } from "react";
 import SearchBar from "../Search/SearchBar";
+import TableTripReport from "./TableTripReport";
 import Pagination from "./Pagination";
+
 import { useTripReportStore } from "../../../zustand/useTripReportStore";
 import { useUserStore } from "../../../zustand/userStore";
 import { useVehicleStore } from "../../../zustand/useVehicleStore";
+
 import UpdateKmForm from "../Form/UpdateKmForm";
 
-export default function TripReportTable({ externalTripId = null }) {
+export default function TripReportTable() {
 
   const {
     tripReports,
     fetchTripReports,
+    page,
+    setPage,
+    totalPages,
+    loading,
+    error,
     editTripReport,
   } = useTripReportStore();
 
-  const { users, fetchUsers } = useUserStore();
+  const {
+    fetchAllChoferes,
+    fetchAllEncargados,
+    choferes = [],
+    encargados = []
+  } = useUserStore();
 
   const {
-    vehicles,
-    fetchVehicles,
+    vehicles = [],
+    fetchAllVehicles,
     editVehicle
   } = useVehicleStore();
+  console.log("VEHICLES:", vehicles);
 
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
   const [openUpdateKmPanel, setOpenUpdateKmPanel] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [selectedTrip, setSelectedTrip] = useState(null);
 
-  const limit = 8;
-
+  // Debounce para evitar request por cada letra
   useEffect(() => {
-    fetchTripReports();
-    fetchUsers();
-    fetchVehicles();
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  // Cargar datos solo una vez
+  useEffect(() => {
+    fetchAllChoferes();
+    fetchAllEncargados();
+    fetchAllVehicles();
   }, []);
 
-  useEffect(() => setPage(1), [search]);
+  // Buscar viajes
+  useEffect(() => {
+    fetchTripReports({ page, search: debouncedSearch });
+  }, [page, debouncedSearch]);
 
   const enrichedTrips = useMemo(() => {
-    return tripReports.map((t) => {
+    return (tripReports || []).map((t) => ({
+      ...t,
 
-      const vehiculoId = t.vehiculo?.id || t.vehiculo;
-      const choferId = t.chofer?.id || t.chofer;
-      const encargadoId = t.encargado?.id || t.encargado;
+      vehiculoNombre: t.vehiculo
+        ? `${t.vehiculo.placa} (${t.vehiculo.tipog || ""})`
+        : "Sin vehículo",
 
-      const vehiculo = vehicles.find(v => Number(v.id) === Number(vehiculoId));
-      const chofer = users.find(u => Number(u.id) === Number(choferId));
-      const encargado = users.find(u => Number(u.id) === Number(encargadoId));
+      choferNombre: t.chofer
+        ? `${t.chofer.nombres} ${t.chofer.apellidos}`
+        : "Sin chofer",
 
-      return {
-        ...t,
-        vehiculoNombre: vehiculo
-          ? `${vehiculo.placa} (${vehiculo.tipo || vehiculo.tipog || ""})`
-          : "Sin vehículo",
-        choferNombre: chofer ? `${chofer.nombres} ${chofer.apellidos}` : "Sin chofer",
-        encargadoNombre: encargado ? `${encargado.nombres} ${encargado.apellidos}` : "Sin encargado",
-        vehiculoObj: vehiculo
-      };
-    });
-  }, [tripReports, users, vehicles]);
+      encargadoNombre: t.encargado
+        ? `${t.encargado.nombres} ${t.encargado.apellidos}`
+        : "Sin encargado",
+    }));
+  }, [tripReports]);
+const handleUpdateKm = (trip) => {
+  const vehicleWithKm = {
+    ...trip.vehiculo,
 
-  const sortedTrips = [...enrichedTrips].sort((a, b) => a.id - b.id);
-
-  const filtered = sortedTrips.filter(t => {
-    const s = search.toLowerCase();
-    return (
-      t.vehiculoNombre?.toLowerCase().includes(s) ||
-      t.choferNombre?.toLowerCase().includes(s) ||
-      t.encargadoNombre?.toLowerCase().includes(s)
-    );
-  });
-
-  const totalPages = Math.ceil(filtered.length / limit);
-
-  const currentData = filtered.slice(
-    (page - 1) * limit,
-    page * limit
-  );
-
-  const handleUpdateKm = (trip) => {
-
-    if (!trip.vehiculoObj) {
-      alert("Vehículo no encontrado");
-      return;
-    }
-
-    setSelectedVehicle(trip.vehiculoObj);
-    setSelectedTrip(trip);
-    setOpenUpdateKmPanel(true);
+    kilometraje: trip.kilollegada || 0,
   };
 
-  return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-white/[0.03] shadow-md transition-all p-4">
+  console.log(vehicleWithKm);
 
-      {/* BUSCADOR */}
+  setSelectedVehicle(vehicleWithKm);
+  setSelectedTrip(trip);
+  setOpenUpdateKmPanel(true);
+};
+
+  return (
+    <div className="bg-white p-4 rounded-xl shadow">
+
       <div className="mb-4 w-64">
         <SearchBar search={search} setSearch={setSearch} />
       </div>
 
-      {/* TABLA */}
+      {loading && <div>Cargando...</div>}
+      {error && <div className="text-red-500">{error}</div>}
+
       <TableTripReport
-        tripReports={currentData}
+        tripReports={enrichedTrips}
         onUpdateKm={handleUpdateKm}
       />
 
-      {/* PAGINACIÓN */}
-      <div className="flex justify-center mt-4">
-        <Pagination
-          page={page}
-          totalPages={totalPages}
-          setPage={setPage}
-        />
-      </div>
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        setPage={setPage}
+      />
 
-      {/* MODAL */}
       {openUpdateKmPanel && selectedVehicle && selectedTrip && (
         <UpdateKmForm
           vehicle={selectedVehicle}
           onClose={() => setOpenUpdateKmPanel(false)}
           onUpdateKm={async (updatedVehicle) => {
+            const result = await editVehicle(updatedVehicle.id, updatedVehicle);
 
-            const resVehicle = await editVehicle(updatedVehicle.id, updatedVehicle);
-            if (!resVehicle.ok) return alert(resVehicle.error);
-
-            const nuevoKm = updatedVehicle.kilometraje;
-            const kmSalida = Number(selectedTrip.kilopartida || 0);
-
-            if (nuevoKm < kmSalida) {
-              return alert("Km inválido");
+            if (result.ok) {
+              alert("Kilometraje actualizado correctamente");
+              setOpenUpdateKmPanel(false);
+            } else {
+              alert("Error al actualizar: " + result.error);
             }
-
-            const kmTotal = nuevoKm - kmSalida;
-
-            const resTrip = await editTripReport(selectedTrip.id, {
-              ...selectedTrip,
-              kilollegada: nuevoKm,
-              kmtotal: kmTotal,
-            });
-
-            if (!resTrip.ok) return alert(resTrip.error);
-
-            alert("Actualizado correctamente 🚀");
-
-            await fetchVehicles();
-            await fetchTripReports();
-
-            setOpenUpdateKmPanel(false);
           }}
         />
       )}
