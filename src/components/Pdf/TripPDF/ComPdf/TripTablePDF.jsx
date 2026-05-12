@@ -7,26 +7,28 @@ import {
 
 import { styles } from "../../common";
 
-export default function TripsReportTablePDF({
-  trips,
-}) {
+export default function TripsReportTablePDF({ trips }) {
 
-  const totalCombustible = trips.reduce(
+  // 🔥 PROTEGER DATA (CLAVE)
+  const safeTrips = Array.isArray(trips) ? trips : [];
+
+  // 🔥 TOTALES SEGUROS
+  const totalCombustible = safeTrips.reduce(
     (acc, t) => acc + Number(t.combustible || 0),
     0
   );
 
-  const totalPrecio = trips.reduce(
+  const totalPrecio = safeTrips.reduce(
     (acc, t) => acc + Number(t.precioTotal || 0),
     0
   );
 
-  const totalPasajeros = trips.reduce(
+  const totalPasajeros = safeTrips.reduce(
     (acc, t) => acc + Number(t.pasajeros || 0),
     0
   );
 
-  const totalViajes = trips.reduce(
+  const totalViajes = safeTrips.reduce(
     (acc, t) => acc + Number(t.nroViajes || 0),
     0
   );
@@ -77,76 +79,63 @@ export default function TripsReportTablePDF({
       </View>
 
       {/* FILAS */}
-      {trips.map((trip, index) => (
-
-        <View
-          key={trip.id}
-          style={styles.row}
-        >
+      {safeTrips.map((trip, index) => (
+        <View key={trip.id} style={styles.row}>
 
           <Text style={[styles.cell, { width: "5%" }]}>
             {index + 1}
           </Text>
 
           <Text style={[styles.cell, { flex: 1.5 }]}>
-            {
-              trip.vehicleTravels
-                ?.map(v => v.vehiculo?.placa)
-                .join(", ")
-            }
+            {trip.vehicleTravels
+              ?.map(v => v.vehiculo?.placa)
+              .join(", ")}
           </Text>
 
           <Text style={[styles.cell, { flex: 1.5 }]}>
-            {
-              trip.userTravels
-                ?.filter(u => u.user?.tipo === "chofer")
-                .map(u =>
-                  `${u.user?.nombres || ""} ${u.user?.apellidos || ""}`
-                )
-                .join(", ")
-            }
+            {trip.userTravels
+              ?.filter(u => u.user?.tipo === "chofer")
+              .map(u =>
+                `${u.user?.nombres || ""} ${u.user?.apellidos || ""}`
+              )
+              .join(", ")}
           </Text>
 
           <Text style={[styles.cell, { width: "10%" }]}>
-          {trip.rutas?.[0]?.total || "0"}
-        </Text>
-
-          <Text style={[styles.cell, { width: "10%" }]}>
-            {
-              trip.presupuestos
-                ?.reduce(
-                  (acc, p) => acc + Number(p.total1C || 0),
-                  0
-                )
-                .toFixed(2)
-            }
+            {trip.rutas?.[0]?.total || "0"}
           </Text>
 
           <Text style={[styles.cell, { width: "10%" }]}>
-            {
-              trip.presupuestos
-                ?.reduce(
-                  (acc, p) => acc + Number(p.precio1 || 0),
-                  0
-                )
-                .toFixed(2)
-            }
+            {safeNumber(
+              trip.presupuestos?.reduce(
+                (acc, p) => acc + Number(p.total1C || 0),
+                0
+              )
+            )}
+          </Text>
+
+          <Text style={[styles.cell, { width: "10%" }]}>
+            {safeNumber(
+              trip.presupuestos?.reduce(
+                (acc, p) => acc + Number(p.precio1 || 0),
+                0
+              )
+            )}
           </Text>
 
           <Text style={[styles.cell, { width: "12%" }]}>
-            {trip.precioTotal}
+            {trip.precioTotal || 0}
           </Text>
 
           <Text style={[styles.cell, { width: "8%" }]}>
-            {trip.pasajeros}
+            {trip.pasajeros || 0}
           </Text>
 
           <Text style={[styles.cell, { width: "9%" }]}>
-            {trip.nroViajes}
+            {trip.nroViajes || 0}
           </Text>
 
         </View>
-
       ))}
 
       {/* TOTAL */}
@@ -188,4 +177,9 @@ export default function TripsReportTablePDF({
 
     </View>
   );
+}
+
+
+function safeNumber(value) {
+  return Number(value || 0).toFixed(2);
 }

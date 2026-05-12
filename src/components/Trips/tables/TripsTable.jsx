@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import SearchBarTrips from "../search/SearchBar";
 import TripsRow from "./TripsRow";
 import Pagination from "./Paginations";
@@ -8,6 +8,8 @@ import TripsCajaForm from "../form/TripsCajaForm";
 import TripDeclarationForm from "../form/TripDeclarationForm";
 import TripDetailForm from "../form/TripDetailForm";
 import EditTripsForm from "../form/Cancel/EditTripForm";
+
+import InformCheck from "../form/SeccInfCh/InformCheck";
 
 import { FiFileText, FiBarChart2, FiPlus } from "react-icons/fi";
 
@@ -74,76 +76,66 @@ export default function TripsTable({ externalTripId = null }) {
 
   useEffect(() => setPage(1), [search, tipo]);
 
+
+  useEffect(() => {
+  const loadData = async () => {
+    const [
+      enc,
+      chof,
+      veh,
+      dest
+    ] = await Promise.all([
+      fetchAllEncargados(),
+      fetchAllChoferes(),
+      fetchAllVehicles(),
+      fetchAllDestinos()
+    ]);
+
+    setEncargados(enc || []);
+    setChoferes(chof || []);
+    setVehiculos(veh || []);
+    setAllDestinos(dest || []);
+  };
+
+  loadData();
+}, []);
+
  
   const handleOpenModal = async (type, trip = null) => {
 
-  if (type === "cheque" || type === "caja"|| type === "add"|| type === "detalle" || type === "edit") {
+  if ((type === "detalle" ||
+       type === "edit" ||
+       type === "InformCheck") && trip?.id) {
+
     try {
-      const encargadosData = await fetchAllEncargados();
-      const choferesData = await fetchAllChoferes();
-      const vehiculosData = await fetchAllVehicles();
-      const destinosData = await fetchAllDestinos();
-        setAllDestinos(destinosData);
+      const res = await fetch(
+        `http://localhost:3000/api/viajes/${trip.id}`
+      );
 
-      setEncargados(encargadosData || []);
-      setChoferes(choferesData || []);
-      setVehiculos(vehiculosData || []);
-    } catch (err) {
-      toast.error("Error al cargar datos del formulario");
-    }
-  }
-
-  if ((type === "detalle" || type === "edit") && trip?.id){
-    try {
-      const res = await fetch(`http://localhost:3000/api/viajes/${trip.id}`);
-      const data = await res.json();
-
-      console.log("DATA API:", data);
+      const tripData = await res.json();
 
       const formattedForForms = {
-        ...data,
-
-        tipoViaje: data.tipo || "",
-        inicio: data.fecha_inicial || "",
-        final: data.fecha_final || "",
-
-        chofer: data.choferes || [],
-        encargado: data.encargados || [],
-        vehiculo: data.vehiculos || [],
-
-        
-        destinos: data.destinos || [], 
-        destinosForm:
-           data.data?.map(d => ({
-              id: d.id,
-              dep_inicio: d.dep_inicio,
-              origen: d.origen,
-              destino: d.destino,
-              dep_final: d.dep_final,
-              ruta: d.ruta,
-              kilometraje: d.kilometraje,
-              nombre: `(${d.dep_inicio}) ${d.origen} → (${d.dep_final}) ${d.destino}`,
-              km: d.kilometraje || ""
-                    })) || []
-          
+        ...tripData,
+        tipoViaje: tripData.tipo || "",
+        inicio: tripData.fecha_inicial || "",
+        final: tripData.fecha_final || "",
+        chofer: tripData.choferes || [],
+        encargado: tripData.encargados || [],
+        vehiculo: tripData.vehiculos || [],
+        destinos: tripData.destinos || [],
       };
-      console.log(data.destinos)
-
-      console.log("FORMATTED:", formattedForForms);
 
       setSelectedTrip(formattedForForms);
 
-      setSelectedTrip(formattedForForms);
-      
-          } catch (err) {
-            toast.error("Error al cargar detalle del viaje");
-          }
-        } else {
-          setSelectedTrip(trip);
-        }
+    } catch (err) {
+      toast.error("Error al cargar detalle del viaje");
+    }
+  } else {
+    setSelectedTrip(trip);
+  }
 
-        setModalType(type);
- };
+  setModalType(type);
+};
 
     const handleCloseModal = () => {
     setModalType(null);
@@ -208,7 +200,10 @@ const handleDeleteTrip = async (id) => {
 
 };
 
-  const filteredTrips = trips.filter(t => {
+ const filteredTrips = useMemo(() => {
+  if (!Array.isArray(trips)) return [];
+
+  return trips.filter(t => {
     const matchesSearch =
       t.entidad?.toLowerCase().includes(search.toLowerCase()) ||
       t.objetivo?.toLowerCase().includes(search.toLowerCase());
@@ -221,6 +216,7 @@ const handleDeleteTrip = async (id) => {
 
     return matchesSearch && matchesTipo && matchesId;
   });
+}, [trips, search, tipo, externalTripId]);
 
   const SimpleModal = ({ title, children }) => (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -244,6 +240,10 @@ const handleDeleteTrip = async (id) => {
       </div>
     </div>
   );
+
+  const pdfDoc = useMemo(() => (
+  <TripsReportPDF trips={filteredTrips} />
+), [filteredTrips]);
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4">
@@ -282,12 +282,12 @@ const handleDeleteTrip = async (id) => {
           </button>
 
           <PDFDownloadLink
-  document={
-    <TripsReportPDF
-      trips={filteredTrips}
-    />
-  }
-  fileName="reporte-viajes.pdf"
+          document={
+            <TripsReportPDF
+              trips={pdfDoc}
+            />
+          }
+          fileName="reporte-viajes.pdf"
 >
 
   {({ loading }) => (
@@ -362,7 +362,7 @@ const handleDeleteTrip = async (id) => {
         </table>
       </div>
 
-      {/* PAGINACIÓN (BACKEND) */}
+     
       <div className="flex justify-center mt-4">
         <Pagination
           page={page}
@@ -371,7 +371,7 @@ const handleDeleteTrip = async (id) => {
         />
       </div>
 
-      {/* MODALES */}
+      
       {modalType === "add" && (
         <AddTripsFrom
           isOpen={true}
@@ -433,6 +433,16 @@ const handleDeleteTrip = async (id) => {
         <TripDetailForm
           data={selectedTrip}
           onClose={handleCloseModal}
+        />
+      )}
+
+      {modalType === "InformCheck" && (
+        <InformCheck
+          data={selectedTrip}
+          onClose={handleCloseModal}
+          choferes={choferes}
+          encargados={encargados}
+          vehiculos={vehiculos}
         />
       )}
 

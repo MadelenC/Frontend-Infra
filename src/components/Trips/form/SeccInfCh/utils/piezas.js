@@ -1,0 +1,17 @@
+export const piezasBase = [
+  "A) Motor",
+  "B) Caja de cambio",
+  "C) Ruedas",
+  "D) Muelles o espirales",
+  "E) Dirección",
+  "F) Caja de dirección",
+  "G) Soporte de motor",
+  "H) Chasis",
+  "I) Sistema eléctrico",
+  "J) Iluminación",
+  "K) Toca cintas",
+  "L) Frenos",
+  "M) Amortiguadores",
+  "N) Bomba de gasolina",
+  "O) Mantenimiento",
+];

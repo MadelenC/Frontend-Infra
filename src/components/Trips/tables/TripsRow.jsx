@@ -11,6 +11,7 @@ import {
   FaPrint,
   FaTrash,
   FaTimes,
+  FaDoorOpen,
 } from "react-icons/fa";
 
 export default function TripsRow({ trip, onOpenModal, onCancelTrip,onDeleteTrip }) {
@@ -169,22 +170,22 @@ export default function TripsRow({ trip, onOpenModal, onCancelTrip,onDeleteTrip 
                 </button>
 
                 {openMenu === "realizar" && (
-                  <div className="absolute right-0 mt-1 w-36 bg-white dark:bg-gray-900
-                                  border dark:border-gray-700 rounded shadow-md z-10 text-xs">
+                  <div className="absolute right-0 mt-1 w-36 bg-white dark:bg-gray-400
+                                  border dark:border-gray-700 rounded shadow-md z-10 text-xs ">
 
                     <button
                       onClick={() => {
                         onOpenModal("detalle", trip);
                         setOpenMenu(null);
                       }}
-                      className="flex items-center gap-1 w-full text-left px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      className="flex items-center gap-1 w-full text-left px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-500"
                     >
                       <FaEye size={10} />
                       Ver
                     </button>
 
                     <button className="flex items-center gap-1 w-full text-left px-2 py-1 hover:bg-gray-100
-                                       dark:hover:bg-gray-800">
+                                       dark:hover:bg-gray-400 d">
                       <FaPrint size={10} />
                       Imprimir
                     </button>
@@ -195,6 +196,17 @@ export default function TripsRow({ trip, onOpenModal, onCancelTrip,onDeleteTrip 
                                        hover:bg-gray-100 dark:hover:bg-gray-800">
                       <FaTrash size={10} />
                       Eliminar
+                    </button>
+                    <button
+                      onClick={() => {
+                        onOpenModal("InformCheck", trip);
+                        setOpenMenu(null);
+                      }}
+                      className="flex items-center gap-1 w-full text-left px-2 py-1 text-gray-900
+                                hover:bg-gray-100 dark:hover:bg-gray-800"
+                    >
+                      <FaFileInvoice size={10} />
+                      Informe/Cheque
                     </button>
 
                   </div>
