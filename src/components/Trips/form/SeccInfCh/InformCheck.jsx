@@ -8,6 +8,7 @@ import Devoluciones from "./Secctions/Devoluciones";
 import InformeViaje from "./Secctions/InformeViaje";
 import InformeTecnico from "./Secctions/InformeTecnico";
 import SectionCard from "./SectionCard";
+import { useTripReportStore } from "../../../../zustand/useTripReportStore";
 
 export default function InformCheck({
   data,
@@ -16,6 +17,8 @@ export default function InformCheck({
   encargados,
   vehiculos,
 }){
+
+  
   const [formData, setFormData] = useState({
      vehiculo: "",
 chofer: "",
@@ -57,6 +60,8 @@ encargado: "",
     recomendaciones: "",
   });
 
+const addTripReport = useTripReportStore((state) => state.addTripReport);
+
   const [selectedPiezas, setSelectedPiezas] = useState([]);
   useEffect(() => {
   if (!data) return;
@@ -92,16 +97,57 @@ encargado: "",
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const data = {
-      ...formData,
-      piezas: selectedPiezas,
-    };
+  const payload = {
+    viaje: data?.id,
+    vehiculo: formData.vehiculo,
+    chofer: formData.chofer,
+    encargado: formData.encargado,
+    entidad: data?.entidad,
 
-    console.log(data);
+    fechapartida: formData.fechaPartida,
+    tiempopartida: formData.horaPartida,
+    kilopartida: formData.kmPartida,
+
+    fechallegada: formData.fechaLlegada,
+    tiempollegada: formData.horaLlegada,
+    kilollegada: formData.kmLlegada,
+
+    kmtotal: formData.kmsDesignados,
+
+    viaticoa: formData.viaticosCiudad,
+    viaticob: formData.viaticosProvincia,
+    viaticoc: formData.viaticosFrontera,
+
+    pasajeros: formData.pasajeros,
+    dias: formData.diasViaje,
+
+    recargue1: formData.recargue1,
+    compra1: formData.compra1,
+    recargue2: formData.recargue2,
+    compra2: formData.compra2,
+    recargue3: formData.recargue3,
+    compra3: formData.compra3,
+
+    combustotalu: formData.asignacionCombustible,
+
+    descripe: formData.informeViaje,
+    descripmante: formData.descripcionTecnica,
+    recomendacion: formData.recomendaciones,
+
+    piezas: selectedPiezas,
   };
+
+  const res = await addTripReport(payload);
+
+  if (res.ok) {
+    onClose();
+  } else {
+    console.error(res.error);
+  }
+};
 
   return (
   <div className="fixed inset-0 z-50 flex items-center justify-center  p-4  bg-black/40 backdrop-blur-sm">
