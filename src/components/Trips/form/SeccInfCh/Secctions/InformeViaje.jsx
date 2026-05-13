@@ -12,8 +12,8 @@ export default function InformeViaje({
       </h3>
 
       <textarea
-        name="informeViaje"
-        rows={6}
+       name="informeViaje"
+        rows={6} 
         placeholder="Realice un informe sobre el viaje y la delegación del mismo"
         value={formData.informeViaje}
         onChange={handleChange}
@@ -21,5 +21,5 @@ export default function InformeViaje({
       />
 
     </div>
-  );
+  );dsf
 }

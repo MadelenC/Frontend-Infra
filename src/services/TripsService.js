@@ -13,6 +13,7 @@ export const getTrips = async ({ page, limit }) => {
   }
 };
 
+
 // Obtener viaje por ID (FULL)
 export const getTripById = async (id) => {
   try {

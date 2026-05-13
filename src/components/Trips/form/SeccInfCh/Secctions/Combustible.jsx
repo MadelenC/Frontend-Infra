@@ -32,7 +32,7 @@ export default function Combustible({
             <input
               type="number"
               name="asignacionCombustible"
-              value={formData.asignacionCombustible}
+              value={formData.asignacionCombustible || ""}
               onChange={handleChange}
               className="w-32 border rounded-xl p-3"
             />
@@ -52,7 +52,7 @@ export default function Combustible({
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
-          {/* FILA 1 */}
+          {/* REGISTRO 1 */}
           <div className="border rounded-2xl p-4 bg-gray-50">
 
             <h4 className="font-bold text-gray-700 mb-4">
@@ -66,21 +66,13 @@ export default function Combustible({
                   Recargue
                 </label>
 
-                <div className="flex items-center gap-2">
-
-                  <input
-                    type="number"
-                    name="recargue1"
-                    value={formData.recargue1}
-                    onChange={handleChange}
-                    className="w-full border rounded-xl p-3"
-                  />
-
-                  <span className="text-sm text-gray-500">
-                    litros
-                  </span>
-
-                </div>
+                <input
+                  type="number"
+                  name="recargue1"
+                  value={formData.recargue1 || ""}
+                  onChange={handleChange}
+                  className="w-full border rounded-xl p-3"
+                />
               </div>
 
               <div>
@@ -88,28 +80,19 @@ export default function Combustible({
                   Compra
                 </label>
 
-                <div className="flex items-center gap-2">
-
-                  <input
-                    type="number"
-                    name="compra1"
-                    value={formData.compra1}
-                    onChange={handleChange}
-                    className="w-full border rounded-xl p-3"
-                  />
-
-                  <span className="text-sm text-gray-500">
-                    Bs.
-                  </span>
-
-                </div>
+                <input
+                  type="number"
+                  name="compra1"
+                  value={formData.compra1 || ""}
+                  onChange={handleChange}
+                  className="w-full border rounded-xl p-3"
+                />
               </div>
 
             </div>
-
           </div>
 
-          {/* FILA 2 */}
+          {/* REGISTRO 2 */}
           <div className="border rounded-2xl p-4 bg-gray-50">
 
             <h4 className="font-bold text-gray-700 mb-4">
@@ -118,55 +101,26 @@ export default function Combustible({
 
             <div className="space-y-4">
 
-              <div>
-                <label className="block text-sm mb-2 font-medium">
-                  Recargue
-                </label>
+              <input
+                type="number"
+                name="recargue2"
+                value={formData.recargue2 || ""}
+                onChange={handleChange}
+                className="w-full border rounded-xl p-3"
+              />
 
-                <div className="flex items-center gap-2">
-
-                  <input
-                    type="number"
-                    name="recargue2"
-                    value={formData.recargue2}
-                    onChange={handleChange}
-                    className="w-full border rounded-xl p-3"
-                  />
-
-                  <span className="text-sm text-gray-500">
-                    litros
-                  </span>
-
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm mb-2 font-medium">
-                  Compra
-                </label>
-
-                <div className="flex items-center gap-2">
-
-                  <input
-                    type="number"
-                    name="compra2"
-                    value={formData.compra2}
-                    onChange={handleChange}
-                    className="w-full border rounded-xl p-3"
-                  />
-
-                  <span className="text-sm text-gray-500">
-                    Bs.
-                  </span>
-
-                </div>
-              </div>
+              <input
+                type="number"
+                name="compra2"
+                value={formData.compra2 || ""}
+                onChange={handleChange}
+                className="w-full border rounded-xl p-3"
+              />
 
             </div>
-
           </div>
 
-          {/* FILA 3 */}
+          {/* REGISTRO 3 */}
           <div className="border rounded-2xl p-4 bg-gray-50">
 
             <h4 className="font-bold text-gray-700 mb-4">
@@ -175,59 +129,29 @@ export default function Combustible({
 
             <div className="space-y-4">
 
-              <div>
-                <label className="block text-sm mb-2 font-medium">
-                  Recargue
-                </label>
+              <input
+                type="number"
+                name="recargue3"
+                value={formData.recargue3 || ""}
+                onChange={handleChange}
+                className="w-full border rounded-xl p-3"
+              />
 
-                <div className="flex items-center gap-2">
-
-                  <input
-                    type="number"
-                    name="recargue3"
-                    value={formData.recargue3}
-                    onChange={handleChange}
-                    className="w-full border rounded-xl p-3"
-                  />
-
-                  <span className="text-sm text-gray-500">
-                    litros
-                  </span>
-
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm mb-2 font-medium">
-                  Compra
-                </label>
-
-                <div className="flex items-center gap-2">
-
-                  <input
-                    type="number"
-                    name="compra3"
-                    value={formData.compra3}
-                    onChange={handleChange}
-                    className="w-full border rounded-xl p-3"
-                  />
-
-                  <span className="text-sm text-gray-500">
-                    Bs.
-                  </span>
-
-                </div>
-              </div>
+              <input
+                type="number"
+                name="compra3"
+                value={formData.compra3 || ""}
+                onChange={handleChange}
+                className="w-full border rounded-xl p-3"
+              />
 
             </div>
-
           </div>
 
         </div>
-
       </div>
 
-      {/* TOTALES */}
+      {/* TOTALES VISUALES */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
         <div className="bg-green-50 border border-green-200 rounded-2xl p-5">
@@ -236,17 +160,9 @@ export default function Combustible({
             Total recargue
           </p>
 
-          <div className="flex items-end gap-2">
-
-            <h2 className="text-3xl font-bold text-green-700">
-              {totalRecargue.toFixed(2)}
-            </h2>
-
-            <span className="text-gray-600 mb-1">
-              litros
-            </span>
-
-          </div>
+          <h2 className="text-3xl font-bold text-green-700">
+            {totalRecargue.toFixed(2)}
+          </h2>
 
         </div>
 
@@ -256,17 +172,9 @@ export default function Combustible({
             Total compra
           </p>
 
-          <div className="flex items-end gap-2">
-
-            <h2 className="text-3xl font-bold text-blue-700">
-              {totalCompra.toFixed(2)}
-            </h2>
-
-            <span className="text-gray-600 mb-1">
-              Bs.
-            </span>
-
-          </div>
+          <h2 className="text-3xl font-bold text-blue-700">
+            {totalCompra.toFixed(2)}
+          </h2>
 
         </div>
 

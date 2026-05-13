@@ -69,6 +69,7 @@ export default function InformeTecnico({
 
               <input
                 type="checkbox"
+                name="mantenimiento[]"
                 checked={selectedPiezas.includes(pieza)}
                 onChange={() => togglePieza(pieza)}
                 className="w-4 h-4"

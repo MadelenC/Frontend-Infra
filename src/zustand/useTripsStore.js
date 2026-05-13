@@ -7,6 +7,7 @@ import {
   getTripById,
   cancelTrip,
    getAllTrips,
+   
 } from "../services/TripsService";
 
 export const useTripsStore = create((set, get) => ({
@@ -19,8 +20,12 @@ export const useTripsStore = create((set, get) => ({
   page: 1,
   limit: 8,
   totalPages: 1,
+  
 
   setPage: (page) => set({ page }),
+
+
+  
 
   
   fetchTrips: async () => {

@@ -19,29 +19,32 @@ export default function Devoluciones({
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
+        {/* COMBUSTIBLE */}
         <input
           type="number"
           name="devolucionCombustible"
           placeholder="Combustible"
-          value={formData.devolucionCombustible}
+          value={formData.devolucionCombustible || ""}
           onChange={handleChange}
           className="border rounded-xl p-3"
         />
 
+        {/* PEAJES */}
         <input
           type="number"
           name="devolucionPeajes"
           placeholder="Peajes"
-          value={formData.devolucionPeajes}
+          value={formData.devolucionPeajes || ""}
           onChange={handleChange}
           className="border rounded-xl p-3"
         />
 
+        {/* IMPREVISTOS */}
         <input
           type="number"
           name="devolucionImprevistos"
           placeholder="Imprevistos"
-          value={formData.devolucionImprevistos}
+          value={formData.devolucionImprevistos || ""}
           onChange={handleChange}
           className="border rounded-xl p-3"
         />
@@ -52,7 +55,7 @@ export default function Devoluciones({
         <p className="font-bold">Total</p>
 
         <p className="text-2xl text-red-700">
-          {total} Bs.
+          {total.toFixed(2)} Bs.
         </p>
       </div>
 
