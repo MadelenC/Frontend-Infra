@@ -6,9 +6,14 @@ export default function UpdateKmForm({
   onClose,
 }) {
   const [increment, setIncrement] = useState(0);
-
- const currentKm = Number(vehicle.kilometraje || 0);
-
+console.log("VEHICLE MODAL:", vehicle);
+console.log("MODELOS:", vehicle?.modelos);
+ ///const currentKm = Number(vehicle.kilometraje || 0);
+const currentKm = Number(
+  vehicle?.modelos?.[0]?.kilometraje ??
+  vehicle?.kilometrajeUI ??
+  0
+);
   const totalKm =
     currentKm + Number(increment || 0);
 
@@ -21,12 +26,12 @@ export default function UpdateKmForm({
     onUpdateKm?.({
       ...vehicle,
 
-      modelos: [
-        {
-          ...vehicle.modelos?.[0],
-          kilometraje: totalKm,
-        },
-      ],
+        modelos: [
+      {
+        ...vehicle.modelos?.[0],
+        kilometraje: totalKm,
+      },
+    ],
     });
 
     onClose?.();

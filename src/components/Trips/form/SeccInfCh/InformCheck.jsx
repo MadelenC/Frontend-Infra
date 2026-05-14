@@ -72,37 +72,112 @@ export default function InformCheck({
 
   const [selectedPiezas, setSelectedPiezas] = useState([]);
 
-  useEffect(() => {
-    if (!data) return;
+ useEffect(() => {
+  if (!data) return;
 
-     if (!data.presupuestos || data.presupuestos.length === 0) {
-    toast.error("❌ Este viaje no tiene presupuesto, no se puede abrir el informe");
+  if (!data?.presupuestos?.length) {
+    toast.error("❌ El viaje no tiene presupuesto asignado");
     onClose();
     return;
   }
+
+  console.log("📦 DATA COMPLETA:", data);
+ 
+
+const vehiculo = data?.vehiculos?.[0];
+
+const kmVehiculo =
+  Number(vehiculo?.modelos?.[0]?.kilometraje || 0);
+
+console.log("KM VEHICULO:", kmVehiculo);
+
+
+
+  const rutas = data.rutas || [];
+  console.log("RUTAS:", rutas);
+
+  const kmRutas = rutas.reduce((acc, r) => {
+    const val = Number(r.total ?? 0);
+    return acc + val;
+  }, 0);
+
+  console.log(" KM RUTAS SUMA:", kmRutas);
+
+  const kmPartidaFinal = kmVehiculo + kmRutas;
+
+  console.log("ESULTADO FINAL:", {
+    kmVehiculo,
+    kmRutas,
+    kmPartidaFinal,
+  });
+
+ 
+  setFormData((prev) => ({
+    ...prev,
+
+    vehiculo:
+      data.vehicleTravels?.[0]?.vehiculo?.id ||
+      data.vehiculos?.[0]?.id ||
+      "",
+
+    chofer: data.choferes?.[0]?.id || "",
+    encargado: data.encargados?.[0]?.id || "",
+
+    fechaPartida: data.fecha_inicial || "",
+    fechaLlegada: data.fecha_final || "",
+
+    pasajeros: data.pasajeros || "",
+    diasViaje: data.dias || "",
+
+    kmsDesignados: kmRutas,
+
+    
+    kmPartida: kmPartidaFinal,
+
+    asignacionCombustible:
+      data.presupuestos?.[0]?.combustible1 || "",
+  }));
+}, [data]);
+
+ const handleChange = (e) => {
+
+  const { name, value } = e.target;
+
+  
+  if (name === "vehiculo") {
+
+    const vehiculoSeleccionado =
+      data?.vehiculos?.find(
+        (v) => Number(v.id) === Number(value)
+      );
+
+    const kmVehiculo =
+      Number(
+        vehiculoSeleccionado?.modelos?.[0]?.kilometraje || 0
+      );
+
+    const kmRutas = (data?.rutas || []).reduce(
+      (acc, r) => acc + Number(r.total || 0),
+      0
+    );
+
+    const kmPartidaFinal =
+      kmVehiculo + kmRutas;
+
     setFormData((prev) => ({
       ...prev,
-      vehiculo: data.vehiculos?.[0]?.id || "",
-      chofer: data.choferes?.[0]?.id || "",
-      encargado: data.encargados?.[0]?.id || "",
-      fechaPartida: data.fecha_inicial || "",
-      fechaLlegada: data.fecha_final || "",
-      pasajeros: data.pasajeros || "",
-      diasViaje: data.dias || "",
-      kmsDesignados:
-        data.rutas?.reduce((acc, r) => acc + Number(r.total || 0), 0) ||
-        "",
-      asignacionCombustible:
-        data.presupuestos?.[0]?.combustible1 || "",
+      vehiculo: value,
+      kmPartida: kmPartidaFinal,
     }));
-  }, [data]);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+    return;
+  }
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -221,9 +296,9 @@ export default function InformCheck({
               <DatosViaje
                 formData={formData}
                 handleChange={handleChange}
-                choferes={choferes}
-                encargados={encargados}
-                vehiculos={vehiculos}
+                choferes={data?.choferes || []}
+                encargados={data?.encargados || []}
+                vehiculos={data?.vehiculos || []}
               />
             </SectionCard>
 

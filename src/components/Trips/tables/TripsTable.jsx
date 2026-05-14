@@ -113,6 +113,7 @@ export default function TripsTable({ externalTripId = null }) {
       );
 
       const tripData = await res.json();
+      console.log("RESPUESTA API:", tripData);
 
       const formattedForForms = {
         ...tripData,

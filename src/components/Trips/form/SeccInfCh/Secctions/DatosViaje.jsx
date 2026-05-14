@@ -11,7 +11,7 @@ export default function DatosViaje({
 
   const vehiculoOptions = vehiculos.map((v) => ({
     value: v.id,
-    label: `${v.tipog} - ${v.placa}`,
+    label: `${v.tipo} - ${v.placa}`,
   }));
 
   const choferOptions = choferes.map((c) => ({
@@ -104,10 +104,9 @@ export default function DatosViaje({
         <input
           type="number"
           name="kmPartida"
-          placeholder="Inserte el km. de partida"
           value={formData.kmPartida}
-          onChange={handleChange}
-          className="border rounded-xl p-3 w-full"
+          readOnly
+          className="border rounded-xl p-3 w-full bg-gray-100"
         />
       </div>
 

@@ -82,13 +82,9 @@ export default function TripReportTable() {
     }));
   }, [tripReports]);
 const handleUpdateKm = (trip) => {
-  const vehicleWithKm = {
-    ...trip.vehiculo,
-
-    kilometraje: trip.kilollegada || 0,
-  };
-
-  console.log(vehicleWithKm);
+  const vehicleWithKm = vehicles.find(
+    (v) => v.id === trip.vehiculo.id
+  );
 
   setSelectedVehicle(vehicleWithKm);
   setSelectedTrip(trip);
