@@ -22,10 +22,10 @@ const mapVehicleFromApi = (v) => ({
   tipoe: v.modelos?.[0]?.tipoe ??"",
   //kilometraje: v.modelos && v.modelos.length > 0 ? v.modelos[0].kilometraje : "—",
 
-  // 👇 ESTE ES EL IMPORTANTE PARA EL MODAL
+  
   kilometrajeUI: v.modelos?.[0]?.kilometraje ?? 0,
   
-  // Datos de marca
+ 
   marca: v.modelos?.[0]?.marcas?.[0]?.marca ?? "",
   chasis: v.modelos?.[0]?.marcas?.[0]?.chasis ?? "",
   motor: v.modelos?.[0]?.marcas?.[0]?.motor ?? "",

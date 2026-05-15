@@ -32,10 +32,9 @@ export default function EditTripsForm({ initialData, isOpen, onClose, onSave, ch
       return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
     };
 
-    // ✅ 1. PRIMERO DECLARA ruta
     const ruta = initialData.rutas?.[0] || {};
 
-    // ✅ 2. DESPUÉS usa ruta en el map
+   
     const destinosFormateados = initialData.destinos?.length
       ? initialData.destinos.map((d, index) => {
 
@@ -207,6 +206,13 @@ export default function EditTripsForm({ initialData, isOpen, onClose, onSave, ch
     toast.error("Por favor complete los campos obligatorios en rojo.");
     return;
   }
+
+
+  const confirmacion = window.confirm(
+    "Si actualiza este viaje se eliminarán los presupuestos e informes realizados para este viaje. ¿Desea continuar?"
+  );
+
+  if (!confirmacion) return;
 
   const dataToSend = {
     tipo: formData.tipoViaje,

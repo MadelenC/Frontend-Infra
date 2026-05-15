@@ -34,9 +34,9 @@ export default function InformCheck({
     kmLlegada: "",
     horaLlegada: "",
 
-    viaticosCiudad: "",
-    viaticosProvincia: "",
-    viaticosFrontera: "",
+    viaticosCiudad: 0,
+    viaticosProvincia: 0,
+    viaticosFrontera: 0,
 
     pasajeros: "",
     kmsDesignados: "",
@@ -46,20 +46,20 @@ export default function InformCheck({
 
     recargue1: "",
     compra1: "",
-    recargue2: "",
-    compra2: "",
-    recargue3: "",
-    compra3: "",
+    recargue2: 0,
+    compra2: 0,
+    recargue3: 0,
+    compra3: 0,
 
     montope: "",
     montoim: "",
 
     peajes: "",
-    imprevistos: "",
+    imprevistos: 0,
 
-    devolucionCombustible: "",
-    devolucionPeajes: "",
-    devolucionImprevistos: "",
+    devolucionCombustible: 0,
+    devolucionPeajes: 0,
+    devolucionImprevistos: 0,
 
     informeViaje: "",
     descripcionTecnica: "",
@@ -90,24 +90,16 @@ const kmVehiculo =
   Number(vehiculo?.modelos?.[0]?.kilometraje || 0);
 
 console.log("KM VEHICULO:", kmVehiculo);
+// 🔥 ESTO SOLO PARA KM DESIGNADOS
+const kmRutas = (data?.rutas || []).reduce(
+  (acc, r) => acc + Number(r.total || 0),
+  0
+);
 
-
-
-  const rutas = data.rutas || [];
-  console.log("RUTAS:", rutas);
-
-  const kmRutas = rutas.reduce((acc, r) => {
-    const val = Number(r.total ?? 0);
-    return acc + val;
-  }, 0);
-
-  console.log(" KM RUTAS SUMA:", kmRutas);
-
-  const kmPartidaFinal = kmVehiculo + kmRutas;
+const kmPartidaFinal = kmVehiculo;
 
   console.log("ESULTADO FINAL:", {
     kmVehiculo,
-    kmRutas,
     kmPartidaFinal,
   });
 
@@ -156,13 +148,7 @@ console.log("KM VEHICULO:", kmVehiculo);
         vehiculoSeleccionado?.modelos?.[0]?.kilometraje || 0
       );
 
-    const kmRutas = (data?.rutas || []).reduce(
-      (acc, r) => acc + Number(r.total || 0),
-      0
-    );
-
-    const kmPartidaFinal =
-      kmVehiculo + kmRutas;
+    const kmPartidaFinal = kmVehiculo;
 
     setFormData((prev) => ({
       ...prev,

@@ -5,11 +5,11 @@ import Pagination from "./Paginations";
 import AddTripsFrom from "../form/AddTripsFrom";
 import CheckTripForm from "../form/TripsCheckForm";
 import TripsCajaForm from "../form/TripsCajaForm";
-import TripDeclarationForm from "../form/TripDeclarationForm";
 import TripDetailForm from "../form/TripDetailForm";
 import EditTripsForm from "../form/Cancel/EditTripForm";
 
 import InformCheck from "../form/SeccInfCh/InformCheck";
+import PdfButton from "./PdfButton";
 
 import { FiFileText, FiBarChart2, FiPlus } from "react-icons/fi";
 
@@ -44,6 +44,10 @@ export default function TripsTable({ externalTripId = null }) {
     fetchAllEncargados,
     fetchAllChoferes
   } = useUserStore();
+
+  const getTripById = useTripsStore(
+  (state) => state.getTripById
+);
 
   const { fetchAllVehicles } = useVehicleStore();
  const { fetchAllDestinos } = useDestinoStore();
@@ -103,23 +107,26 @@ export default function TripsTable({ externalTripId = null }) {
  
   const handleOpenModal = async (type, trip = null) => {
 
-  if ((type === "detalle" ||
-       type === "edit" ||
-       type === "InformCheck") && trip?.id) {
+  if (
+    (type === "detalle" ||
+      type === "edit" ||
+      type === "InformCheck") &&
+    trip?.id
+  ) {
 
     try {
-      const res = await fetch(
-        `http://localhost:3000/api/viajes/${trip.id}`
-      );
 
-      const tripData = await res.json();
-      console.log("RESPUESTA API:", tripData);
+      const tripData = await getTripById(trip.id);
+
+      console.log("RESPUESTA STORE:", tripData);
 
       const formattedForForms = {
         ...tripData,
+
         tipoViaje: tripData.tipo || "",
         inicio: tripData.fecha_inicial || "",
         final: tripData.fecha_final || "",
+
         chofer: tripData.choferes || [],
         encargado: tripData.encargados || [],
         vehiculo: tripData.vehiculos || [],
@@ -129,13 +136,19 @@ export default function TripsTable({ externalTripId = null }) {
       setSelectedTrip(formattedForForms);
 
     } catch (err) {
+
       toast.error("Error al cargar detalle del viaje");
+
     }
+
   } else {
+
     setSelectedTrip(trip);
+
   }
 
   setModalType(type);
+
 };
 
     const handleCloseModal = () => {
@@ -242,9 +255,7 @@ const handleDeleteTrip = async (id) => {
     </div>
   );
 
-  const pdfDoc = useMemo(() => (
-  <TripsReportPDF trips={filteredTrips} />
-), [filteredTrips]);
+ 
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4">
@@ -274,47 +285,10 @@ const handleDeleteTrip = async (id) => {
 
         <div className="flex flex-wrap gap-2 justify-start md:justify-end">
 
-          <button
-            onClick={() => handleOpenModal("declaratoria")}
-            className="flex items-center gap-2 bg-gray-600 hover:bg-gray-500 text-white px-3 h-10 rounded-md"
-          >
-            <FiFileText />
-            Declaratoria
-          </button>
+         
 
-          <PDFDownloadLink
-          document={
-            <TripsReportPDF
-              trips={pdfDoc}
-            />
-          }
-          fileName="reporte-viajes.pdf"
->
-
-  {({ loading }) => (
-
-    <button
-      className="
-      flex items-center gap-2
-      bg-red-600 hover:bg-red-700
-      text-white
-      px-4 h-10
-      rounded-md
-      "
-    >
-
-      <FiFileText />
-
-      {loading
-        ? "Generando..."
-        : "PDF"}
-
-    </button>
-
-  )}
-
-</PDFDownloadLink>
-
+      <PdfButton trips={filteredTrips} />
+      
           {!externalTripId && (
             <button
               onClick={() => handleOpenModal("add")}
@@ -418,11 +392,7 @@ const handleDeleteTrip = async (id) => {
         />
       )}
 
-      {modalType === "declaratoria" && (
-        <TripDeclarationForm
-          onClose={handleCloseModal}
-        />
-      )}
+      
 
       {modalType === "informe" && (
         <SimpleModal title="Informe de Viajes">
