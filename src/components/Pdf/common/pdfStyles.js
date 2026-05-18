@@ -3,7 +3,7 @@ import { StyleSheet } from "@react-pdf/renderer";
 export const styles = StyleSheet.create({
 
   page: {
-    paddingTop: 50,
+    paddingTop: 70,
     paddingBottom: 30,
     paddingLeft: 20,
     paddingRight: 20,

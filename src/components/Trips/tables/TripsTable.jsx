@@ -9,7 +9,8 @@ import TripDetailForm from "../form/TripDetailForm";
 import EditTripsForm from "../form/Cancel/EditTripForm";
 
 import InformCheck from "../form/SeccInfCh/InformCheck";
-import PdfButton from "./PdfButton";
+
+import VehicleReportButton from "../../pdf-buttons/VehicleReportButton";
 
 import { FiFileText, FiBarChart2, FiPlus } from "react-icons/fi";
 
@@ -22,7 +23,7 @@ import { toast } from "react-toastify";
 
 import { PDFDownloadLink } from "@react-pdf/renderer";
 
-import TripsReportPDF from "../../../components/Pdf/TripPDF/TripPDF";
+
 
 
 export default function TripsTable({ externalTripId = null }) {
@@ -48,6 +49,11 @@ export default function TripsTable({ externalTripId = null }) {
   const getTripById = useTripsStore(
   (state) => state.getTripById
 );
+
+const [openMenu, setOpenMenu] = useState({
+  id: null,
+  type: null,
+});
 
   const { fetchAllVehicles } = useVehicleStore();
  const { fetchAllDestinos } = useDestinoStore();
@@ -233,7 +239,8 @@ const handleDeleteTrip = async (id) => {
 }, [trips, search, tipo, externalTripId]);
 
   const SimpleModal = ({ title, children }) => (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+    >
       <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg w-[420px] p-6 border border-gray-200 dark:border-gray-700">
         <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">
           {title}
@@ -287,7 +294,7 @@ const handleDeleteTrip = async (id) => {
 
          
 
-      <PdfButton trips={filteredTrips} />
+      <VehicleReportButton />
       
           {!externalTripId && (
             <button
@@ -320,6 +327,8 @@ const handleDeleteTrip = async (id) => {
                 <TripsRow
                   key={trip.id}
                   trip={trip}
+                  openMenu={openMenu}
+                  setOpenMenu={setOpenMenu}
                   onOpenModal={handleOpenModal}
                   onCancelTrip={handleCancelTrip}
                   onDeleteTrip={handleDeleteTrip}

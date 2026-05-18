@@ -10,9 +10,10 @@ export const useUserStore = create((set, get) => ({
   
   users: [],
   drivers: [],
-
+reportUsers: [],
   loading: false,
   loadingDrivers: false,
+  loadingReport: false,
   error: null,
 
   page: 1,
@@ -102,6 +103,55 @@ export const useUserStore = create((set, get) => ({
       });
     }
   },
+
+  fetchUsersReport: async (tipo = "todos") => {
+
+  set({
+    loadingReport: true,
+  });
+
+  try {
+
+    const res = await getUsers({
+
+      page: 1,
+      limit: 10000,
+      search: "",
+
+      role:
+        tipo === "todos"
+          ? ""
+          : tipo,
+
+    });
+
+    set({
+
+      reportUsers:
+        res.data || [],
+
+      loadingReport: false,
+
+    });
+
+    return res.data || [];
+
+  } catch (error) {
+
+    console.error(error);
+
+    set({
+
+      reportUsers: [],
+      loadingReport: false,
+
+    });
+
+    return [];
+
+  }
+
+},
 
   
   setPage: (page) => set({ page }),

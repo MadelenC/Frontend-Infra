@@ -2,6 +2,7 @@ import React from "react";
 import { TableRow, TableCell } from "../../ui/table";
 import Badge from "../../ui/badge/Badge";
 import { FaEdit, FaPrint } from "react-icons/fa";
+import PresupuestosReportButton from "../../pdf-buttons/PresupuestoReportButton";
 
 export default function CheckBudgetRow({ budget, index, onEdit }) {
 
@@ -63,13 +64,7 @@ export default function CheckBudgetRow({ budget, index, onEdit }) {
             <FaEdit size={14} />
           </button>
 
-          <button
-            className="p-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-800 transition"
-            title="Imprimir presupuesto"
-            onClick={handlePrint}
-          >
-            <FaPrint size={14} />
-          </button>
+         <PresupuestosReportButton budgetId={budget.id} />
 
         </div>
       </TableCell>
