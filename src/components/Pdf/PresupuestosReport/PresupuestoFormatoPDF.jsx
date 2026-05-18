@@ -24,16 +24,17 @@ const safe = (v) => {
 
 export default function PresupuestoPDF({ data }) {
 
-  const presupuestos =
-    Array.isArray(data)
-      ? data
-      : [];
+  const item = data;
 
-  return (
-
-    <Document>
-
-      {presupuestos.map((item, index) => {
+  if (!item) {
+    return (
+      <Document>
+        <Page size="A4">
+          <Text>No hay datos</Text>
+        </Page>
+      </Document>
+    );
+  }
 
         console.log("ITEM =>", item);
         console.log("RUTAS =>", item.rutas);
@@ -43,9 +44,7 @@ export default function PresupuestoPDF({ data }) {
             ? item.rutas
             : [];
 
-        // =====================================
-        // DETALLES PRESUPUESTO
-        // =====================================
+       
 
         const detalles = [
 
@@ -171,16 +170,9 @@ export default function PresupuestoPDF({ data }) {
         ];
 
         return (
+        <Document>
+          <Page>
 
-          <Page
-            key={index}
-            size="A4"
-            style={styles.page}
-          >
-
-            {/* ===================================== */}
-            {/* TITULO */}
-            {/* ===================================== */}
 
             <View style={styles.header}>
 
@@ -188,13 +180,7 @@ export default function PresupuestoPDF({ data }) {
                 PRESUPUESTO DE VIAJE
               </Text>
 
-              <Text>
-                UNIVERSIDAD AUTÓNOMA TOMÁS FRÍAS
-              </Text>
-
-              <Text>
-                DEPARTAMENTO DE INFRAESTRUCTURA
-              </Text>
+              
 
             </View>
 
@@ -592,11 +578,7 @@ export default function PresupuestoPDF({ data }) {
 
             </View>
 
-          </Page>
-
-        );
-
-      })}
+   </Page>
 
     </Document>
 

@@ -5,37 +5,41 @@ import { FiPrinter } from "react-icons/fi";
 import PresupuestoPDF from "../Pdf/PresupuestosReport/PresupuestoFormatoPDF";
 import { useBudgetsReportStore } from "../../zustand/useReportBudgetsStore";
 
-export default function PresupuestosReportButton() {
+export default function PresupuestosReportButton({ budgetId }) {
 
   const { fetchReporte } = useBudgetsReportStore();
 
-  const handleDownload = async () => {
+const handleDownload = async () => {
+  try {
+    const response = await fetchReporte(budgetId);
 
-    try {
+    console.log("RESPONSE COMPLETO =>", response);
 
-      const data = await fetchReporte();
+    const presupuesto = response?.data; 
+        console.log("PRESUPUESTO FINAL =>", presupuesto);
+    console.log("VIAJE =>", presupuesto?.viaje);
+    console.log("RUTAS =>", presupuesto?.rutas);
 
-      const blob = await pdf(
-        <PresupuestoPDF data={data} />
-      ).toBlob();
+    const blob = await pdf(
+      <PresupuestoPDF data={presupuesto} />
+    ).toBlob();
 
-      const url = URL.createObjectURL(blob);
+    const url = URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "presupuesto-viaje.pdf";
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "presupuesto-viaje.pdf";
 
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
-      URL.revokeObjectURL(url);
+    URL.revokeObjectURL(url);
 
-    } catch (error) {
-      console.log("ERROR PDF:", error);
-    }
-
-  };
+  } catch (error) {
+    console.log("ERROR PDF:", error);
+  }
+};
 
   return (
     <button
@@ -43,7 +47,7 @@ export default function PresupuestosReportButton() {
       className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 h-10 rounded-lg"
     >
       <FiPrinter />
-      Reporte Presupuestos
+      Reporte Presupuesto
     </button>
   );
 }

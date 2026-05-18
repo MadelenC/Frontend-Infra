@@ -3,62 +3,39 @@
 import { create } from "zustand";
 
 import {
-getReportePresupuestos
+getBudgetById 
 } from "../services/reportBudgetsService";
 
 
 
 export const useBudgetsReportStore = create((set) => ({
 
-loading: false,
+  loading: false,
 
+  fetchReporte: async (id) => {
 
-fetchReporte: async () => {
+    set({ loading: true });
 
+    try {
 
-set({
+      const data = await getBudgetById (id);
 
-  loading: true,
+      console.log("DATA REPORTE =>", data);
 
-});
+      set({ loading: false });
 
-try {
+      return data; 
 
- 
-  const data =
-    await getReportePresupuestos();
+    } catch (error) {
 
-  console.log(
-    "DATA REPORTE =>",
-    data
-  );
+      console.log(error);
 
-  set({
+      set({ loading: false });
 
-    loading: false,
-
-  });
-
- 
-  return Array.isArray(data)
-    ? data
-    : [];
-
-} catch (error) {
-
-  console.log(error);
-
-  set({
-
-    loading: false,
-
-  });
-
-  return [];
-
-}
-
-
-},
+      return null;
+    }
+  },
 
 }));
+
+

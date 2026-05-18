@@ -16,9 +16,6 @@ return res.data.data || [];
 
 
 export const getBudgetById = async (id) => {
-
-const res = await api.get(`/reporte/${id}`);
-
-return res.data.data || null;
-
+  const res = await api.get(`/reporte/${id}`);
+  return res.data; 
 };

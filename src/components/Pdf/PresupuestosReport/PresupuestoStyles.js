@@ -4,6 +4,22 @@ export const styles = {
     fontSize: 8,
   },
 
+  header: {
+    marginBottom: 10,
+    textAlign: "center",
+  },
+
+  box: {
+    border: 1,
+    padding: 5,
+    marginTop: 5,
+  },
+
+  signatureContainer: {
+    marginTop: 30,
+    alignItems: "center",
+  },
+
   title: {
     fontSize: 12,
     textAlign: "center",
@@ -21,7 +37,6 @@ export const styles = {
     marginTop: 5,
   },
 
-  /* CABECERAS */
   th: {
     width: "15%",
     backgroundColor: "#eee",
@@ -69,7 +84,6 @@ export const styles = {
     fontWeight: "bold",
   },
 
-  /* CELDAS */
   tdCant: {
     width: "10%",
     padding: 3,
