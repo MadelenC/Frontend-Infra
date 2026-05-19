@@ -36,7 +36,7 @@ export default function NotaTable({
             },
           ]}
         >
-          NOTA:
+          NOTA: {safe(item.nota)}
         </Text>
 
       </View>
@@ -108,7 +108,28 @@ export default function NotaTable({
 
       </View>
 
+      <View style={styles.row}>
+
+        <Text style={[styles.cell, { width: "25%" }]}>
+          Fecha partida: {safe(item.fecha_sa)}
+        </Text>
+
+        <Text style={[styles.cell, { width: "25%" }]}>
+          Hora salida: {safe(item.hsalida)}
+        </Text>
+
+        <Text style={[styles.cell, { width: "25%" }]}>
+          Fecha llegada: {safe(item.fecha_sa)}
+        </Text>
+
+        <Text style={[styles.cell, { width: "25%" }]}>
+          Hora llegada: {safe(item.hllegada)}
+        </Text>
+
+      </View>
+
     </View>
+    
 
   );
 

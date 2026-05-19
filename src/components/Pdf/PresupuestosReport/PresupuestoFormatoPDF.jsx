@@ -62,7 +62,7 @@ export default function PresupuestoPDF({
           detalles={detalles}
           total8T={total8T}
         />
-        <PasajesSection presupuesto={item} />
+    
 
         <NotaTable item={item} />
 

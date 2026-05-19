@@ -43,46 +43,28 @@ export const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 
-  /* ========================= */
-  /* RUTAS */
-  /* ========================= */
+ 
 
   rutasContainer: {
-    width: 190,
-  },
+  width: "100%",
+},
 
-  rutaColumn: {
+rutaColumn: {
+  flex: 2.2,
+  borderWidth: 1,
+  borderColor: "#000",
+  paddingVertical: 3,
+  paddingHorizontal: 4,
+  justifyContent: "center",
+},
 
-    width: 140,
-
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-
-    borderColor: "#000",
-
-    paddingVertical: 3,
-    paddingHorizontal: 4,
-
-    justifyContent: "center",
-
-  },
-
-  kmColumn: {
-
-    width: 50,
-
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderRightWidth: 1,
-
-    borderColor: "#000",
-
-    justifyContent: "center",
-    alignItems: "center",
-
-  },
+kmColumn: {
+  flex: 0.8,
+  borderWidth: 1,
+  borderColor: "#000",
+  justifyContent: "center",
+  alignItems: "center",
+},
 
   rutaText: {
     fontSize: 7,
@@ -100,13 +82,13 @@ export const styles = StyleSheet.create({
 
 
 
-  /* ========================= */
+
 /* PRESUPUESTO */
-/* ========================= */
+
 
 presupuestoTable: {
   width: "100%",
-  marginTop: 10,
+  marginTop: -20,
 },
 
 presupuestoRow: {
@@ -115,7 +97,7 @@ presupuestoRow: {
 },
 
 colCant: {
-  flex: 0.7,
+  flex: 0.7,  
   borderWidth: 1,
   borderColor: "#000",
   padding: 3,

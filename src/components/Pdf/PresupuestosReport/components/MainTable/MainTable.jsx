@@ -13,7 +13,7 @@ import PresupuestoRows from "./PresupuestoRows";
 import PresupuestoTable from "./PresupuestosTable";
 import PasajesSection from "./PasajesSection";
 import CombustibleSection from "./CombustibleSection";
-
+import DatosViajeAdicional from "./DatosViajeAdicional"
 
 export default function MainTable({
   item,
@@ -26,50 +26,47 @@ export default function MainTable({
 
     <View style={styles.table}>
 
+      {/* ENCABEZADO */}
       <View style={styles.row}>
 
-        <Text
-          style={[
-            styles.cell,
-            styles.bold,
-            styles.center,
-            {
-              width: "62%",
-            },
-          ]}
-        >
-          VIAJE (Viaje Académico)
-        </Text>
+  <Text
+    style={[
+      styles.cell,
+      styles.bold,
+      styles.center,
+      { flex: 3 }
+    ]}
+  >
+    VIAJE (Viaje Académico)
+  </Text>
 
-        <Text
-          style={[
-            styles.cell,
-            styles.bold,
-            styles.center,
-            {
-              width: "28%",
-            },
-          ]}
-        >
-          Ruta
-        </Text>
+  <Text
+    style={[
+      styles.cell,
+      styles.bold,
+      styles.center,
+      { flex: 2.2 }
+    ]}
+  >
+    Ruta
+  </Text>
 
-        <Text
-          style={[
-            styles.cell,
-            styles.bold,
-            styles.center,
-            {
-              width: "10%",
-            },
-          ]}
-        >
-          KM
-        </Text>
+  <Text
+    style={[
+      styles.cell,
+      styles.bold,
+      styles.center,
+      { flex: 0.8 }
+    ]}
+  >
+    KM
+  </Text>
 
-      </View>
+</View>
+
 
       <View style={styles.row}>
+
 
         <View
           style={[
@@ -92,30 +89,37 @@ export default function MainTable({
 
         <ViajeInfo item={item} />
 
+
         <RutasSection rutas={rutas} />
 
       </View>
+      
+      <View style={styles.row}>
 
-     
+      {/* ESPACIO IZQUIERDA */}
+      <View style={{ width: "62%" }} />
+
+      {/* BLOQUE DERECHO (MISMA COLUMNA QUE RUTAS) */}
+      <View style={{ width: "38%" }}>
+
+        <CombustibleSection item={item} />
+
+        <DatosViajeAdicional item={item} />
+
+      </View>
+
+    </View>
 
       <PresupuestoTable item={item} />
-      <PresupuestoRows detalles={detalles} 
-      total8T={total8T}
-
+      <PresupuestoRows
+        detalles={detalles}
+        total8T={total8T}
       />
-      
-      <PasajesSection />
-<View style={{ width: "100%", flexDirection: "row" }}>
 
-  {/* IZQUIERDA VACÍA (respeta flujo) */}
-  <View style={{ width: "70%" }} />
+      {/* PASAJES */}
+      <PasajesSection presupuesto={item} />
 
-  {/* DERECHA: COMBUSTIBLE */}
-  <View style={{ width: "30%" }}>
-    <CombustibleSection item={item} />
-  </View>
-
-</View>
+      <View style={{ width: "70%" }} />
 
     </View>
 

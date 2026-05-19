@@ -32,33 +32,33 @@ export default function PasajesSection({ presupuesto }) {
       {rows.map((r, i) => (
         <View key={i} style={styles.presupuestoRow}>
 
-          {/* CANTIDAD */}
+
           <View style={styles.colCant}>
             <Text style={styles.bodyCenter}>
               {r.c || ""}
             </Text>
           </View>
 
-          {/* UNIDAD */}
+ 
           <View style={styles.colUnidad}>
             <Text style={styles.bodyCenter}>
               {r.u}
             </Text>
           </View>
 
-          {/* DESCRIPCIÓN */}
+    
           <View style={styles.colDescripcion}>
             <Text style={styles.bodyLeft}>
               {r.d}
             </Text>
           </View>
 
-          {/* P/U (vacío como en tu diseño) */}
+
           <View style={styles.colPU}>
             <Text />
           </View>
 
-          {/* TOTAL */}
+
           <View style={styles.colTotal}>
             <Text style={styles.bodyRight}>
               {r.t || "0.00"}
@@ -68,7 +68,7 @@ export default function PasajesSection({ presupuesto }) {
         </View>
       ))}
 
-      {/* TOTAL B */}
+
       <View style={styles.presupuestoRow}>
 
         <View style={styles.colCant} />
@@ -90,7 +90,7 @@ export default function PasajesSection({ presupuesto }) {
 
       </View>
 
-      {/* DIFERENCIA */}
+
       <View style={styles.presupuestoRow}>
 
         <View style={styles.colCant} />

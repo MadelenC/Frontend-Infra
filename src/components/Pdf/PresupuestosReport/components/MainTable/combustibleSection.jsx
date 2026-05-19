@@ -5,67 +5,52 @@ import { styles } from "../../PresupuestoStyles";
 export default function CombustibleSection({ item }) {
   if (!item) return null;
 
-  const row = {
-    flexDirection: "row",
-    width: "100%",
+  const cell = {
+    borderWidth: 1,
+    borderColor: "#000",
+    padding: 3,
+    fontSize: 7,
   };
 
   return (
-    <View
-      style={{
-        width: "100%",
-        border: "1px solid #000",
-        padding: 5,
-        marginTop: 10,
-      }}
-    >
+    <View style={{ width: "100%" }}>
 
-      {/* TÍTULO */}
-      <View style={row}>
-        <Text style={styles.headerText}>
+      {/* HEADER */}
+      <View style={{ flexDirection: "row" }}>
+        <Text style={[cell, { flex: 1, fontWeight: "bold", textAlign: "center" }]}>
           COMBUSTIBLE
         </Text>
       </View>
 
-      {/* FILA 1 */}
-      <View style={row}>
-        <Text style={{ flex: 1, fontSize: 7 }}>Combustible</Text>
-        <Text style={{ flex: 1, fontSize: 7, textAlign: "right" }}>
-          {item.cantidad1 || "0"}
+      {/* TABLA */}
+      <View style={{ flexDirection: "row" }}>
+        <Text style={[cell, { flex: 1 }]}>Combustible</Text>
+        <Text style={[cell, { flex: 1, textAlign: "right" }]}>
+          {item.cantidad1 || 0}
         </Text>
       </View>
 
-      {/* FILA 2 */}
-      <View style={row}>
-        <Text style={{ flex: 1, fontSize: 7 }}>Pedido</Text>
-        <Text style={{ flex: 1, fontSize: 7, textAlign: "right" }}>
+      <View style={{ flexDirection: "row" }}>
+        <Text style={[cell, { flex: 1 }]}>Pedido</Text>
+        <Text style={[cell, { flex: 1, textAlign: "right" }]}>
           0
         </Text>
       </View>
 
-      {/* FILA 3 */}
-      <View style={row}>
-        <Text style={{ flex: 1, fontSize: 7 }}>Carta</Text>
-        <Text style={{ flex: 1, fontSize: 7, textAlign: "right" }}>
-          {item.cantidad1 || "0"}
+      <View style={{ flexDirection: "row" }}>
+        <Text style={[cell, { flex: 1 }]}>Carta</Text>
+        <Text style={[cell, { flex: 1, textAlign: "right" }]}>
+          {item.cantidad1 || 0}
         </Text>
       </View>
 
       {/* TOTAL */}
-      <View
-        style={{
-          borderTop: "1px solid #000",
-          marginTop: 5,
-          paddingTop: 3,
-          flexDirection: "row",
-        }}
-      >
-        <Text style={{ flex: 1, fontSize: 7, fontWeight: "bold" }}>
+      <View style={{ flexDirection: "row" }}>
+        <Text style={[cell, { flex: 1, fontWeight: "bold" }]}>
           TOTAL
         </Text>
-
-        <Text style={{ flex: 1, fontSize: 7, textAlign: "right" }}>
-          {item.cantidad1 || "0"} Lts
+        <Text style={[cell, { flex: 1, textAlign: "right" }]}>
+          {item.cantidad1 || 0} Lts
         </Text>
       </View>
 

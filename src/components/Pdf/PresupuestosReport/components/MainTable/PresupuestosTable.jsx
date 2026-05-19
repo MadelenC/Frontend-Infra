@@ -17,7 +17,7 @@ export default function PresupuestoTable({
 
     <View style={styles.presupuestoTable}>
 
-      {/* ================= HEADER ================= */}
+      
 
       <View style={styles.presupuestoRow}>
 
@@ -53,8 +53,7 @@ export default function PresupuestoTable({
 
       </View>
 
-      {/* ================= FILAS ================= */}
-
+   
       {
         detalles.map((d, i) => (
 

@@ -63,7 +63,7 @@ export default function PresupuestoRows({
         ))
       }
 
-       {/* TOTAL GENERAL */}
+
 
   <View style={styles.presupuestoRow}>
 
