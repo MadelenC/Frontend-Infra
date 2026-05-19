@@ -1,121 +1,177 @@
-export const styles = {
+import { StyleSheet } from "@react-pdf/renderer";
+
+export const styles = StyleSheet.create({
+
   page: {
     padding: 20,
     fontSize: 8,
+    fontFamily: "Helvetica",
   },
 
   header: {
-    marginBottom: 10,
-    textAlign: "center",
-  },
-
-  box: {
-    border: 1,
-    padding: 5,
-    marginTop: 5,
-  },
-
-  signatureContainer: {
-    marginTop: 30,
     alignItems: "center",
+    marginBottom: 10,
   },
 
   title: {
-    fontSize: 12,
-    textAlign: "center",
+    fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 5,
+  },
+
+  table: {
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#000",
   },
 
   row: {
     flexDirection: "row",
-    borderBottom: 1,
   },
 
-  table: {
-    border: 1,
-    marginTop: 5,
-  },
-
-  th: {
-    width: "15%",
-    backgroundColor: "#eee",
+  cell: {
+    borderWidth: 1,
+    borderColor: "#000",
     padding: 3,
-    fontWeight: "bold",
-    borderRight: 1,
+    fontSize: 8,
   },
 
-  thCant: {
-    width: "10%",
-    backgroundColor: "#eee",
-    padding: 3,
-    fontWeight: "bold",
-    borderRight: 1,
+  center: {
+    textAlign: "center",
   },
 
-  thUnidad: {
-    width: "15%",
-    backgroundColor: "#eee",
-    padding: 3,
-    fontWeight: "bold",
-    borderRight: 1,
-  },
-
-  thDesc: {
-    width: "45%",
-    backgroundColor: "#eee",
-    padding: 3,
-    fontWeight: "bold",
-    borderRight: 1,
-  },
-
-  thRuta: {
-    width: "70%",
-    backgroundColor: "#eee",
-    padding: 3,
-    fontWeight: "bold",
-    borderRight: 1,
-  },
-
-  thKm: {
-    width: "30%",
-    backgroundColor: "#eee",
-    padding: 3,
+  bold: {
     fontWeight: "bold",
   },
 
-  tdCant: {
-    width: "10%",
-    padding: 3,
-    borderRight: 1,
+  /* ========================= */
+  /* RUTAS */
+  /* ========================= */
+
+  rutasContainer: {
+    width: 190,
   },
 
-  tdUnidad: {
-    width: "15%",
-    padding: 3,
-    borderRight: 1,
+  rutaColumn: {
+
+    width: 140,
+
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+
+    borderColor: "#000",
+
+    paddingVertical: 3,
+    paddingHorizontal: 4,
+
+    justifyContent: "center",
+
   },
 
-  tdDesc: {
-    width: "45%",
-    padding: 3,
-    borderRight: 1,
+  kmColumn: {
+
+    width: 50,
+
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderRightWidth: 1,
+
+    borderColor: "#000",
+
+    justifyContent: "center",
+    alignItems: "center",
+
   },
 
-  td: {
-    width: "15%",
-    padding: 3,
-    borderRight: 1,
+  rutaText: {
+    fontSize: 7,
   },
 
-  tdRuta: {
-    width: "70%",
-    padding: 3,
-    borderRight: 1,
+  kmText: {
+    fontSize: 7,
+    textAlign: "center",
   },
 
-  tdKm: {
-    width: "30%",
-    padding: 3,
+  firmaContainer: {
+    marginTop: 40,
+    alignItems: "center",
   },
-};
+
+
+
+  /* ========================= */
+/* PRESUPUESTO */
+/* ========================= */
+
+presupuestoTable: {
+  width: "100%",
+  marginTop: 10,
+},
+
+presupuestoRow: {
+  flexDirection: "row",
+  width: "62%",
+},
+
+colCant: {
+  flex: 0.7,
+  borderWidth: 1,
+  borderColor: "#000",
+  padding: 3,
+  justifyContent: "center",
+},
+
+colUnidad: {
+  flex: 1,
+  borderWidth: 1,
+  borderColor: "#000",
+  padding: 3,
+  justifyContent: "center",
+},
+
+colDescripcion: {
+  flex: 3.5,
+  borderWidth: 1,
+  borderColor: "#000",
+  padding: 3,
+  justifyContent: "center",
+},
+
+colPU: {
+  flex: 1,
+  borderWidth: 1,
+  borderColor: "#000",
+  padding: 3,
+  justifyContent: "center",
+},
+
+colTotal: {
+  flex: 1.2,
+  borderWidth: 1,
+  borderColor: "#000",
+  padding: 3,
+  justifyContent: "center",
+},
+
+headerText: {
+  fontSize: 7,
+  fontWeight: "bold",
+  textAlign: "center",
+},
+
+bodyCenter: {
+  fontSize: 7,
+  textAlign: "center",
+},
+
+bodyLeft: {
+  fontSize: 7,
+  textAlign: "left",
+},
+
+bodyRight: {
+  fontSize: 7,
+  textAlign: "right",
+},
+});
