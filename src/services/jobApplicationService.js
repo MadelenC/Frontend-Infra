@@ -1,10 +1,18 @@
 import api from "../helpers/axiosClient";
 
-// Traer todas las solicitudes
-export const getApplications = async () => {
+// Traer todas las solicitudes (PAGINADO)
+export const getApplications = async ({
+  page = 1,
+  limit = 8,
+} = {}) => {
   try {
-    const response = await api.get("/solicitudes");
+    const response = await api.get("/solicitudes", {
+      params: { page, limit },
+    });
+
     return response.data;
+    // esperado backend:
+    // { data, total, totalPages }
   } catch (err) {
     throw err.response?.data?.message || "Error al obtener las solicitudes";
   }
@@ -30,7 +38,7 @@ export const createApplication = async (data) => {
   }
 };
 
-//Actualizar una solicitud
+// Actualizar una solicitud
 export const updateApplication = async (id, data) => {
   try {
     const response = await api.put(`/solicitudes/${id}`, data);

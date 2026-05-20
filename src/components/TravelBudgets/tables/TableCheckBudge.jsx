@@ -48,21 +48,21 @@ export default function TableCheckBudget() {
   }, [page]);
 
   
-  useEffect(() => {
-    const loadData = async () => {
+useEffect(() => {
+  if (!openForm) return;
 
-      const drivers = await fetchAllChoferes();
-      const managers = await fetchAllEncargados();
-      const allVehicles = await fetchAllVehicles();
+  const loadData = async () => {
+    const drivers = await fetchAllChoferes();
+    const managers = await fetchAllEncargados();
+    const allVehicles = await fetchAllVehicles();
 
-      setChoferes(drivers);
-      setEncargados(managers);
-      setVehiculos(allVehicles);
-    };
+    setChoferes(drivers);
+    setEncargados(managers);
+    setVehiculos(allVehicles);
+  };
 
-    loadData();
-
-  }, []);
+  loadData();
+}, [openForm]);
 
   useEffect(() => {
   const delay = setTimeout(() => {

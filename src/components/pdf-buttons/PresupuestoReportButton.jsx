@@ -2,44 +2,48 @@ import React from "react";
 import { pdf } from "@react-pdf/renderer";
 import { FiPrinter } from "react-icons/fi";
 
-import PresupuestoPDF from "../Pdf/PresupuestosReport/PresupuestoFormatoPDF";
 import { useBudgetsReportStore } from "../../zustand/useReportBudgetsStore";
 
 export default function PresupuestosReportButton({ budgetId }) {
 
   const { fetchReporte } = useBudgetsReportStore();
 
-const handleDownload = async () => {
-  try {
-    const response = await fetchReporte(budgetId);
+  const handleDownload = async () => {
+    try {
+      // 1. Traer datos del backend
+      const response = await fetchReporte(budgetId);
 
-    console.log("RESPONSE COMPLETO =>", response);
+      const presupuesto = response?.data;
 
-    const presupuesto = response?.data; 
-        console.log("PRESUPUESTO FINAL =>", presupuesto);
-    console.log("VIAJE =>", presupuesto?.viaje);
-    console.log("RUTAS =>", presupuesto?.rutas);
+      console.log("PRESUPUESTO =>", presupuesto);
 
-    const blob = await pdf(
-      <PresupuestoPDF data={presupuesto} />
-    ).toBlob();
+      // 2. IMPORT DINÁMICO del PDF (IMPORTANTE)
+      const { default: PresupuestoPDF } = await import(
+        "../../Pdf/PresupuestosReport/PresupuestoFormatoPDF"
+      );
 
-    const url = URL.createObjectURL(blob);
+      // 3. Generar PDF
+      const blob = await pdf(
+        <PresupuestoPDF data={presupuesto} />
+      ).toBlob();
 
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "presupuesto-viaje.pdf";
+      // 4. Descargar archivo
+      const url = URL.createObjectURL(blob);
 
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "presupuesto-viaje.pdf";
 
-    URL.revokeObjectURL(url);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-  } catch (error) {
-    console.log("ERROR PDF:", error);
-  }
-};
+      URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.log("ERROR PDF:", error);
+    }
+  };
 
   return (
     <button

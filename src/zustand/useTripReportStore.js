@@ -16,52 +16,52 @@ export const useTripReportStore = create((set, get) => ({
   totalPages: 1,
   search: "",
 
-  setPage: (page) => {
-    set({ page });
-    get().fetchTripReports();
-  },
-
-  setSearch: (search) => {
-    set({ search, page: 1 });
-    get().fetchTripReports();
-  },
-
   
+
+  setPage: (page) => set({ page }),
+
+  setSearch: (search) => set({ search, page: 1 }),
+
+
   fetchTripReports: async () => {
+    const { page, limit, search } = get();
+
     set({ loading: true, error: null });
 
     try {
       const res = await getTripReports({
-        page: get().page,
-        limit: get().limit,
-        search: get().search,
+        page,
+        limit,
+        search,
       });
 
       set({
-        tripReports: res.data,      
-        totalPages: res.totalPages, 
+        tripReports: res.data,
+        totalPages: res.totalPages,
         loading: false,
       });
 
     } catch (err) {
       set({
-        error: err.message || err,
+        error: err.message || "Error al cargar trip reports",
         loading: false,
       });
     }
   },
 
+  
+
   addTripReport: async (data) => {
     try {
       const newReport = await createTripReport(data);
 
-      set({
-        tripReports: [newReport, ...get().tripReports],
-      });
+      set((state) => ({
+        tripReports: [newReport, ...state.tripReports],
+      }));
 
       return { ok: true };
     } catch (err) {
-      return { ok: false, error: err.message || err };
+      return { ok: false, error: err.message };
     }
   },
 
@@ -69,30 +69,30 @@ export const useTripReportStore = create((set, get) => ({
     try {
       const updated = await updateTripReport(id, data);
 
-      set({
-        tripReports: get().tripReports.map((r) =>
-          r.id === id ? { ...r, ...updated } : r
+      set((state) => ({
+        tripReports: state.tripReports.map((r) =>
+          r.id === id ? updated : r
         ),
-      });
+      }));
 
       return { ok: true };
     } catch (err) {
-      return { ok: false, error: err.message || err };
+      return { ok: false, error: err.message };
     }
   },
 
- 
+
   removeTripReport: async (id) => {
     try {
       await deleteTripReport(id);
 
-      set({
-        tripReports: get().tripReports.filter((r) => r.id !== id),
-      });
+      set((state) => ({
+        tripReports: state.tripReports.filter((r) => r.id !== id),
+      }));
 
       return { ok: true };
     } catch (err) {
-      return { ok: false, error: err.message || err };
+      return { ok: false, error: err.message };
     }
   },
 }));

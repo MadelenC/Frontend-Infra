@@ -11,7 +11,7 @@ export const useRepaymentStore = create((set, get) => ({
   loading: false,
   error: null,
 
-  // Traer todas las devoluciones
+ 
   fetchRepayments: async () => {
     set({ loading: true, error: null });
     try {

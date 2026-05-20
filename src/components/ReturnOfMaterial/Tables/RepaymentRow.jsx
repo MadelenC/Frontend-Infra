@@ -40,7 +40,7 @@ export default function RepaymentRow({ item, index, onAction }) {
 
         <button
           onClick={() => onAction?.("edit", item)}
-          className="p-2 bg-yellow-100 dark:bg-yellow-900 text-yellow-600 dark:text-yellow-300 rounded-full hover:bg-yellow-200 dark:hover:bg-yellow-800"
+          className="p-2 bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-300 rounded-full hover:bg-blue-200 dark:hover:bg-blue-800"
         >
           <FaEdit size={14} />
         </button>

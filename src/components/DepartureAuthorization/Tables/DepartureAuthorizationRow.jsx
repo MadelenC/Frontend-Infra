@@ -2,6 +2,7 @@ import React from "react";
 import { TableRow, TableCell } from "../../ui/table";
 import Badge from "../../ui/badge/Badge";
 import { FaEdit, FaPrint } from "react-icons/fa";
+import BoletaDeparturesButton from "../../pdf-buttons/BoletaDeparturesButton";
 
 export default function DepartureAuthorizationRow({
   departure,
@@ -53,13 +54,7 @@ export default function DepartureAuthorizationRow({
             <FaEdit size={14} />
           </button>
 
-          <button
-            className="p-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-800 transition"
-            title="Imprimir"
-            onClick={handlePrint}
-          >
-            <FaPrint size={14} />
-          </button>
+          <BoletaDeparturesButton boletaId={departure?.id} />
 
         </div>
       </TableCell>

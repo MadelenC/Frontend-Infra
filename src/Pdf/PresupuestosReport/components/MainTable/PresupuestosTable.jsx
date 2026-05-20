@@ -7,7 +7,7 @@ import {
 
 import { styles } from "../../PresupuestoStyles";
 
-import { safe } from "../../../../../utils/safe";
+import { safe } from "../../../../utils/safe";
 
 export default function PresupuestoTable({
   detalles = [],

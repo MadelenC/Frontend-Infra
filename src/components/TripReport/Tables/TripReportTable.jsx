@@ -36,33 +36,23 @@ export default function TripReportTable() {
   } = useVehicleStore();
   console.log("VEHICLES:", vehicles);
 
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const { search, setSearch } = useTripReportStore();
 
   const [openUpdateKmPanel, setOpenUpdateKmPanel] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [selectedTrip, setSelectedTrip] = useState(null);
 
-  // Debounce para evitar request por cada letra
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(search);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [search]);
-
-  // Cargar datos solo una vez
+  
   useEffect(() => {
     fetchAllChoferes();
     fetchAllEncargados();
     fetchAllVehicles();
   }, []);
 
-  // Buscar viajes
-  useEffect(() => {
-    fetchTripReports({ page, search: debouncedSearch });
-  }, [page, debouncedSearch]);
+useEffect(() => {
+  fetchTripReports();
+}, [page, search]);
+ 
 
   const enrichedTrips = useMemo(() => {
     return (tripReports || []).map((t) => ({

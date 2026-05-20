@@ -1,72 +1,48 @@
 import React from "react";
+import { pdf } from "@react-pdf/renderer";
+import { FiPrinter } from "react-icons/fi";
 
-import { pdf }
-from "@react-pdf/renderer";
+import { useUserStore } from "../../zustand/userStore";
 
-import { FiPrinter }
-from "react-icons/fi";
+export default function UsersReportButton({ tipo, title }) {
 
-import UsersReportPDF
-from "../Pdf/usersReport/UsersReportPDF";
+  const { fetchUsersReport } = useUserStore();
 
-import { useUserStore }
-from "../../zustand/userStore";
+  const handleDownload = async () => {
+    try {
 
-export default function UsersReportButton({
-  tipo,
-  title,
-}) {
+      const users = await fetchUsersReport(tipo);
 
-  const {
-    fetchUsersReport,
-  } = useUserStore();
+      // 🔥 IMPORT DINÁMICO (IMPORTANTE)
+      const { default: UsersReportPDF } = await import(
+        "../../Pdf/UsersReport/UsersReportPDF"
+      );
 
-  const handleDownload =
-    async () => {
+      const blob = await pdf(
+        <UsersReportPDF
+          users={users}
+          title={title}
+        />
+      ).toBlob();
 
-      try {
+      const url = URL.createObjectURL(blob);
 
-        const users =
-          await fetchUsersReport(tipo);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${tipo}-usuarios.pdf`;
 
-        const blob = await pdf(
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-          <UsersReportPDF
-            users={users}
-            title={title}
-          />
+      URL.revokeObjectURL(url);
 
-        ).toBlob();
-
-        const url =
-          URL.createObjectURL(blob);
-
-        const link =
-          document.createElement("a");
-
-        link.href = url;
-
-        link.download =
-          `${tipo}-usuarios.pdf`;
-
-        document.body.appendChild(link);
-
-        link.click();
-
-        document.body.removeChild(link);
-
-        URL.revokeObjectURL(url);
-
-      } catch (error) {
-
-        console.log(error);
-
-      }
-
-    };
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
-
     <button
       onClick={handleDownload}
       className="
@@ -77,14 +53,10 @@ export default function UsersReportButton({
         text-sm
       "
     >
-
       <div className="flex items-center gap-2">
         <FiPrinter />
         {title}
       </div>
-
     </button>
-
   );
-
 }

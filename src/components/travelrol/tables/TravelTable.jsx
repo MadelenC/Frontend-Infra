@@ -13,7 +13,7 @@ import {
 } from "@react-pdf/renderer";
 
 import RoleTravelPDF
-from "../../../components/Pdf/TravelRol/TravelRolPDF";
+from "../../../Pdf/TravelRol/TravelRolPDF";
 
 
 export default function TravelTable() {

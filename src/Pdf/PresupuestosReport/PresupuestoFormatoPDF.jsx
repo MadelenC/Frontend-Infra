@@ -16,7 +16,7 @@ import NotaTable from "./components/Nota/NotaTable";
 import FirmaFooter from "./components/Footer/FirmaFooter";
 import PasajesSection from "./components/MainTable/PasajesSection";
 
-import { buildDetalles } from "../../../utils/buildDetalles";
+import { buildDetalles } from "../../utils/buildDetalles";
 
 export default function PresupuestoPDF({
   data,

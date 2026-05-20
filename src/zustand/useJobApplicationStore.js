@@ -11,30 +11,36 @@ export const useJobApplicationStore = create((set, get) => ({
   loading: false,
   error: null,
 
-  //  Obtener todas las solicitudes
+  page: 1,
+  limit: 8,
+  totalPages: 1,
+
+  // -----------------------
+  // PAGINATION CONTROLS
+  // -----------------------
+
+  setPage: (page) => set({ page }),
+
+  // -----------------------
+  // FETCH PAGINADO
+  // -----------------------
+
   fetchApplications: async () => {
-    set({ loading: true, error: null });
-    try {
-      const data = await getApplications();
+  const { page, limit, choferId, vehiculoId } = get();
 
-      const mapped = data.map(a => ({
-        id: a.id,
-        chofer: a.chofer,
-        descripcion: a.descripsoli,
-        fecha: a.fecha,
-        vehiculo: a.vehiculo,
-        accesorios: a.accesorios || [],
-        createdAt: a.created_at,
-        updatedAt: a.updated_at,
-      }));
+  const res = await getApplications({
+    page,
+    limit,
+    choferId: choferId || "", 
+    vehiculoId: vehiculoId || "",
+  });
 
-      set({ applications: mapped, loading: false });
-    } catch (err) {
-      set({ error: err.message || err, loading: false });
-    }
-  },
+  set({
+    applications: res.data,
+    totalPages: res.totalPages,
+  });
+},
 
-//Crear solicitud
   addApplication: async (data) => {
     try {
       const newApp = await createApplication(data);
@@ -50,7 +56,9 @@ export const useJobApplicationStore = create((set, get) => ({
         updatedAt: newApp.updated_at,
       };
 
-      set({ applications: [...get().applications, mapped] });
+      set({
+        applications: [mapped, ...get().applications],
+      });
 
       return { ok: true };
     } catch (err) {
@@ -58,7 +66,10 @@ export const useJobApplicationStore = create((set, get) => ({
     }
   },
 
-  // 🔹 Editar solicitud
+  // -----------------------
+  // UPDATE
+  // -----------------------
+
   editApplication: async (id, data) => {
     try {
       const payload = {
@@ -66,8 +77,8 @@ export const useJobApplicationStore = create((set, get) => ({
         descripsoli: data.descripsoli ?? data.descripcion,
         fecha: data.fecha,
         vehiculo_id: data.vehiculo_id,
-        accesorio_ids: data.accesorio_ids || [],          
-        nuevos_accesorios: data.nuevos_accesorios || [],  
+        accesorio_ids: data.accesorio_ids || [],
+        nuevos_accesorios: data.nuevos_accesorios || [],
       };
 
       const updated = await updateApplication(id, payload);
@@ -95,7 +106,10 @@ export const useJobApplicationStore = create((set, get) => ({
     }
   },
 
-  // 🔹 Eliminar solicitud
+  // -----------------------
+  // DELETE
+  // -----------------------
+
   removeApplication: async (id) => {
     try {
       await deleteApplication(id);

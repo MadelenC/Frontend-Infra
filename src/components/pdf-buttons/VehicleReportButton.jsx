@@ -1,17 +1,7 @@
 import React, { useState } from "react";
-
-import {
-  PDFDownloadLink,
-} from "@react-pdf/renderer";
-
 import { FiFileText } from "react-icons/fi";
 
-import VehicleReportPDF
-from "../pdf/tripsVehiclesRport/VehicleReportPDF";
-
-import {
-  useReporteVehiculosStore,
-} from "../../zustand/useReporteVehiculosStore";
+import { useReporteVehiculosStore } from "../../zustand/useReporteVehiculosStore";
 
 export default function VehicleReportButton() {
 
@@ -21,22 +11,33 @@ export default function VehicleReportButton() {
     fetchReporte,
   } = useReporteVehiculosStore();
 
-  const [ready, setReady] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
+  const [PDFDoc, setPDFDoc] = useState(null);
 
-  const handleGenerate =
-    async () => {
+  const handleGenerate = async () => {
+    try {
+
+      setLoading(true);
 
       await fetchReporte();
 
-      setReady(true);
+      
+      const { default: VehicleReportPDF } = await import(
+        "../../Pdf/tripsVehiclesRport/VehicleReportPDF"
+      );
 
-    };
+      setPDFDoc(() => VehicleReportPDF);
 
-  if (!ready) {
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // 👇 antes de generar
+  if (!PDFDoc) {
     return (
-
       <button
         onClick={handleGenerate}
         className="
@@ -45,55 +46,47 @@ export default function VehicleReportButton() {
           px-4 h-10 rounded-md
         "
       >
-
         <FiFileText />
-
-        Generar Reporte
-
+        {loading ? "Generando..." : "Generar Reporte"}
       </button>
-
     );
-
   }
 
+  const VehicleReportPDF = PDFDoc;
+
   return (
+    <button
+      onClick={async () => {
 
-    <PDFDownloadLink
+        const { pdf } = await import("@react-pdf/renderer");
 
-      document={
-        <VehicleReportPDF
-          data={reporte}
-          totales={totales}
-        />
-      }
+        const blob = await pdf(
+          <VehicleReportPDF
+            data={reporte}
+            totales={totales}
+          />
+        ).toBlob();
 
-      fileName="reporte-vehiculos.pdf"
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "reporte-vehiculos.pdf";
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        URL.revokeObjectURL(url);
+      }}
+      className="
+        flex items-center gap-2
+        bg-red-600 text-white
+        px-4 h-10 rounded-md
+      "
     >
-
-      {({ loading }) => (
-
-        <button
-          className="
-            flex items-center gap-2
-            bg-red-600 text-white
-            px-4 h-10 rounded-md
-          "
-        >
-
-          <FiFileText />
-
-          {
-            loading
-              ? "Generando..."
-              : "Descargar PDF"
-          }
-
-        </button>
-
-      )}
-
-    </PDFDownloadLink>
-
+      <FiFileText />
+      Descargar PDF
+    </button>
   );
-
 }

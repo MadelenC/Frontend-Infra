@@ -2,39 +2,45 @@ import React from "react";
 import { pdf } from "@react-pdf/renderer";
 import { FiFileText } from "react-icons/fi";
 
-import { getHojaRuta } from "../../services/hojaRutaService";
+import { useReporteDepartureStore } from "../../zustand/useReporteDepartureStore";
 
-export default function HojaRutaButton({ viajeId }) {
+export default function BoletaDeparturesButton({ boletaId }) {
+  const fetchBoleta = useReporteDepartureStore((s) => s.fetchBoleta);
 
   const handleDownload = async () => {
     try {
+      const data = await fetchBoleta(boletaId);
+       const fechaImpresion = new Date().toLocaleDateString("es-BO", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+      
 
-      const res = await getHojaRuta(viajeId);
-      const data = res.data?.data;
+      console.log("DATA PDF:", data);
 
       if (!data) return;
 
-      // 🔥 IMPORT DINÁMICO (IMPORTANTE)
-      const { default: HojaRutaPDF } = await import(
-        "../../Pdf/tripsHojaRuta/HojaRutaPDF"
+      const { default: ReporteDeparture } = await import(
+        "../../Pdf/DepartureAuthorization/ReporteDeparture"
       );
 
       const blob = await pdf(
-        <HojaRutaPDF data={data} />
+        <ReporteDeparture boleta={data} 
+        fechaImpresion={fechaImpresion}/>
       ).toBlob();
 
       const url = URL.createObjectURL(blob);
 
       const link = document.createElement("a");
       link.href = url;
-      link.download = `hoja-ruta-${viajeId}.pdf`;
+      link.download = `boleta-salida-${boletaId}.pdf`;
 
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
       URL.revokeObjectURL(url);
-
     } catch (error) {
       console.log(error);
     }
@@ -53,7 +59,7 @@ export default function HojaRutaButton({ viajeId }) {
       "
     >
       <FiFileText />
-      Imprimir Ruta
+      Imprimir Boleta
     </button>
   );
 }
