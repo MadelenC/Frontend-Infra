@@ -6,27 +6,27 @@ export default function DesktopRow({ item, index, onAction }) {
   return (
     <TableRow className="border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
 
-      {/* # */}
+    
       <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">
         {index}
       </TableCell>
 
-      {/* Nombre */}
+    
       <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">
         {item.nombre || "-"}
       </TableCell>
 
-      {/* Motivo */}
+      
       <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">
         {item.motivo || "-"}
       </TableCell>
 
-      {/* Fecha */}
+    
       <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">
         {item.fecha || "-"}
       </TableCell>
 
-      {/* Operación */}
+     
       <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 flex gap-2 justify-center">
 
         <button

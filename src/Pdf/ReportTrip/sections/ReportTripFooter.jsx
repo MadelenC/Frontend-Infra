@@ -1,3 +1,5 @@
+// ReportTripFooter.jsx
+
 import React from "react";
 import { View, Text } from "@react-pdf/renderer";
 import styles from "../styles/reportTripStyles";
@@ -6,7 +8,9 @@ export default function ReportTripFooter({ trip }) {
   return (
     <View style={styles.section}>
 
-      <Text style={styles.sectionTitle}>VIÁTICOS Y COMBUSTIBLE</Text>
+      <Text style={styles.sectionTitle}>
+        VIÁTICOS Y COMBUSTIBLE
+      </Text>
 
       <View style={styles.row}>
         <Text>Viático A: {trip?.viaticoa}</Text>
