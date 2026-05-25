@@ -10,6 +10,7 @@ import { useAccessoriesStore } from "../../../zustand/useAccessoriesStore";
 import { useUserStore } from "../../../zustand/userStore";
 import CreateJobApplicationForm from "../Form/CreateJobApplicationForm";
 import EditJobApplicationForm from "../Form/EditJobAplicationForm";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 export default function JobApplicationTable() {
   const {
@@ -20,19 +21,26 @@ export default function JobApplicationTable() {
     page,
     setPage,
     totalPages,
+    search,
+    chofer,
+    vehiculoId,
+    setSearch,
+  setChofer,
+  setVehiculoId,
+  
   } = useJobApplicationStore();
 
   const { choferes = [], fetchAllChoferes } = useUserStore();
   const { vehicles = [], fetchAllVehicles } = useVehicleStore();
   const { accessories, fetchAccessories } = useAccessoriesStore();
 
-  const [chofer, setChofer] = useState("");
-  const [vehiculo, setVehiculo] = useState("");
-  const [search, setSearch] = useState("");
+ 
+
+
   const [modalType, setModalType] = useState(null);
   const [selectedApplication, setSelectedApplication] = useState(null);
 
-  const limit = 8;
+const limit = 8;
   const currentData = applications;
 
  
@@ -41,9 +49,10 @@ export default function JobApplicationTable() {
   fetchAllVehicles();
 }, []);
 
+
 useEffect(() => {
-   fetchApplications({ page, choferId: chofer, vehiculoId: vehiculo });
-}, [page, chofer, vehiculo]);
+  fetchApplications();
+}, [page, search, chofer, vehiculoId]);
 
   
   const handleOpenCreate = async () => {
@@ -93,18 +102,18 @@ useEffect(() => {
 
        
         <div className="w-full md:flex-1">
-          <SearchBar
-            chofer={chofer}
-            setChofer={setChofer}
-            vehiculo={vehiculo}
-            setVehiculo={setVehiculo}
-            listaChoferes={choferes.map((c) => ({
-              value: `${c.nombres} ${c.apellidos}`,
-              label: `${c.nombres} ${c.apellidos}`,
-            }))}
-            listaVehiculos={vehicles}
+         <SearchBar
             search={search}
             setSearch={setSearch}
+            chofer={chofer}
+            setChofer={setChofer}
+            vehiculo={vehiculoId}
+            setVehiculo={setVehiculoId}
+            listaChoferes={choferes.map(c => ({
+              value: `${c.nombres} ${c.apellidos}`,
+              label: `${c.nombres} ${c.apellidos}`
+            }))}
+            listaVehiculos={vehicles}
           />
         </div>
 

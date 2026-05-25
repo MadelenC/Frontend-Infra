@@ -7,7 +7,7 @@ export default function TableTrips({ trips, onOpenModal, onCancelTrip }) {
 
       <table className="w-full border-collapse text-sm text-gray-200">
 
-        {/* HEADER */}
+        
         <thead className="bg-gray-800">
           <tr>
             {[
@@ -32,7 +32,7 @@ export default function TableTrips({ trips, onOpenModal, onCancelTrip }) {
           </tr>
         </thead>
 
-        {/* BODY */}
+    
         <tbody>
           {trips.length > 0 ? (
             trips.map((trip) => (

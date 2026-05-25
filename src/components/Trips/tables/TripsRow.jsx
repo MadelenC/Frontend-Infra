@@ -44,7 +44,7 @@ export default function TripsRow({
 
   return (
     <tr
-      className={`border border-gray-200 dark:border-gray-700 transition-colors
+      className={`border border-gray-200 dark:border-gray-700 transition-colors dark:text-gray-400
       ${
         estado === "cancelado"
           ? "bg-red-100 dark:bg-red-900/40 hover:bg-red-200 dark:hover:bg-red-900/60"

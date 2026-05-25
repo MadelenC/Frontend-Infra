@@ -10,24 +10,20 @@ export default function PresupuestosReportButton({ budgetId }) {
 
   const handleDownload = async () => {
     try {
-      // 1. Traer datos del backend
+      
       const response = await fetchReporte(budgetId);
 
       const presupuesto = response?.data;
 
       console.log("PRESUPUESTO =>", presupuesto);
-
-      // 2. IMPORT DINÁMICO del PDF (IMPORTANTE)
       const { default: PresupuestoPDF } = await import(
         "../../Pdf/PresupuestosReport/PresupuestoFormatoPDF"
       );
 
-      // 3. Generar PDF
       const blob = await pdf(
         <PresupuestoPDF data={presupuesto} />
       ).toBlob();
 
-      // 4. Descargar archivo
       const url = URL.createObjectURL(blob);
 
       const link = document.createElement("a");
@@ -48,10 +44,9 @@ export default function PresupuestosReportButton({ budgetId }) {
   return (
     <button
       onClick={handleDownload}
-      className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 h-10 rounded-lg"
-    >
+      title="imprimir"
+      className="p-2 rounded-full   bg-red-100 dark:bg-red-900/30  text-red-600 dark:text-red-400  hover:bg-red-200 dark:hover:bg-red-800   transition duration-200  flex items-center justify-center">
       <FiPrinter />
-      Reporte Presupuesto
     </button>
   );
 }

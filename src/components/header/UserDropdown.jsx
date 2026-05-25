@@ -57,7 +57,7 @@ export default function UserDropdown() {
             }}
           >
             <SlUser className="w-5 h-5" />
-            Ver Perfil
+           👤 Ver Perfil
           </p>
           
         </div>

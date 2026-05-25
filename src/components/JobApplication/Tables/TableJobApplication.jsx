@@ -12,7 +12,7 @@ export default function TableJobApplication({
 
       <table className="w-full text-sm bg-white dark:bg-gray-900 border-collapse">
 
-        {/* HEADER */}
+     
         <thead className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-900">
           <tr>
             {[
@@ -34,7 +34,7 @@ export default function TableJobApplication({
           </tr>
         </thead>
 
-        {/* BODY */}
+       
         <tbody>
           {applications?.length > 0 ? (
             applications.map((app, index) => (

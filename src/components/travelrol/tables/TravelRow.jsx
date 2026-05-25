@@ -88,40 +88,15 @@ export default function TravelRow({
 
         <td className={cellClass} className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-400">{entitie.fecha}</td>
 
-        {/* OPERACIONES */}
+       
         <td className={`${cellClass} text-center relative`} ref={refOperaciones}>
-
-          <button
-            onClick={() => setOpenOperaciones(!openOperaciones)}
-            className="p-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs flex items-center gap-1 hover:bg-green-200 dark:hover:bg-green-800 transition"
-          >
-            Opciones <FaEllipsisV size={12} />
-          </button>
-
-          {openOperaciones && (
-            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-36 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-50">
-
-              <button className="w-full px-3 py-1.5 text-xs text-left hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                <FaEye /> Mostrar
-              </button>
-
-              <button className="w-full px-3 py-1.5 text-xs text-left hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                <FaPlus /> Insertar
-              </button>
-
-              <button className="w-full px-3 py-1.5 text-xs text-left hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                <FaBroom /> Limpiar
-              </button>
-
-              <button
-                onClick={() => onDelete(entitie.id)}
-                className="w-full px-3 py-1.5 text-xs text-left hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-2 text-red-600"
-              >
-                <FaTrash /> Eliminar
-              </button>
-
-            </div>
-          )}
+           <button
+              onClick={() => onDelete(entitie.id)}
+              className="p-2 rounded-full text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30  hover:text-red-700  hover:shadow-[0_0_10px_rgba(239,68,68,0.5)]   transition-all duration-200    flex items-center justify-center">
+              <FaTrash className="text-sm" />
+            </button>
+            
+          
         </td>
 
       </tr>

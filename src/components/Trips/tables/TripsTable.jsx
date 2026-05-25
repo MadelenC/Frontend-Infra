@@ -267,8 +267,7 @@ const handleDeleteTrip = async (id) => {
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4">
 
-      {/* FILTROS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 items-center">
+     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 items-center">
 
         <div className="flex gap-2 w-full">
           <div className="flex-1">
@@ -309,7 +308,7 @@ const handleDeleteTrip = async (id) => {
         </div>
       </div>
 
-      {/* TABLA */}
+   
       <div className="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-xl">
 
         <table className="w-full text-sm">

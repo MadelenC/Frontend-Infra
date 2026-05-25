@@ -14,25 +14,22 @@ export const useJobApplicationStore = create((set, get) => ({
   page: 1,
   limit: 8,
   totalPages: 1,
+  search: "",
+chofer: "",
+vehiculoId: "",
 
-  // -----------------------
-  // PAGINATION CONTROLS
-  // -----------------------
 
   setPage: (page) => set({ page }),
 
-  // -----------------------
-  // FETCH PAGINADO
-  // -----------------------
+  
 
-  fetchApplications: async () => {
-  const { page, limit, choferId, vehiculoId } = get();
-
+  fetchApplications: async ({ page, search, chofer, vehiculoId } = {}) => {
   const res = await getApplications({
     page,
-    limit,
-    choferId: choferId || "", 
-    vehiculoId: vehiculoId || "",
+    limit: get().limit,
+    search: search ?? get().search,
+    chofer: chofer ?? get().chofer,
+    vehiculoId: vehiculoId ?? get().vehiculoId,
   });
 
   set({
@@ -66,9 +63,7 @@ export const useJobApplicationStore = create((set, get) => ({
     }
   },
 
-  // -----------------------
-  // UPDATE
-  // -----------------------
+  
 
   editApplication: async (id, data) => {
     try {
@@ -106,9 +101,7 @@ export const useJobApplicationStore = create((set, get) => ({
     }
   },
 
-  // -----------------------
-  // DELETE
-  // -----------------------
+
 
   removeApplication: async (id) => {
     try {
@@ -123,4 +116,8 @@ export const useJobApplicationStore = create((set, get) => ({
       return { ok: false, error: err.message || err };
     }
   },
+
+  setSearch: (search) => set({ search, page: 1 }),
+setChofer: (chofer) => set({ chofer, page: 1 }),
+setVehiculoId: (vehiculoId) => set({ vehiculoId, page: 1 }),
 }));

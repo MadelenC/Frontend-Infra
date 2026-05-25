@@ -8,9 +8,7 @@ import PrintTravel from "../tables/TableTravelPrint";
 import ListException from "../form/Excep/ListException";
 import { FaPlus, FaPrint } from "react-icons/fa";
 import { useExceptionsStore } from "../../../zustand/useExceptionsStore";
-import {
-  PDFDownloadLink,
-} from "@react-pdf/renderer";
+import {  PDFDownloadLink,} from "@react-pdf/renderer";
 
 import RoleTravelPDF
 from "../../../Pdf/TravelRol/TravelRolPDF";
@@ -127,7 +125,6 @@ export default function TravelTable() {
   return (
     <div className="overflow-hidden rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-md p-4">
 
-      {/* HEADER */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
 
         <div className="w-full md:w-auto">
@@ -142,36 +139,33 @@ export default function TravelTable() {
           >
             <FaPlus size={14} /> Agregar Chofer
           </button>
-<PDFDownloadLink
-    document={
-      <RoleTravelPDF
-        travels={allTravels}
-      />
-    }
-    fileName="rol-viajes.pdf"
-  >
-    {({ loading }) => (
+      <PDFDownloadLink
+          document={
+            <RoleTravelPDF
+              travels={allTravels}
+            />
+          }
+          fileName="rol-viajes.pdf"
+        >
+          {({ loading }) => (
 
-      <button
-        className="
-        flex items-center justify-center gap-2
-        bg-red-600 hover:bg-red-700
-        text-white
-        px-5 py-3
-        rounded-lg
-        shadow
-        "
-      >
-        <FaPrint size={18} />
+            <button
+              className="
+              flex items-center justify-center gap-2
+              bg-red-600 hover:bg-red-700
+              text-white
+              px-5 py-3
+              rounded-lg
+              shadow
+              "
+            >
+              <FaPrint size={18} />
 
-        {loading
-          ? "Generando..."
-          : "Descargar PDF"}
 
-      </button>
+            </button>
 
-    )}
-  </PDFDownloadLink>
+          )}
+        </PDFDownloadLink>
 
         </div>
       </div>

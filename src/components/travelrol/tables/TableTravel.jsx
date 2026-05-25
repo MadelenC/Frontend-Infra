@@ -21,7 +21,7 @@ export default function TableTravel({
 
       <table className="min-w-full text-sm border-collapse bg-white dark:bg-gray-900">
 
-        {/* HEADER */}
+        
         <thead className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-800">
 
           <tr>
@@ -37,7 +37,7 @@ export default function TableTravel({
 
         </thead>
 
-        {/* BODY */}
+     
         <tbody>
 
           {entidades.length > 0 ? (

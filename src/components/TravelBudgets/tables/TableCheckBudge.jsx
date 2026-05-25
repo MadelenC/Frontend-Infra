@@ -8,6 +8,7 @@ import CheckBudgetForm from "../form/CheckBudgetForm";
 import { useTravelBudgetsStore } from "../../../zustand/useTravelBudgetsStore";
 import { useUserStore } from "../../../zustand/userStore";
 import { useVehicleStore } from "../../../zustand/useVehicleStore";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 export default function TableCheckBudget() {
 
@@ -19,21 +20,14 @@ export default function TableCheckBudget() {
     page,
     setPage,
     totalPages,
-    search,
-    setSearch,
   } = useTravelBudgetsStore();
 
-  const {
-    fetchAllChoferes,
-    fetchAllEncargados,
-  } = useUserStore();
-
-  const {
-    fetchAllVehicles,
-  } = useVehicleStore();
+  const { fetchAllChoferes, fetchAllEncargados,} = useUserStore();
+  const { fetchAllVehicles } = useVehicleStore();
 
   
   const [searchLocal, setSearchLocal] = useState("");
+   const debouncedSearch = useDebounce(searchLocal, 400);
 
   const [openForm, setOpenForm] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState(null);
@@ -41,11 +35,6 @@ export default function TableCheckBudget() {
   const [choferes, setChoferes] = useState([]);
   const [encargados, setEncargados] = useState([]);
   const [vehiculos, setVehiculos] = useState([]);
-
-
-  useEffect(() => {
-    fetchBudgets();
-  }, [page]);
 
   
 useEffect(() => {
@@ -64,18 +53,14 @@ useEffect(() => {
   loadData();
 }, [openForm]);
 
-  useEffect(() => {
-  const delay = setTimeout(() => {
-    setSearch(searchLocal); 
-    setPage(1);
-  }, 400);
+ useEffect(() => {
+  fetchBudgets(page, debouncedSearch);
+}, [page, debouncedSearch]);
 
-  return () => clearTimeout(delay);
-}, [searchLocal]);
+useEffect(() => {
+  setPage(1);
+}, [debouncedSearch]);
 
- 
-
-  // ENRIQUECER DATOS
   const enrichedBudgets = (budgets || []).map((b) => {
     return {
       ...b,
@@ -90,16 +75,13 @@ useEffect(() => {
     };
   });
 
-  // LOADING
-  if (loading) {
-    return (
-      <div className="p-4 text-center">
-        Cargando presupuestos...
-      </div>
-    );
-  }
+  {loading && (
+  <div className="text-sm text-gray-500 animate-pulse mb-2">
+    Buscando...
+  </div>
+)}
 
-  // ERROR
+ 
   if (error) {
     return (
       <div className="p-4 text-center text-red-500">
@@ -111,7 +93,6 @@ useEffect(() => {
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4">
 
-      {/* SEARCH */}
       <div className="h-10 w-64 mb-4">
         <CheckBudgetSearch
           search={searchLocal}
@@ -119,7 +100,7 @@ useEffect(() => {
         />
       </div>
 
-      {/* TABLE */}
+    
       <CheckBudgetTable
         budgets={enrichedBudgets}
         onEdit={(budget) => {
@@ -128,7 +109,6 @@ useEffect(() => {
         }}
       />
 
-      {/* PAGINATION */}
       {budgets.length > 0 && (
         <div className="flex justify-center mt-4">
           <Pagination
@@ -139,7 +119,7 @@ useEffect(() => {
         </div>
       )}
 
-      {/* MODAL */}
+  
       {openForm && (
         <CheckBudgetForm
           data={selectedBudget}

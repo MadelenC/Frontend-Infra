@@ -1,6 +1,6 @@
 import React from "react";
 import { pdf } from "@react-pdf/renderer";
-import { FiFileText } from "react-icons/fi";
+import { FiFileText,FiPrinter } from "react-icons/fi";
 
 import { useReporteDepartureStore } from "../../zustand/useReporteDepartureStore";
 
@@ -49,17 +49,10 @@ export default function BoletaDeparturesButton({ boletaId }) {
   return (
     <button
       onClick={handleDownload}
-      className="
-        flex items-center gap-1
-        bg-red-600 hover:bg-red-700
-        text-white text-xs
-        px-2 py-1
-        rounded
-        w-full
-      "
+      title="Imprimir boleta de salida"
+      className="p-2 rounded-full   bg-red-100 dark:bg-red-900/30  text-red-600 dark:text-red-400  hover:bg-red-200 dark:hover:bg-red-800   transition duration-200  flex items-center justify-center"
     >
-      <FiFileText />
-      Imprimir Boleta
+      <FiPrinter/>
     </button>
   );
 }

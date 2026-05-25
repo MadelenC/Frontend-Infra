@@ -19,30 +19,30 @@ export default function CheckBudgetRow({ budget, index, onEdit }) {
   };
 
   return (
-    <TableRow className="border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+    <TableRow className="border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ">
 
-      {/* # */}
-      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 font-medium text-gray-700 dark:text-gray-300">
+      
+      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 font-medium text-gray-700 dark:text-gray-400">
         {index}
       </TableCell>
 
-      {/* Num-Pre */}
-      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">
+ 
+      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-400">
         {budget.id}
       </TableCell>
 
-      {/* Chofer */}
-      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">
+  
+      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-400">
         {budget.choferNombre}
       </TableCell>
 
-      {/* Vehículo */}
-      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300">
+      
+      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-400">
         {budget.vehiculoNombre}
       </TableCell>
 
-      {/* Entidad */}
-      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 dark:text-gray-300">
+   
+      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 dark:text-gray-400">
         <Badge
           size="sm"
           color={badgeColor}
@@ -52,7 +52,7 @@ export default function CheckBudgetRow({ budget, index, onEdit }) {
         </Badge>
       </TableCell>
 
-      {/* Operaciones */}
+     
       <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2">
         <div className="flex items-center gap-2">
 

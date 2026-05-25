@@ -21,7 +21,7 @@ export default function Profile() {
 
   const [preview, setPreview] = useState(null);
 
-  // SOLO CAMPOS EDITABLES
+
   const [profile, setProfile] = useState({
     nombres: user?.nombres || "",
     apellidos: user?.apellidos || "",
@@ -243,7 +243,7 @@ export default function Profile() {
 
         </div>
 
-        {/* INFO */}
+   
         <div className="mt-8 space-y-4">
 
           <div className="bg-gray-100 dark:bg-[#1a2238] p-4 rounded-2xl border border-gray-200 dark:border-white/5">

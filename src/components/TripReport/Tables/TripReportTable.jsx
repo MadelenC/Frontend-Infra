@@ -82,7 +82,7 @@ const handleUpdateKm = (trip) => {
 };
 
   return (
-    <div className="bg-white p-4 rounded-xl shadow">
+    <div className="bg-white p-4 rounded-xl shadow dark:bg-gray-900">
 
       <div className="mb-4 w-64">
         <SearchBar search={search} setSearch={setSearch} />

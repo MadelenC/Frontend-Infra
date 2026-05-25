@@ -1,13 +1,18 @@
 import api from "../helpers/axiosClient";
 
-// Traer todas las solicitudes (PAGINADO)
+ 
 export const getApplications = async ({
   page = 1,
   limit = 8,
+  search = "",
+  chofer = "",
+  vehiculoId = "",
 } = {}) => {
   try {
     const response = await api.get("/solicitudes", {
-      params: { page, limit },
+      params: { page, limit,search,
+        chofer,
+        vehiculoId, },
     });
 
     return response.data;
@@ -18,7 +23,7 @@ export const getApplications = async ({
   }
 };
 
-// Traer una solicitud por ID
+
 export const getApplicationById = async (id) => {
   try {
     const response = await api.get(`/solicitudes/${id}`);
@@ -28,7 +33,7 @@ export const getApplicationById = async (id) => {
   }
 };
 
-// Crear una solicitud
+
 export const createApplication = async (data) => {
   try {
     const response = await api.post("/solicitudes", data);
@@ -38,7 +43,7 @@ export const createApplication = async (data) => {
   }
 };
 
-// Actualizar una solicitud
+
 export const updateApplication = async (id, data) => {
   try {
     const response = await api.put(`/solicitudes/${id}`, data);
@@ -48,7 +53,7 @@ export const updateApplication = async (id, data) => {
   }
 };
 
-// Eliminar una solicitud
+
 export const deleteApplication = async (id) => {
   try {
     const response = await api.delete(`/solicitudes/${id}`);

@@ -19,6 +19,15 @@ export default function ApplicationTable() {
     fetchApplications,
     addApplication,
     editApplication,
+    page,
+    setPage,
+    totalPages,
+    search,
+    chofer,
+    vehiculoId,
+    setSearch,
+    setChofer,
+    setVehiculoId,
   } = useJobApplicationStore();
 
   const { addMechanic } = useMechanicsStore();
@@ -28,10 +37,8 @@ export default function ApplicationTable() {
   const { accessories, fetchAccessories } = useAccessoriesStore();
   const { users, fetchUsers } = useUserStore(); 
 
-  const [chofer, setChofer] = useState("");
-  const [vehiculo, setVehiculo] = useState("");
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
+  const [modalType, setModalType] = useState(null);
+  const [editOpen, setEditOpen] = useState(false);
 
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [jobFormOpen, setJobFormOpen] = useState(false);
@@ -48,7 +55,10 @@ export default function ApplicationTable() {
     fetchUsers();
   }, []);
 
-  useEffect(() => setPage(1), [search, chofer, vehiculo]);
+useEffect(() => {
+  fetchApplications();
+}, [page, search, chofer, vehiculoId]);
+
 
   const handleOpenCreate = () => {
     setModalType("add");
@@ -101,43 +111,20 @@ export default function ApplicationTable() {
 
   const choferes = users?.filter(u => u.tipo && u.tipo.toLowerCase() === "chofer");
 
-  const filtered = applications.filter((a) => {
-    const choferNombre = a.chofer
-      ? `${a.chofer.nombres || ""} ${a.chofer.apellidos || ""}`.toLowerCase()
-      : "";
-
-    const matchChofer = chofer
-      ? choferNombre.includes(chofer.toLowerCase())
-      : true;
-
-    const idVehiculo = a.vehiculo?.id ? String(a.vehiculo.id) : "";
-    const tipoVehiculo = a.vehiculo?.tipog ? String(a.vehiculo.tipog).toLowerCase() : "";
-
-    const matchVehiculo = vehiculo
-      ? idVehiculo === vehiculo || tipoVehiculo.includes(vehiculo.toLowerCase())
-      : true;
-
-    return matchChofer && matchVehiculo;
-  });
-
-  const totalPages = Math.ceil(filtered.length / limit);
-
-  const currentData = filtered.slice(
-    (page - 1) * limit,
-    page * limit
-  );
+ 
+  const currentData = applications;
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4 transition-all">
 
-      {/* HEADER */}
+      
       <div className="flex justify-between items-center mb-4">
 
-        <SearchBarApplication
+       <SearchBarApplication
           chofer={chofer}
           setChofer={setChofer}
-          vehiculo={vehiculo}
-          setVehiculo={setVehiculo}
+          vehiculo={vehiculoId}
+          setVehiculo={setVehiculoId}
           listaChoferes={(choferes || []).map(c => ({
             value: `${c.nombres} ${c.apellidos}`,
             label: `${c.nombres} ${c.apellidos}`
@@ -158,7 +145,7 @@ export default function ApplicationTable() {
 
       </div>
 
-      {/* TABLE */}
+     
       <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
 
         <table className="w-full text-sm bg-white dark:bg-gray-900">

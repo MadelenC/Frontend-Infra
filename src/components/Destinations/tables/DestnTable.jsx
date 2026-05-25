@@ -4,6 +4,7 @@ import TableDest from "./TableDestn";
 import Pagination from "./Paginations";
 import { useDestinoStore } from "../../../zustand/useDestinationsStore";
 import { FaPrint } from "react-icons/fa";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 export default function DestTable() {
   const {
@@ -14,10 +15,11 @@ export default function DestTable() {
     error,
   } = useDestinoStore();
 
-  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [page, setPage] = useState(1);
 
+  const debouncedSearch = useDebounce(searchInput, 500);
   const limit = 8;
 
   const departments = [
@@ -32,33 +34,31 @@ export default function DestTable() {
     "Pando",
   ];
 
- 
+
   useEffect(() => {
-    fetchDestinos(page, limit, departmentFilter, search);
-  }, [page, departmentFilter, search]);
+    fetchDestinos(page, limit, departmentFilter, debouncedSearch);
+  }, [page, departmentFilter, debouncedSearch]);
 
-  if (loading)
-    return (
-      <div className="p-4 text-center text-gray-500 dark:text-gray-400 animate-pulse">
-        Cargando destinos...
-      </div>
-    );
 
-  if (error)
-    return (
-      <div className="p-4 text-center text-red-500 font-semibold">
-        {error}
-      </div>
-    );
+  useEffect(() => {
+    setPage(1);
+  }, [departmentFilter]);
+
+    {loading && (
+  <div className="absolute inset-0 bg-white/40 dark:bg-black/30 backdrop-blur-sm flex items-center justify-center z-10">
+    <div className="text-sm text-gray-500 animate-pulse">
+      Buscando destinos...
+    </div>
+  </div>
+)}
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-4">
+    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-4 relative">
 
-      {/* FILTROS */}
       <div className="flex justify-between gap-3 mb-4">
 
         <div className="flex gap-2">
-          <SearchBar search={search} setSearch={setSearch} />
+          <SearchBar search={searchInput} setSearch={setSearchInput} />
 
           <select
             value={departmentFilter}
@@ -78,17 +78,16 @@ export default function DestTable() {
         </button>
       </div>
 
-      {/* TABLA */}
+      
       <TableDest data={destinos} />
 
-      {/* SIN RESULTADOS */}
-      {destinos.length === 0 && (
+      {!loading && destinos.length === 0 && (
         <div className="text-center text-gray-500 mt-3">
           No hay resultados
         </div>
       )}
 
-      {/* PAGINACIÓN */}
+   
       {destinos.length > 0 && (
         <Pagination
           page={page}
@@ -96,8 +95,6 @@ export default function DestTable() {
           setPage={setPage}
         />
       )}
-
     </div>
   );
 }
-

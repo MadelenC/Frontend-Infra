@@ -66,10 +66,10 @@ export default function TableVehicle() {
   return (
     <div className="max-w-full rounded-xl bg-white dark:bg-gray-900 shadow-md p-4 pt-14">
 
-{/* FILTROS */}
+
 <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-4">
 
-  {/* IZQUIERDA */}
+
   <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto items-end">
 
     <div className="w-full sm:w-64">
@@ -95,7 +95,6 @@ export default function TableVehicle() {
     className="h-10 flex items-center justify-center gap-2
       bg-gradient-to-r from-blue-600 to-blue-500
       hover:from-blue-700 hover:to-blue-600
-      dark:bg-gray-600 dark:bg-none dark:hover:bg-gray-800
       text-white px-5 rounded-lg shadow-lg font-medium
       transition-all duration-300
       hover:scale-105 active:scale-95"

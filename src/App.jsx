@@ -56,7 +56,7 @@ export default function App() {
       <Routes>
 
 <Route path="/" element={<Home />} />
-        {/* ================= AUTH ================= */}
+       
         <Route
           path="/signin"
           element={
@@ -68,11 +68,11 @@ export default function App() {
 
         <Route path="/signup" element={<SignUp />} />
 
-        {/* ================= APP LAYOUT ===========*/}
+        
         <Route element={<AppLayout />}>
 
 
-          {/* 🔥 DASHBOARD */}
+          
           <Route
             path="/dashboard"
             element={
@@ -90,36 +90,29 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-       {/* ================= MODULOS ================= */}
+      
           <Route path="/usuarios" element={<UserHome />} />
           <Route path="/entidades" element={<UserProfiles />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/vehiculos" element={<FormElements />} />
           <Route path="/travel-rol" element={<Travelrol />} />
-          <Route path="/combustible" element={<Combustible />} />
           <Route path="/destinos" element={<Destinations />} />
           <Route path="/mapas" element={<Maps />} />
           <Route path="/reservas" element={<Reservations />} />
-
-          {/* VIAJES */}
           <Route path="/viajes">
             <Route index element={<TripsHome />} />
             <Route path="calendar" element={<Calendar />} />
           </Route>
-
-          {/* PRESUPUESTOS */}
           <Route path="/presupuestos">
             <Route index element={<CheckBudgetHome />} />
             <Route path="cheque" element={<CheckBudgetHome />} />
             <Route path="caja" element={<CashBudgetHome />} />
           </Route>
-
-          {/* AUTORIZACION */}
           <Route path="/autorizacion" element={<DepartureHome />} />
           <Route path="/informe" element={<TripReportHome />} />
           <Route path="/Solicitud_Trabajo" element={<JobApplicationHome />} />
 
-          {/* ================= MANTENIMIENTO ================= */}
+      
           <Route path="/mantenimiento">
             <Route
               index
@@ -147,7 +140,7 @@ export default function App() {
             />
           </Route>
 
-          {/* ================= PEDIDOS ================= */}
+        
           <Route path="/pedido">
             <Route
               index
@@ -175,7 +168,7 @@ export default function App() {
             />
           </Route>
 
-          {/* DEVOLUCIONES */}
+ 
           <Route
             path="/devoluciones"
             element={
@@ -185,7 +178,7 @@ export default function App() {
             }
           />
 
-          {/* ================= UI ================= */}
+         
           <Route path="/alerts" element={<Alerts />} />
           <Route path="/avatars" element={<Avatars />} />
           <Route path="/badge" element={<Badges />} />
@@ -195,7 +188,7 @@ export default function App() {
 
         </Route>
 
-        {/* ================= NOT FOUND ================= */}
+     
         <Route path="*" element={<NotFound />} />
 
       </Routes>

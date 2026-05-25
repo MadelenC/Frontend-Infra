@@ -8,14 +8,13 @@ export const useAuthStore = create(
         user: null,
         token: null,
 
-        // Guardar usuario
+        
         setUser: (user) => set({ user }),
 
-        // Guardar token
+      
         setToken: (token) => set({ token }),
 
-        // Limpiar sesión
-       // 🔥 NUEVO: actualizar solo campos del usuario
+      
         updateUser: (data) =>
           set({
             user: {

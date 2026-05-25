@@ -2,7 +2,7 @@ import React from "react";
 import { pdf } from "@react-pdf/renderer";
 import ReportTrip from "../../Pdf/ReportTrip/ReportTrip";
 import { getTripReportById } from "../../services/TripReportService";
-import { FaFilePdf } from "react-icons/fa";
+import { FiPrinter } from "react-icons/fi";
 
 export default function ReportTripButton({ tripId }) {
 
@@ -37,24 +37,9 @@ export default function ReportTripButton({ tripId }) {
    <button
   onClick={handleDownload}
   title="Imprimir PDF"
-  style={{
-    background: "transparent",
-    border: "none",
-    cursor: "pointer",
-    fontSize: "24px",
-    color: "#dc2626",
-    transition: "0.2s",
-  }}
-  onMouseEnter={(e) => {
-    e.currentTarget.style.color = "#991b1b";
-    e.currentTarget.style.transform = "scale(1.1)";
-  }}
-  onMouseLeave={(e) => {
-    e.currentTarget.style.color = "#dc2626";
-    e.currentTarget.style.transform = "scale(1)";
-  }}
->
-  <FaFilePdf />
+  className="p-2 rounded-full   bg-red-100 dark:bg-red-900/30  text-red-600 dark:text-red-400  hover:bg-red-200 dark:hover:bg-red-800   transition duration-200  flex items-center justify-center">
+
+  <FiPrinter />
 </button>
   );
 }

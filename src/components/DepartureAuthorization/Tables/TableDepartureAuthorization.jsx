@@ -13,8 +13,8 @@ export default function TableDepartureAuthorization({
 
       <table className="w-full text-sm bg-white dark:bg-gray-900 border-collapse">
 
-        {/* HEADER */}
-        <thead className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-800">
+        
+        <thead className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-800 ">
 
           <tr>
             {[

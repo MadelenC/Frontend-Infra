@@ -18,12 +18,12 @@ export const useTravelBudgetsStore = create((set, get) => ({
   search: "",
   totalPages: 1,
 
-  // Traer presupuestos
-  fetchBudgets: async () => {
+ 
+  fetchBudgets: async (page = 1, search = "") => {
     set({ loading: true, error: null });
 
     try {
-      const { page, limit, search } = get();
+      const limit = get().limit;
 
       const data = await getBudgets({
         page,
@@ -45,15 +45,7 @@ export const useTravelBudgetsStore = create((set, get) => ({
   },
 
   setPage: (page) => set({ page }),
-
-   // 🔥 SEARCH CON DEBOUNCE
-  setSearch: (search) =>
-  set({
-    search,
-    page: 1,
-  }),
-
-  // Crear
+  
   addBudget: async (data) => {
     try {
       await createBudget(data);

@@ -78,7 +78,7 @@ fetchDestinos: async ( page, limit, departamento, search  ) => {
   },
 
 
-  // Crear un destino
+  
   addDestino: async (data) => {
     try {
       const newDestino = await createDestino(data);
@@ -100,7 +100,7 @@ fetchDestinos: async ( page, limit, departamento, search  ) => {
     }
   },
 
-  // Editar un destino
+  
   editDestino: async (id, data) => {
     try {
       const payload = {
