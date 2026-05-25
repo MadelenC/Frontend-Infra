@@ -13,7 +13,7 @@ export const useMaterialOrderStore = create((set, get) => ({
   loading: false,
   error: null,
 
-  // 🔹 Obtener todas las peticiones
+ 
   fetchRequests: async () => {
     set({ loading: true, error: null });
     try {
@@ -80,7 +80,7 @@ export const useMaterialOrderStore = create((set, get) => ({
     }
   },
 
-  // 🔹 Obtener una petición por ID
+
   fetchRequestById: async (id) => {
     set({ loading: true, error: null });
     try {
@@ -148,7 +148,7 @@ export const useMaterialOrderStore = create((set, get) => ({
     }
   },
 
-  //  Crear petición
+
   addRequest: async (data) => {
     try {
       const newRequest = await createRequest(data);

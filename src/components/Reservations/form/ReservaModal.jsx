@@ -30,6 +30,7 @@ export default function ReservaModal({
     encargado: [],
     entidad: "",
     objetivo: "",
+     dias: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -50,10 +51,11 @@ export default function ReservaModal({
     setFormData({
       destinos: initialData.destinos?.length
         ? initialData.destinos.map(d => ({
+            id: d.id || "",
             nombre: d.nombre || "",
             km: d.km || ""
           }))
-        : [{ nombre: "", km: "" }],
+        : [{ id: "", nombre: "", km: "" }],
 
       kmAdicional: initialData.kmAdicional || "",
       tipoViaje: initialData.tipoViaje || "",
@@ -104,21 +106,62 @@ export default function ReservaModal({
 
   
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!validateForm()) {
-      toast.error("❌ Complete los campos obligatorios");
-      return;
-    }
+  if (!validateForm()) {
+    toast.error("❌ Complete los campos obligatorios");
+    return;
+  }
 
-    try {
-      await onSave(formData);
-      toast.success("✅ Reserva guardada correctamente");
-      onClose();
-    } catch (error) {
-      toast.error("⚠️ Error al guardar la reserva");
-    }
+  const dataToSend = {
+    tipo: formData.tipoViaje,
+
+    entidad: formData.entidad,
+    objetivo: formData.objetivo,
+    dias: formData.dias,
+
+    pasajeros: Number(formData.pasajeros),
+
+    fecha_inicial: formData.inicio,
+    fecha_final: formData.final,
+
+    reserva_id: initialData?.id || null,
+
+    destinos: formData.destinos.map((d) => ({
+      id: d.id,
+      km: Number(d.km) || 0,
+    })),
+
+    vehiculos: formData.vehiculo.map((id) => ({
+      id,
+    })),
+
+    usuarios: [
+      ...formData.chofer.map((id) => ({
+        id,
+        tipo: "chofer",
+      })),
+
+      ...formData.encargado.map((id) => ({
+        id,
+        tipo: "encargado",
+      })),
+    ],
   };
+
+  try {
+    console.log("DATA A ENVIAR:", dataToSend);
+    await onSave(dataToSend);
+
+    toast.success("✅ Reserva guardada correctamente");
+
+    onClose();
+  } catch (error) {
+    console.error(error);
+
+    toast.error("⚠️ Error al guardar la reserva");
+  }
+};
 
   return (
     <div className="fixed inset-0 flex justify-center items-center z-50 p-5 bg-black/40 backdrop-blur-sm">

@@ -77,7 +77,6 @@ export const useTravelBudgetsStore = create((set, get) => ({
     }
   },
 
-  // Eliminar
   removeBudget: async (id) => {
     try {
       await deleteBudget(id);

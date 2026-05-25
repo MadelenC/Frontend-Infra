@@ -14,11 +14,12 @@ function SeccionDestinos({
   const listaDestinos = formData?.destinos ?? [];
   const containerRef = useRef(null);
 
-  // Seleccionar un destino de la lista
+
   const seleccionarDestino = useCallback((i, dest) => {
     const nuevos = [...listaDestinos];
 
-    nuevos[i] = {
+      nuevos[i] = {
+      id: dest.id,
       nombre: `(${dest.departamentoInicio}) ${dest.origen} → ${dest.destino}`,
       km: dest.distancia || ""
     };
@@ -27,7 +28,7 @@ function SeccionDestinos({
     setOpenDestinoIndex(null);
     setSearchDestino("");
 
-    // Validar en tiempo real
+
     if (setErrors) {
       if (!dest.nombre) {
         setErrors(prev => ({
@@ -44,7 +45,7 @@ function SeccionDestinos({
     }
   }, [listaDestinos, setFormData, setOpenDestinoIndex, setSearchDestino, setErrors]);
 
-  // Cerrar dropdown al click fuera
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -55,15 +56,17 @@ function SeccionDestinos({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [setOpenDestinoIndex]);
 
-  // Agregar nuevo destino vacío
-  const agregarDestino = () => {
+
+    const agregarDestino = () => {
     setFormData(prev => ({
       ...prev,
-      destinos: [...(prev.destinos ?? []), { nombre: "", km: "" }]
+      destinos: [
+        ...(prev.destinos ?? []),
+        { id: "", nombre: "", km: "" }
+      ]
     }));
   };
 
-  // Eliminar destino
   const eliminarDestino = (index) => {
     setFormData(prev => ({
       ...prev,
@@ -79,7 +82,7 @@ function SeccionDestinos({
     }
   };
 
-  // Filtrado optimizado de destinos
+
   const destinosFiltrados = useMemo(() => {
     if (!searchDestino) return destinos.slice(0, 50);
 
@@ -92,7 +95,7 @@ function SeccionDestinos({
       .slice(0, 50);
   }, [searchDestino, destinos]);
 
-  // Total Km (destinos + km adicional)
+
   const totalKm = useMemo(() => {
     const kmDestinos = listaDestinos.reduce(
       (acc, d) => acc + Number(d.km || 0),

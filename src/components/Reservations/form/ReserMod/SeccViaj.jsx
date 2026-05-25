@@ -10,7 +10,6 @@ function SeccionViaje({ formData, handleChange, errors }) {
 
       <div className="grid grid-cols-2 gap-4">
 
-        {/* TIPO VIAJE */}
         <div>
           <label className="text-sm font-semibold">Tipo de viaje</label>
           <select
@@ -31,7 +30,7 @@ function SeccionViaje({ formData, handleChange, errors }) {
           )}
         </div>
 
-        {/* PASAJEROS */}
+   
         <div>
           <label className="text-sm font-semibold">Pasajeros</label>
           <input
@@ -47,7 +46,7 @@ function SeccionViaje({ formData, handleChange, errors }) {
           )}
         </div>
 
-        {/* INICIO */}
+ 
         <div>
           <label className="text-sm font-semibold">Fecha inicio</label>
           <input
@@ -63,7 +62,6 @@ function SeccionViaje({ formData, handleChange, errors }) {
           )}
         </div>
 
-        {/* FIN */}
         <div>
           <label className="text-sm font-semibold">Fecha fin</label>
           <input

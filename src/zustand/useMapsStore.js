@@ -15,7 +15,7 @@ export const useMapsStore = create((set, get) => ({
   search: "",
    totalPages:1,
 
-  // Traer todos los mapas
+
    fetchMaps: async () => {
     set({ loading: true, error: null });
 

@@ -45,7 +45,7 @@ export default function AddReservaModal({ isOpen, onClose, onSave, encargados = 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // evitar números en texto
+
     if ((name === "entidad" || name === "objetivo") && /\d/.test(value)) {
       return;
     }

@@ -89,23 +89,14 @@ export default function TableReserva() {
   const handleEditSave = async (formData) => {
 
   const payload = {
-    tipo: formData.tipoViaje,
-    entidad: formData.entidad,
-    objetivo: formData.objetivo,
-    pasajeros: formData.pasajeros,
-    fecha_inicial: formData.inicio,
-    fecha_final: formData.final,
-    dias: formData.dias,
+    ...formData,
 
     estado: "pendiente",
 
-    reserva: selectedReserva.id,
-
-    destinos: formData.destinos,
-    chofer: formData.chofer,
-    vehiculo: formData.vehiculo,
-    encargado: formData.encargado,
+    reserva_id: selectedReserva.id,
   };
+
+  console.log("DATA A ENVIAR:", payload);
 
   const res = await addTrip(payload);
 
@@ -115,7 +106,9 @@ export default function TableReserva() {
   }
 
   toast.success("Viaje creado desde reserva");
+
   setIsEditOpen(false);
+
   setSelectedReserva(null);
 };
 

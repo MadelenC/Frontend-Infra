@@ -88,7 +88,7 @@ export default function Home() {
           </p>
 
           <h1 className="text-white text-5xl md:text-6xl font-black leading-tight">
-            Sistema Administrativo
+           Departamento de Infraestructura
           </h1>
 
           <p className="mt-5 text-white/60 text-sm md:text-base max-w-2xl">

@@ -11,7 +11,7 @@ export const useMaintenanceStore = create((set, get) => ({
   loading: false,
   error: null,
 
-  // 🔹 Obtener todos los mantenimientos
+
   fetchMaintenances: async () => {
     set({ loading: true, error: null });
     try {
