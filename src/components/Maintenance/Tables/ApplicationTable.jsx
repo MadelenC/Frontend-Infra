@@ -132,16 +132,7 @@ useEffect(() => {
           listaVehiculos={vehicles}
         />
 
-        <button
-          onClick={handleOpenCreate}
-          className="flex items-center gap-3 bg-gradient-to-r from-orange-600 to-orange-500
-              hover:from-orange-700 hover:to-orange-600 text-white px-5 py-3 rounded-lg shadow-lg font-medium
-              focus:outline-none focus:ring-4 focus:ring-orange-400 focus:ring-offset-2
-              dark:focus:ring-gray-600 dark:focus:ring-offset-gray-900
-              transition-all duration-300 hover:scale-105 active:scale-95 mb-4"
-        >
-          Imprimir
-        </button>
+    
 
       </div>
 
@@ -187,7 +178,7 @@ useEffect(() => {
         </table>
       </div>
 
-      {/* PAGINACIÓN */}
+ 
       <div className="flex justify-center mt-4">
         <Pagination
           page={page}
@@ -196,7 +187,7 @@ useEffect(() => {
         />
       </div>
 
-      {/* FORMULARIOS */}
+      
       {jobFormOpen && selectedJobApplication && (
         <CreateJobForm
           isOpen={jobFormOpen}

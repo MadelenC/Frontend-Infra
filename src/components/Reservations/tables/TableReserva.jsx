@@ -91,7 +91,7 @@ export default function TableReserva() {
   const payload = {
     ...formData,
 
-    estado: "pendiente",
+    estado: "activo",
 
     reserva_id: selectedReserva.id,
   };

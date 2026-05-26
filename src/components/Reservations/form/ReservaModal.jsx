@@ -113,6 +113,12 @@ export default function ReservaModal({
     return;
   }
 
+  const totalKm =
+  formData.destinos.reduce(
+    (acc, d) => acc + (Number(d.km) || 0),
+    0
+  ) + (Number(formData.kmAdicional) || 0);
+
   const dataToSend = {
     tipo: formData.tipoViaje,
 
@@ -135,6 +141,10 @@ export default function ReservaModal({
     vehiculos: formData.vehiculo.map((id) => ({
       id,
     })),
+
+    kmAdicional: Number(formData.kmAdicional) || 0,
+
+    kmTotal: totalKm,
 
     usuarios: [
       ...formData.chofer.map((id) => ({

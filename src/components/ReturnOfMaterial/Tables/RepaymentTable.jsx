@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import RepaymentRow from "./RepaymentRow";
 import EditRepaymentForm from "../Form/EditRepaymentForm";
 import { useRepaymentStore } from "../../../zustand/useRepaymetnStore";
+import ReturnsReportButton from "../../pdf-buttons/ReturnsReportButton";
 
 
 export default function TableRepayment() {
@@ -74,12 +75,7 @@ export default function TableRepayment() {
             />
           </label>
         </div>
-        <button
-          onClick={() => window.print()}
-          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition"
-        >
-          Imprimir
-        </button>
+        <ReturnsReportButton data={filteredData} />
       </div>
 
       

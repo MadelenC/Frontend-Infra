@@ -1,6 +1,7 @@
 import React from "react";
 import { TableRow, TableCell } from "../../ui/table";
 import { FaEdit, FaPrint, FaTrash } from "react-icons/fa";
+import JobReportButton from "../../pdf-buttons/JobReportButton";
 
 export default function JobApplicationRow({
   application,
@@ -67,13 +68,7 @@ export default function JobApplicationRow({
           </button>
 
        
-          <button
-            className="p-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-800 transition"
-            title="Imprimir"
-            onClick={handlePrint}
-          >
-            <FaPrint size={14} />
-          </button>
+          <JobReportButton item={application} />
 
         </div>
       </TableCell>
