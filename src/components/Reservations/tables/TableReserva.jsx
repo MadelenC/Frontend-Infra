@@ -47,29 +47,51 @@ export default function TableReserva() {
   }, [page]);
 
   
-  useEffect(() => {
-    if (!(isAddOpen || isEditOpen)) return;
+ useEffect(() => {
+  if (!isAddOpen) return;
 
-    const loadData = async () => {
-      try {
-        const [enc, cho, dest, veh] = await Promise.all([
-          fetchAllEncargados(),
-          fetchAllChoferes(),
-          fetchAllDestinos(),
-          fetchAllVehicles(), 
-        ]);
+  const loadAddData = async () => {
+    try {
 
-        setEncargados(enc);
-        setChoferes(cho);
-        setDestinos(dest);
-        setVehiculos(veh); 
-      } catch (err) {
-        console.error("Error cargando data:", err);
-      }
-    };
+      const enc = await fetchAllEncargados();
 
-    loadData();
-  }, [isAddOpen, isEditOpen]);
+      setEncargados(enc);
+
+    } catch (err) {
+      console.error("Error cargando encargados:", err);
+    }
+  };
+
+  loadAddData();
+
+}, [isAddOpen]);
+
+useEffect(() => {
+  if (!isEditOpen) return;
+
+  const loadEditData = async () => {
+    try {
+
+      const [enc, cho, dest, veh] = await Promise.all([
+        fetchAllEncargados(),
+        fetchAllChoferes(),
+        fetchAllDestinos(),
+        fetchAllVehicles(),
+      ]);
+
+      setEncargados(enc);
+      setChoferes(cho);
+      setDestinos(dest);
+      setVehiculos(veh);
+
+    } catch (err) {
+      console.error("Error cargando data:", err);
+    }
+  };
+
+  loadEditData();
+
+}, [isEditOpen]);
 
   const filtered = reservas.filter((r) =>
     (r.entidad || "").toLowerCase().includes(search.toLowerCase())
@@ -117,7 +139,6 @@ export default function TableReserva() {
 
       <ToastContainer />
 
-      
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-4">
 
   

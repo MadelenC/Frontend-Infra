@@ -87,44 +87,39 @@ const [openMenu, setOpenMenu] = useState({
   useEffect(() => setPage(1), [search, tipo]);
 
 
-  useEffect(() => {
-  const loadData = async () => {
-    const [
-      enc,
-      chof,
-      veh,
-      dest
-    ] = await Promise.all([
-      fetchAllEncargados(),
-      fetchAllChoferes(),
-      fetchAllVehicles(),
-      fetchAllDestinos()
-    ]);
-
-    setEncargados(enc || []);
-    setChoferes(chof || []);
-    setVehiculos(veh || []);
-    setAllDestinos(dest || []);
-  };
-
-  loadData();
-}, []);
-
- 
   const handleOpenModal = async (type, trip = null) => {
 
-  if (
-    (type === "detalle" ||
-      type === "edit" ||
-      type === "InformCheck") &&
-    trip?.id
-  ) {
+  try {
 
-    try {
+    if (
+      type === "add" ||
+      type === "edit" ||
+      type === "cheque" ||
+      type === "caja" ||
+      type === "InformCheck"
+    ) {
+
+      const [enc, chof, veh, dest] = await Promise.all([
+        fetchAllEncargados(),
+        fetchAllChoferes(),
+        fetchAllVehicles(),
+        fetchAllDestinos(),
+      ]);
+
+      setEncargados(enc || []);
+      setChoferes(chof || []);
+      setVehiculos(veh || []);
+      setAllDestinos(dest || []);
+    }
+
+    if (
+      (type === "detalle" ||
+        type === "edit" ||
+        type === "InformCheck") &&
+      trip?.id
+    ) {
 
       const tripData = await getTripById(trip.id);
-
-      console.log("RESPUESTA STORE:", tripData);
 
       const formattedForForms = {
         ...tripData,
@@ -141,21 +136,25 @@ const [openMenu, setOpenMenu] = useState({
 
       setSelectedTrip(formattedForForms);
 
-    } catch (err) {
+    } else {
 
-      toast.error("Error al cargar detalle del viaje");
+      setSelectedTrip(trip);
 
     }
 
-  } else {
+    setModalType(type);
 
-    setSelectedTrip(trip);
+  } catch (err) {
+
+    console.error(err);
+
+    toast.error("Error cargando datos");
 
   }
-
-  setModalType(type);
-
 };
+
+ 
+
 
     const handleCloseModal = () => {
     setModalType(null);

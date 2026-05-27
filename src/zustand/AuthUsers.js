@@ -8,13 +8,10 @@ export const useAuthStore = create(
         user: null,
         token: null,
 
-        
         setUser: (user) => set({ user }),
 
-      
         setToken: (token) => set({ token }),
 
-      
         updateUser: (data) =>
           set({
             user: {

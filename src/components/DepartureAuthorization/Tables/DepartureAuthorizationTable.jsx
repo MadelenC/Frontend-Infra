@@ -36,28 +36,36 @@ const [allVehicles, setAllVehicles] = useState([]);
 
   const limit = 8;
 
-useEffect(() => {
+  useEffect(() => {
   fetchDepartures();
+}, []); 
 
-  const loadData = async () => {
-    const choferesData = await fetchAllChoferes();
-    const vehiculosData = await fetchAllVehicles();
 
-    setAllChoferes(choferesData);
-    setAllVehicles(vehiculosData);
-  };
-
-  loadData();
-}, []);
 
   useEffect(() => setPage(1), [search]);
 
-  const handleOpenCreate = () => setModalType("add");
+  const handleOpenCreate = async () => {
 
-  const handleEdit = (departure) => {
-    setSelectedDeparture(departure);
-    setEditOpen(true);
-  };
+  const choferesData = await fetchAllChoferes();
+  const vehiculosData = await fetchAllVehicles();
+
+  setAllChoferes(choferesData || []);
+  setAllVehicles(vehiculosData || []);
+
+  setModalType("add");
+};
+
+  const handleEdit = async (departure) => {
+
+  const choferesData = await fetchAllChoferes();
+  const vehiculosData = await fetchAllVehicles();
+
+  setAllChoferes(choferesData || []);
+  setAllVehicles(vehiculosData || []);
+
+  setSelectedDeparture(departure);
+  setEditOpen(true);
+};
 
   const handleCloseEdit = () => {
     setEditOpen(false);

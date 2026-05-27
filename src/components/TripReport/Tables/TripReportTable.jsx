@@ -43,11 +43,7 @@ export default function TripReportTable() {
   const [selectedTrip, setSelectedTrip] = useState(null);
 
   
-  useEffect(() => {
-    fetchAllChoferes();
-    fetchAllEncargados();
-    fetchAllVehicles();
-  }, []);
+ 
 
 useEffect(() => {
   fetchTripReports();
@@ -71,8 +67,11 @@ useEffect(() => {
         : "Sin encargado",
     }));
   }, [tripReports]);
-const handleUpdateKm = (trip) => {
-  const vehicleWithKm = vehicles.find(
+const handleUpdateKm = async (trip) => {
+
+  const vehiculosData = await fetchAllVehicles();
+
+  const vehicleWithKm = vehiculosData.find(
     (v) => v.id === trip.vehiculo.id
   );
 
