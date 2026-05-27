@@ -51,13 +51,17 @@ export default function VehicleRow({ vehicle, onEdit, onUpdateKm, onView }) {
 
           <button
             onClick={onEdit}
-            className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-800 transition"
+            className="p-2 rounded-full bg-indigo-100 dark:bg-indigo-900/30
+            text-indigo-600 dark:text-indigo-400 hover:bg-indigo-200
+              dark:hover:bg-indigo-800 transition"
+              title="Editar"
           >
             <FaEdit size={14} />
           </button>
 
           <button
             onClick={onUpdateKm}
+            title="Actualizar kilometraje"
             className="p-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-800 transition"
           >
             <FaTachometerAlt size={14} />
@@ -65,6 +69,7 @@ export default function VehicleRow({ vehicle, onEdit, onUpdateKm, onView }) {
 
           <button
             onClick={onView}
+            title="ver"
             className="p-2 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-800 transition"
           >
             <FaEye size={14} />

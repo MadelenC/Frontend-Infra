@@ -46,6 +46,8 @@ export default function TableUser() {
     );
   }
 
+  
+
   return (
     <div className="p-4 space-y-4">
 
@@ -61,7 +63,7 @@ export default function TableUser() {
 
   <div className="flex items-center gap-2">
 
-  {/* BOTON IMPRIMIR */}
+ 
   <div className="relative group">
 
     <button
@@ -109,7 +111,6 @@ export default function TableUser() {
 
   </div>
 
-  {/* BOTON AGREGAR */}
   <button
     onClick={() => {
       setOpenPanel(true);
@@ -120,8 +121,6 @@ export default function TableUser() {
       whitespace-nowrap min-w-max
       bg-gradient-to-r from-blue-600 to-blue-500
       hover:from-blue-700 hover:to-blue-600
-      dark:bg-gray-600 dark:bg-none
-      dark:hover:bg-gray-800
       text-white px-8 rounded-lg shadow-lg
       font-medium transition-all duration-300
       hover:scale-105 active:scale-95

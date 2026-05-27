@@ -21,7 +21,7 @@ export default function RoleTravelPDF({
     <Document>
 
       <Page
-        size="A4"
+        size="LETTER"
         orientation="portrait"
         style={styles.page}
       >

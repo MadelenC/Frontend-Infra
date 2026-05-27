@@ -102,27 +102,12 @@ export default function EditUserForm({ user, onUpdate, onDelete, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 top-11 bg-opacity-30 flex justify-center items-start overflow-auto p-12 z-50 max-h-[100vh] bg-black/40 backdrop-blur-sm">
-
-      <form
-        onSubmit={handleSubmit}
-        className="relative bg-white rounded-lg shadow-md p-12 max-w-xl w-full max-h-[80vh] overflow-y-auto dark:bg-gray-800 dark:text-gray-200"
-      >
-
-       
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute top-3 right-3 text-gray-700 font-bold px-3 py-1 rounded hover:bg-gray-200"
-        >
-          X
-        </button>
-
-        <h1 className="text-lg font-bold mb-4 text-center">
-          Editar Usuario
-        </h1>
-
-        
+    
+        <form
+      onSubmit={handleSubmit}
+      className="w-full dark:text-gray-200"
+    >
+ 
         <div className="grid grid-cols-2 gap-4">
 
           <div className="flex flex-col">
@@ -263,7 +248,7 @@ export default function EditUserForm({ user, onUpdate, onDelete, onClose }) {
               className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md
                         transition transform hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
             >
-              <VscCheck className="text-lg" />
+      
               Actualizar
             </button>
 
@@ -273,13 +258,13 @@ export default function EditUserForm({ user, onUpdate, onDelete, onClose }) {
               className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2 rounded-lg shadow-md
                         transition transform hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-400"
             >
-              <LuTrash2 className="text-lg" />
+              
               Eliminar
             </button>
           </div>
 
       </form>
-    </div>
+    
   );
 }
 

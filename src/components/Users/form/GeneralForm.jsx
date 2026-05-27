@@ -115,7 +115,7 @@ export default function GeneralForm({ onSubmit }) {
     }
   };
 
-  //  VALIDAR AL SALIR DEL INPUT
+  
   const handleBlur = (e) => {
     const { name, value } = e.target;
 

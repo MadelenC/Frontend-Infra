@@ -583,6 +583,11 @@
   dependencies:
     "@fullcalendar/daygrid" "~6.1.19"
 
+"@googlemaps/js-api-loader@^1.16.6":
+  version "1.16.10"
+  resolved "https://registry.yarnpkg.com/@googlemaps/js-api-loader/-/js-api-loader-1.16.10.tgz#b61cf2b4a1b6ed77017b0dab131e6d51e814ec4e"
+  integrity sha512-c2erv2k7P2ilYzMmtYcMgAR21AULosQuUHJbStnrvRk2dG93k5cqptDrh9A8p+ZNlyhiqEOgHW7N9PAizdUM7Q==
+
 "@humanfs/core@^0.19.1":
   version "0.19.1"
   resolved "https://registry.yarnpkg.com/@humanfs/core/-/core-0.19.1.tgz#17c55ca7d426733fe3c561906b8173c336b40a77"
@@ -2959,7 +2964,15 @@ keyv@^4.5.4:
   dependencies:
     json-buffer "3.0.1"
 
-leaflet@^1.9.4:
+leaflet-geosearch@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/leaflet-geosearch/-/leaflet-geosearch-4.4.0.tgz#cb0004cb51e36b06d64e818ff9dfe4755c2e8e1e"
+  integrity sha512-Pt/3JU0Oxvk+5ccGChNOV8yxk+Vl+3P83drGwW8/6ugF+K7zKPkx3naGDbPdhfeUmy+QuSCeVdvjN1jLCgwbaQ==
+  optionalDependencies:
+    "@googlemaps/js-api-loader" "^1.16.6"
+    leaflet "^1.6.0"
+
+leaflet@^1.6.0, leaflet@^1.9.4:
   version "1.9.4"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.9.4.tgz#23fae724e282fa25745aff82ca4d394748db7d8d"
   integrity sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA==

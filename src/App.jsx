@@ -92,7 +92,6 @@ export default function App() {
           />
       
           <Route path="/usuarios" element={<UserHome />} />
-          <Route path="/entidades" element={<UserProfiles />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/vehiculos" element={<FormElements />} />
           <Route path="/travel-rol" element={<Travelrol />} />

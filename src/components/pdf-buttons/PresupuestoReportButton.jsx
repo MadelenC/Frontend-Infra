@@ -46,7 +46,7 @@ export default function PresupuestosReportButton({ budgetId }) {
       onClick={handleDownload}
       title="imprimir"
       className="p-2 rounded-full   bg-red-100 dark:bg-red-900/30  text-red-600 dark:text-red-400  hover:bg-red-200 dark:hover:bg-red-800   transition duration-200  flex items-center justify-center">
-      <FiPrinter />
+      <FiPrinter  size={14} />
     </button>
   );
 }

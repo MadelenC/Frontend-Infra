@@ -3,8 +3,8 @@ import React from "react";
 import { pdf }
 from "@react-pdf/renderer";
 
-import { FaPrint }
-from "react-icons/fa";
+import { FiPrinter }
+from "react-icons/fi";
 
 export default function JobReportButton({
   item,
@@ -47,16 +47,9 @@ export default function JobReportButton({
 
     <button
       onClick={handlePrint}
-      className="
-        p-2
-        bg-orange-100
-        text-orange-600
-        rounded-full
-        hover:bg-orange-200
-      "
-    >
+       className="p-2 rounded-full   bg-red-100 dark:bg-red-900/30  text-red-600 dark:text-red-400  hover:bg-red-200 dark:hover:bg-red-800   transition duration-200  flex items-center justify-center">
 
-      <FaPrint size={14} />
+      <FiPrinter  size={14} />
 
     </button>
 

@@ -50,7 +50,7 @@ export default function PresupuestoPDF({
     <Document>
 
       <Page
-        size="A4"
+        size="LETTER"
         style={styles.page}
       >
 

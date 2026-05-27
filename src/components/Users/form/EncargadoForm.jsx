@@ -33,7 +33,6 @@ export default function EncargadoForm({ onSubmit, onClose }) {
     if (entidades.length === 0) fetchEntidades();
   }, [entidades.length, fetchEntidades]);
 
-  // VALIDAR CAMPO INDIVIDUAL
   const validateField = (name, value) => {
     let error = "";
 
@@ -109,7 +108,6 @@ export default function EncargadoForm({ onSubmit, onClose }) {
     }
   };
 
-  // VALIDAR AL SALIR DEL INPUT
   const handleBlur = (e) => {
     const { name, value } = e.target;
 
@@ -192,7 +190,7 @@ export default function EncargadoForm({ onSubmit, onClose }) {
         Registro Encargado
       </h3>
 
-      {/* INPUTS */}
+    
       <div className="grid grid-cols-2 gap-3 dark:text-gray-200">
         {["nombres", "apellidos", "cedula", "celular", "password", "email"].map(
           (field) => (
@@ -232,52 +230,56 @@ export default function EncargadoForm({ onSubmit, onClose }) {
         )}
       </div>
 
-      {/* ENTIDADES */}
-      <div className="grid grid-cols-2 gap-4 mt-2">
-        <AutocompleteMultiSelect
-          label="Facultad"
-          options={getUniqueOptions("facultad")}
-          value={userEntities.facultades}
-          onChange={(v) =>
-            setUserEntities((p) => ({ ...p, facultades: v }))
-          }
-          error={errors.facultades}
-        />
+  
+   <div className="grid grid-cols-2 gap-4 mt-2">
+  <AutocompleteMultiSelect
+    label="Facultad"
+    options={getUniqueOptions("facultad")}
+    value={userEntities.facultades}
+    onChange={(v) =>
+      setUserEntities((p) => ({ ...p, facultades: v }))
+    }
+    error={errors.facultades}
+    filterOptions={true}
+  />
 
-        <AutocompleteMultiSelect
-          label="Carrera"
-          options={getUniqueOptions("carrera")}
-          value={userEntities.carreras}
-          onChange={(v) =>
-            setUserEntities((p) => ({ ...p, carreras: v }))
-          }
-          error={errors.carreras}
-        />
-      </div>
+  <AutocompleteMultiSelect
+    label="Carrera"
+    options={getUniqueOptions("carrera")}
+    value={userEntities.carreras}
+    onChange={(v) =>
+      setUserEntities((p) => ({ ...p, carreras: v }))
+    }
+    error={errors.carreras}
+    filterOptions={true}
+  />
+</div>
 
-      <div className="grid grid-cols-2 gap-4 mt-2">
-        <AutocompleteMultiSelect
-          label="Materia"
-          options={getUniqueOptions("materia")}
-          value={userEntities.materias}
-          onChange={(v) =>
-            setUserEntities((p) => ({ ...p, materias: v }))
-          }
-          error={errors.materias}
-        />
+<div className="grid grid-cols-2 gap-4 mt-2">
+  <AutocompleteMultiSelect
+    label="Materia"
+    options={getUniqueOptions("materia")}
+    value={userEntities.materias}
+    onChange={(v) =>
+      setUserEntities((p) => ({ ...p, materias: v }))
+    }
+    error={errors.materias}
+    filterOptions={true}
+  />
 
-        <AutocompleteMultiSelect
-          label="Sigla"
-          options={getUniqueOptions("sigla")}
-          value={userEntities.siglas}
-          onChange={(v) =>
-            setUserEntities((p) => ({ ...p, siglas: v }))
-          }
-          error={errors.siglas}
-        />
-      </div>
+  <AutocompleteMultiSelect
+    label="Sigla"
+    options={[]}
+    value={userEntities.siglas}
+    onChange={(v) =>
+      setUserEntities((p) => ({ ...p, siglas: v }))
+    }
+    error={errors.siglas}
+    filterOptions={false}
+  />
+</div>
 
-      {/* BOTONES */}
+    
       <div className="flex justify-center mt-4 gap-3">
   <button
     type="submit"
@@ -304,6 +306,7 @@ const AutocompleteMultiSelect = ({
   value,
   onChange,
   error,
+  filterOptions = true,
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [open, setOpen] = useState(false);
@@ -312,105 +315,140 @@ const AutocompleteMultiSelect = ({
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (ref.current && !ref.current.contains(e.target)) {
+
+   
+        if (inputValue.trim()) {
+          addValue(inputValue);
+        }
+
         setOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
+
     return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+  }, [inputValue]);
 
   const addValue = (val) => {
     const trimmed = val.trim();
-    if (trimmed && !value.includes(trimmed)) {
+
+    if (!trimmed) return;
+
+    if (!value.includes(trimmed)) {
       onChange([...value, trimmed]);
     }
+
     setInputValue("");
     setOpen(false);
   };
 
-  const removeValue = (val) =>
+  const removeValue = (val) => {
     onChange(value.filter((v) => v !== val));
+  };
 
-  const filteredOptions = options.filter((opt) =>
-    String(opt).toLowerCase().includes(inputValue.toLowerCase())
-  );
+  const filteredOptions = filterOptions
+    ? options.filter((opt) =>
+        String(opt)
+          .toLowerCase()
+          .includes(inputValue.toLowerCase())
+      )
+    : [];
 
- return (
-  <div className="flex flex-col relative gap-1 space-y-0.5" ref={ref}>
-    
- 
-    <label className="text-xs font-medium text-gray-600 dark:text-gray-300">
-      {label}
-    </label>
-
-    
+  return (
     <div
-      onClick={() => setOpen(true)}
-      className={`flex flex-wrap items-center gap-1 px-2 py-1.5 rounded-md border text-sm transition
-
-      ${
-        error
-          ? "border-red-500 bg-red-50 dark:bg-red-900/30"
-          : "border-gray-300 bg-white hover:border-gray-400 focus-within:ring-1 focus-within:ring-blue-500 focus-within:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500"
-      }`}
+      className="flex flex-col relative gap-1 space-y-0.5"
+      ref={ref}
     >
-   
-      {value.map((v, i) => (
-        <span
-          key={i}
-          className="flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium
-          bg-indigo-100 text-indigo-700
-          dark:bg-indigo-500/20 dark:text-indigo-300"
-        >
-          {v}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation(); 
-              removeValue(v);
-            }}
-            className="hover:text-red-500"
-          >
-            ×
-          </button>
-        </span>
-      ))}
+      <label className="text-xs font-medium text-gray-600 dark:text-gray-300">
+        {label}
+      </label>
 
-      
-      <input
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        className="flex-1 min-w-[80px] outline-none bg-transparent text-gray-800 dark:text-gray-200 placeholder-gray-400 text-sm"
-        placeholder={value.length === 0 ? "Seleccione..." : ""}
-      />
-    </div>
-
-    {/* DROPDOWN */}
-    {open && filteredOptions.length > 0 && (
-      <ul
-        className="absolute top-full mt-1 w-full rounded-md shadow-lg z-20 max-h-52 overflow-auto text-sm
-        
-        bg-white border border-gray-300
-        dark:bg-gray-800 dark:border-gray-600"
+      <div
+        onClick={() => setOpen(true)}
+        className={`flex flex-wrap items-center gap-1 px-2 py-1.5 rounded-md border text-sm transition
+        ${
+          error
+            ? "border-red-500 bg-red-50 dark:bg-red-900/30"
+            : "border-gray-300 bg-white hover:border-gray-400 focus-within:ring-1 focus-within:ring-blue-500 focus-within:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500"
+        }`}
       >
-        {filteredOptions.map((opt, i) => (
-          <li
+        {value.map((v, i) => (
+          <span
             key={i}
-            onClick={() => addValue(opt)}
-            className="px-3 py-2 cursor-pointer transition
-            hover:bg-blue-100 dark:hover:bg-gray-700"
+            className="flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium
+            bg-indigo-100 text-indigo-700
+            dark:bg-indigo-500/20 dark:text-indigo-300"
           >
-            {opt}
-          </li>
-        ))}
-      </ul>
-    )}
+            {v}
 
-    {/* ERROR */}
-    {error && (
-      <span className="text-red-500 text-xs mt-1">{error}</span>
-    )}
-  </div>
-);
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                removeValue(v);
+              }}
+              className="hover:text-red-500"
+            >
+              ×
+            </button>
+          </span>
+        ))}
+
+        <input
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onFocus={() => setOpen(true)}
+          onBlur={() => {
+            if (inputValue.trim()) {
+              addValue(inputValue);
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              addValue(inputValue);
+            }
+          }}
+          className="flex-1 min-w-[80px] outline-none bg-transparent text-gray-800 dark:text-gray-200 placeholder-gray-400 text-sm"
+          placeholder={
+            value.length === 0
+              ? label === "Sigla"
+                ? "Ej: TUR-110"
+                : "Escriba o seleccione..."
+              : ""
+          }
+        />
+      </div>
+
+      {open && filteredOptions.length > 0 && (
+        <ul
+          className="absolute top-full mt-1 w-full rounded-md shadow-lg z-20 max-h-52 overflow-auto text-sm
+          bg-white border border-gray-300
+          dark:bg-gray-800 dark:border-gray-600"
+        >
+          {filteredOptions.map((opt, i) => (
+            <li
+              key={i}
+              onClick={() => addValue(opt)}
+              className="px-3 py-2 cursor-pointer transition
+              hover:bg-blue-100 dark:hover:bg-gray-700"
+            >
+              {opt}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {error && (
+        <span className="text-red-500 text-xs mt-1">
+          {error}
+        </span>
+      )}
+    </div>
+  );
 };

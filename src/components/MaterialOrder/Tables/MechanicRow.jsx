@@ -45,10 +45,7 @@ export default function MechanicRow({ mechanic, index, onRealizar }) {
 
        <RequestButton requestId={mechanic.id} />
 
-        <RequestButton
-        requestId={mechanic.id}
-        blank={true}
-      />
+        <RequestButton requestId={mechanic.id} blank={true} className="-gray-500" />
 
        <MaterialRequestButton requestId={mechanic.id} />
 

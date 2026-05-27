@@ -18,7 +18,7 @@ export default function MaintenanceReportPDF({
     <Document>
 
       <Page
-        size="A4"
+        size="LETTER"
         style={{
           padding: 20,
           fontSize: 9,

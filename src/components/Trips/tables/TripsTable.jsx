@@ -311,11 +311,11 @@ const handleDeleteTrip = async (id) => {
    
       <div className="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-xl">
 
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 dark:bg-gray-800">
+        <table className="w-full text-sm  border-collapse">
+          <thead className=" dark:bg-gray-800 bg-blue-100  ">
             <tr>
               {["#", "Entidad", "Tipo", "Objetivo", "Días", "Pasajeros", "Inicio", "Fin", "Estado", "Acciones"].map(h => (
-                <th key={h} className="px-3 py-2 border dark:text-gray-200">{h}</th>
+                <th key={h} className="px-3 py-2   ">{h}</th>
               ))}
             </tr>
           </thead>
@@ -335,7 +335,7 @@ const handleDeleteTrip = async (id) => {
               ))
             ) : (
               <tr>
-                <td colSpan={10} className="text-center py-4">
+                <td colSpan={10} className="text-center py-4 ">
                   No hay registros
                 </td>
               </tr>
@@ -345,7 +345,7 @@ const handleDeleteTrip = async (id) => {
         </table>
       </div>
 
-     
+     {!externalTripId && (
       <div className="flex justify-center mt-4">
         <Pagination
           page={page}
@@ -353,7 +353,7 @@ const handleDeleteTrip = async (id) => {
           setPage={setPage}
         />
       </div>
-
+)}
       
       {modalType === "add" && (
         <AddTripsFrom

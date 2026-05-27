@@ -14,7 +14,7 @@ export default function HojaRutaButton({ viajeId }) {
 
       if (!data) return;
 
-      // 🔥 IMPORT DINÁMICO (IMPORTANTE)
+      
       const { default: HojaRutaPDF } = await import(
         "../../Pdf/tripsHojaRuta/HojaRutaPDF"
       );

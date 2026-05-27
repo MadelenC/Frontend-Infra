@@ -3,7 +3,8 @@ import {
   getUsers,
   createUser as apiCreateUser,
   updateUser as apiUpdateUser,
-  deleteUser as apiDeleteUser
+  deleteUser as apiDeleteUser,
+  toggleUserStatus as apiToggleUserStatus,
 } from "../services/userService";
 
 export const useUserStore = create((set, get) => ({
@@ -201,6 +202,34 @@ reportUsers: [],
       return { ok: false, error: err.message };
     }
   },
+
+  toggleUserStatus: async (id) => {
+  try {
+
+    const res = await apiToggleUserStatus(id);
+
+    set({
+      users: get().users.map((u) =>
+        u.id === id
+          ? {
+              ...u,
+              active: res.data.active,
+            }
+          : u
+      ),
+    });
+
+    return { ok: true };
+
+  } catch (err) {
+
+    return {
+      ok: false,
+      error: err.message,
+    };
+
+  }
+},
 
 
   fetchDrivers: async () => {

@@ -45,12 +45,8 @@ export default function ReservaRow({ reserva, onEdit }) {
 
       <td className="border px-3 py-2 text-center space-y-1">
 
-        <div className="text-blue-600 hover:underline cursor-pointer">
-          Ninguna
-        </div>
-
         <button
-          className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-2 py-1 rounded"
+           className="bg-blue-100 text-blue-700 hover:bg-blue-200 text-xs px-2 py-1 rounded-md transition"
           onClick={() => onEdit(reserva)}
         >
           Concretar

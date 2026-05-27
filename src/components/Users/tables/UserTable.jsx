@@ -23,6 +23,7 @@ export default function UserTable({ users, page = 1, limit = 8 }) {
                 "Tipo",
                 "Cargo",
                 "Acciones",
+                "Activo",
               ].map((head) => (
                 <th
                   key={head}
@@ -49,7 +50,7 @@ export default function UserTable({ users, page = 1, limit = 8 }) {
               ))
             ) : (
               <tr>
-                <td colSpan={8} className="text-center py-4 text-gray-500 dark:text-gray-400">
+                <td colSpan={9} className="text-center py-4 text-gray-500 dark:text-gray-400">
                   No se encontraron usuarios.
                 </td>
               </tr>

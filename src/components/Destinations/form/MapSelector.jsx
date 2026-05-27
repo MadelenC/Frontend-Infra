@@ -1,21 +1,95 @@
 import React, { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
+
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMapEvents,
+  useMap,
+} from "react-leaflet";
+
+import {
+  GeoSearchControl,
+  OpenStreetMapProvider,
+} from "leaflet-geosearch";
+
 import L from "leaflet";
 
+import "leaflet/dist/leaflet.css";
 
 const markerIcon = new L.Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  iconUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
   iconSize: [25, 41],
   iconAnchor: [12, 41],
 });
 
-export default function MapSelector({ open, onClose, onSelectLocation, initialLocation }) {
-  const [position, setPosition] = useState(initialLocation || { lat: -17.393, lng: -66.158 });
+export default function MapSelector({
+  open,
+  onClose,
+  onSelectLocation,
+  initialLocation,
+}) {
+  const [position, setPosition] = useState(
+    initialLocation || {
+      lat: -17.393,
+      lng: -66.158,
+    }
+  );
+
   const [title, setTitle] = useState("");
 
-  
+
+  function SearchField() {
+    const map = useMap();
+
+    useEffect(() => {
+      const provider = new OpenStreetMapProvider();
+
+      const searchControl = new GeoSearchControl({
+        provider,
+
+        style: "bar",
+
+        autoComplete: true,
+        autoCompleteDelay: 250,
+
+        showMarker: false,
+        showPopup: false,
+
+        retainZoomLevel: false,
+        animateZoom: true,
+        keepResult: true,
+      });
+
+      map.addControl(searchControl);
+
+      map.on("geosearch/showlocation", (result) => {
+        const newPosition = {
+          lat: result.location.y,
+          lng: result.location.x,
+        };
+
+        setPosition(newPosition);
+
+        map.setView(
+          [newPosition.lat, newPosition.lng],
+          15
+        );
+      });
+
+      return () => {
+        map.removeControl(searchControl);
+      };
+    }, [map]);
+
+    return null;
+  }
+
+ 
   function DraggableMarker() {
-    const map = useMapEvents({
+    useMapEvents({
       click(e) {
         setPosition(e.latlng);
       },
@@ -32,7 +106,9 @@ export default function MapSelector({ open, onClose, onSelectLocation, initialLo
           },
         }}
       >
-        <Popup>Mueva el marcador para seleccionar ubicación</Popup>
+        <Popup>
+          Mueva el marcador para seleccionar ubicación
+        </Popup>
       </Marker>
     );
   }
@@ -40,86 +116,123 @@ export default function MapSelector({ open, onClose, onSelectLocation, initialLo
   if (!open) return null;
 
   const handleSave = () => {
-    onSelectLocation({ ...position, title });
+    onSelectLocation({
+      ...position,
+      title,
+    });
+
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-center items-center  bg-black/40 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm">
       <div className="bg-white w-full max-w-3xl rounded-lg shadow-2xl overflow-hidden dark:bg-gray-800">
-       
+
+        
         <div className="flex justify-between items-center p-4 border-b text-center">
-          <h2 className="text-lg font-bold dark:text-gray-200 text-center">Inserte la ubicación en el mapa</h2>
+          <h2 className="text-lg font-bold dark:text-gray-200 text-center">
+            Inserte la ubicación en el mapa
+          </h2>
+
           <button
             onClick={onClose}
-            className=" text-gray-700 px-3 py-1 font-bold  rounded hover:bg-gray-200 dark:text-gray-200"
-            
-       
+            className="text-gray-700 px-3 py-1 font-bold rounded hover:bg-gray-200 dark:text-gray-200"
           >
             X
           </button>
         </div>
 
-        
+  
         <div className="p-4 space-y-4">
+
+         
           <div className="flex flex-col">
-            <label className="text-sm font-semibold dark:text-gray-300">Título</label>
+            <label className="text-sm font-semibold dark:text-gray-300">
+              Título
+            </label>
+
             <input
               type="text"
               placeholder="Ejemplo: Universidad Tomas Frias Potosi"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="p-2 border rounded text-sm w-full transition  dark:bg-gray-200/40 dark:border-gray-200 dark:text-gray-900"
+              className="p-2 border rounded text-sm w-full transition dark:bg-gray-200/40 dark:border-gray-200 dark:text-gray-900"
             />
           </div>
 
+      
           <MapContainer
             center={[position.lat, position.lng]}
             zoom={6}
-            className="w-full h-48"
+            className="w-full h-72 rounded-lg z-0"
           >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+
+          
+            <SearchField />
+
+         
             <DraggableMarker />
           </MapContainer>
 
+       
           <div className="grid grid-cols-2 gap-4">
+
             <div className="flex flex-col dark:text-gray-300">
-              <label className="text-sm font-semibold dark:text-gray-300">Latitud</label>
+              <label className="text-sm font-semibold dark:text-gray-300">
+                Latitud
+              </label>
+
               <input
                 type="text"
                 value={position.lat.toFixed(6)}
                 readOnly
-                className="p-2 border rounded text-sm w-full transition  dark:bg-gray-200/40 dark:border-gray-200 dark:text-gray-900"
+                className="p-2 border rounded text-sm w-full transition dark:bg-gray-200/40 dark:border-gray-200 dark:text-gray-900"
               />
-              <small>Mueva la posición para generar este campo</small>
+
+              <small>
+                Mueva la posición para generar este campo
+              </small>
             </div>
+
             <div className="flex flex-col dark:text-gray-300">
-              <label className="text-sm font-semibold dark:text-gray-300">Longitud</label>
+              <label className="text-sm font-semibold dark:text-gray-300">
+                Longitud
+              </label>
+
               <input
                 type="text"
                 value={position.lng.toFixed(6)}
                 readOnly
-                className="p-2 border rounded text-sm w-full transition  dark:bg-gray-200/40 dark:border-gray-200 dark:text-gray-900"
+                className="p-2 border rounded text-sm w-full transition dark:bg-gray-200/40 dark:border-gray-200 dark:text-gray-900"
               />
-              <small>Mueva la posición para generar este campo</small>
+
+              <small>
+                Mueva la posición para generar este campo
+              </small>
             </div>
           </div>
         </div>
 
-        
+  
         <div className="flex justify-end p-4 border-t gap-2">
+
           <button
             onClick={handleSave}
             className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700"
           >
             Guardar
           </button>
+
           <button
             onClick={onClose}
-            className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-500"
+            className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600"
           >
             Cancelar
           </button>
+
         </div>
       </div>
     </div>

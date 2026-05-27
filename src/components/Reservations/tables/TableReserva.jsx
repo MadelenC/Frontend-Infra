@@ -165,7 +165,7 @@ export default function TableReserva() {
         />
       )}
 
-      {/* EDIT */}
+      
       {isEditOpen && selectedReserva && (
         <ReservaModal
           isOpen={true}

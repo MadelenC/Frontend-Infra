@@ -5,6 +5,7 @@ import { pdf } from "@react-pdf/renderer";
 
 import RequestPdf from "../../Pdf/RequestPdf/RequestPdf";
 import { getRequestById } from "../../services/materialOrderService";
+import { FaFilePdf } from "react-icons/fa6";
 
 export default function RequestButton({
   requestId,
@@ -63,8 +64,8 @@ export default function RequestButton({
   };
 
   return (
-    <button onClick={handleDownload}>
-      📄 PDF
+    <button onClick={handleDownload}className="text-red-500 hover:text-red-300" title="Descargar PDF" >
+      <FaFilePdf size={20} />
     </button>
   );
 }

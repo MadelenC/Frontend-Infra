@@ -68,7 +68,7 @@ export default function UserFormPanel({ open, onClose, formType, setFormType }) 
           </div>
         )}
 
-        {/* Formularios */}
+       
         {formType === "general" && <GeneralForm onSubmit={handleSubmit} />}
         {formType === "encargado" && <EncargadoForm onSubmit={handleSubmit} />}
       </div>

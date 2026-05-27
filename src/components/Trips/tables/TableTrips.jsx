@@ -5,7 +5,7 @@ export default function TableTrips({ trips, onOpenModal, onCancelTrip }) {
   return (
     <div className="overflow-x-auto rounded-xl border border-gray-700 shadow-sm bg-gray-900">
 
-      <table className="w-full border-collapse text-sm text-gray-200">
+      <table className="w-full border-collapse text-sm text-gray-200 border border-gray-700">
 
         
         <thead className="bg-gray-800">
@@ -47,7 +47,7 @@ export default function TableTrips({ trips, onOpenModal, onCancelTrip }) {
             <tr>
               <td
                 colSpan={10}
-                className="text-center py-6 text-gray-400"
+                className="border border-gray-700 px-3 py-2"
               >
                 No se encontraron viajes.
               </td>

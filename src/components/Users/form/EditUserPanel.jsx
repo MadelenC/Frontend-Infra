@@ -20,7 +20,7 @@ export default function EditUserPanel({ open, onClose, user }) {
   if (!open) return null;
 
   const handleUpdate = async () => {
-  await fetchUsers(); // 🔥 refresca la tabla
+  await fetchUsers();
   onClose();
 };
 
@@ -32,19 +32,19 @@ export default function EditUserPanel({ open, onClose, user }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-5">
-      <div className="w-full max-w-lg bg-white p-6 rounded-md shadow-lg max-h-[90vh] overflow-y-auto relative">
-        {/* Botón cerrar */}
+    <div className="fixed inset-0  flex justify-center items-center z-50 p-5 bg-black/40 backdrop-blur-sm">
+      <div className="w-full max-w-lg bg-white p-6 rounded-md shadow-lg max-h-[90vh] overflow-y-auto relative dark:bg-gray-800">
+       
        
           <button
           type="button"
           onClick={onClose}
-          className="absolute top-3 right-3 text-gray-700 font-bold px-3 py-1 rounded hover:bg-gray-200"
+          className="absolute top-3 right-3 text-gray-700 font-bold px-3 py-1 rounded hover:bg-gray-200 dark:text-gray-300"
           aria-label="Cerrar formulario"
         >
           X
         </button>
-        <h2 className="text-xl font-bold mb-4">Editar Usuario</h2>
+        <h2 className="text-xl font-bold mb-4 dark:text-gray-200 text-center">Editar Usuario</h2>
 
         <EditUserForm
           user={user}

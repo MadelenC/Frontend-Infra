@@ -26,7 +26,7 @@ export default function UsersReportPDF({
     <Document>
 
       <Page
-        size="A4"
+        size="LETTER"
         style={{
           padding: 25,
           fontSize: 8,

@@ -40,17 +40,13 @@ export default function RepaymentRow({ item, index, onAction }) {
 
         <button
           onClick={() => onAction?.("edit", item)}
-          className="p-2 bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-300 rounded-full hover:bg-blue-200 dark:hover:bg-blue-800"
+          className="p-2 rounded-full bg-indigo-100 dark:bg-indigo-900/30
+     text-indigo-600 dark:text-indigo-400 hover:bg-indigo-200
+      dark:hover:bg-indigo-800 transition"
         >
           <FaEdit size={14} />
         </button>
 
-       <button
-          onClick={() => onAction?.("print", item)}
-          className="p-2 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 rounded-full hover:bg-blue-200 dark:hover:bg-blue-800"
-        >
-          <FaPrint />
-        </button>
 
       </TableCell>
     </TableRow>

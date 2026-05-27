@@ -50,3 +50,14 @@ export const deleteUser = async (id) => {
   }
 };
 
+// Cambiar estado usuario
+export const toggleUserStatus = async (id) => {
+  try {
+    const response = await api.patch(`/users/${id}/status`);
+
+    return response.data;
+
+  } catch (err) {
+    throw err.response?.data?.message || "Error al cambiar estado";
+  }
+};

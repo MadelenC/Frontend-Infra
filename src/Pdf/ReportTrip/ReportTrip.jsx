@@ -15,7 +15,7 @@ export default function ReportTrip({ trip }) {
     <Document>
 
       <Page
-        size="A4"
+        size="LETTER"
         style={styles.page}
       >
 

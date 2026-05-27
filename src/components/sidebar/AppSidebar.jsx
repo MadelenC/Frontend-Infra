@@ -16,7 +16,6 @@ import { IoCalendarNumberOutline } from "react-icons/io5";
 
 const navItems = [
   { icon: <FaUsersLine className="text-white font-size" />, name: "Usuarios", subItems: [{ name: " Ver Lista", path: "/usuarios", pro: false, icon:<FaListUl className="text-white " /> }] },
-  { icon: <MdDomainAdd className="text-white" />, name: "Entidades", subItems: [{ name: " Ver Lista", path: "/entidades", pro: false,icon:<FaListUl className="text-white " /> }] },
   { name: "Rol de Viajes", icon: <FaUsersGear className="text-white" />, subItems: [{ name: "Motrar", path: "/travel-rol", pro: false,icon:<FaListUl className="text-white " /> }] },
   { name: "Vehiculos ", icon: <FaCarSide  className="text-white" />, subItems: [{ name: "Mostrar", path: "/vehiculos", pro: false,icon:<FaListUl className="text-white " /> }] },
   { name: "Destinos", icon: <GiHorizonRoad className="text-white" />, subItems: [{ name: "Ver Lista ", path: "/destinos", pro: false,icon:<FaListUl className="text-white " /> }] },

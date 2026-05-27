@@ -45,16 +45,10 @@ export default function ReturnsReportButton({
 
     <button
       onClick={handlePrint}
-      className="
-        p-2
-        bg-orange-100
-        text-orange-600
-        rounded-full
-        hover:bg-orange-200
-      "
+      className=" p-2 bg-red-500 text-gray-200 hover:bg-red-700 rounded flex items-center  gap-1 "
     >
 
-      <FaPrint size={14} />
+      <FaPrint size={14} />Imprimir
 
     </button>
 

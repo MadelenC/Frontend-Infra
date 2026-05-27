@@ -19,7 +19,7 @@ export default function ReturnsReportPDF({
     <Document>
 
       <Page
-        size="A4"
+        size="LETTER"
         style={{
           padding: 25,
           fontSize: 8,
