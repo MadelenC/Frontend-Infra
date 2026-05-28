@@ -7,20 +7,16 @@ import CheckTripForm from "../form/TripsCheckForm";
 import TripsCajaForm from "../form/TripsCajaForm";
 import TripDetailForm from "../form/TripDetailForm";
 import EditTripsForm from "../form/Cancel/EditTripForm";
-
 import InformCheck from "../form/SeccInfCh/InformCheck";
-
 import VehicleReportButton from "../../pdf-buttons/VehicleReportButton";
+import ProtectedView from "../../Protected/ProtectedView";
 
 import { FiFileText, FiBarChart2, FiPlus } from "react-icons/fi";
-
 import { useTripsStore } from "../../../zustand/useTripsStore";
 import { useUserStore } from "../../../zustand/userStore";
 import { useVehicleStore } from "../../../zustand/useVehicleStore";
 import { useDestinoStore } from "../../../zustand/useDestinationsStore";
-
 import { toast } from "react-toastify";
-
 import { PDFDownloadLink } from "@react-pdf/renderer";
 
 
@@ -290,10 +286,9 @@ const handleDeleteTrip = async (id) => {
 
         <div className="flex flex-wrap gap-2 justify-start md:justify-end">
 
-         
-
       <VehicleReportButton />
-      
+        <ProtectedView 
+            rolesAllowed={["supervisor","administrador"]}>
           {!externalTripId && (
             <button
               onClick={() => handleOpenModal("add")}
@@ -303,7 +298,7 @@ const handleDeleteTrip = async (id) => {
               Agregar Viaje
             </button>
           )}
-
+        </ProtectedView>
         </div>
       </div>
 

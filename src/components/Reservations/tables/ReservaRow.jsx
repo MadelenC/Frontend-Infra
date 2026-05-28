@@ -1,4 +1,5 @@
 import React from "react";
+import ProtectedView from "../../Protected/ProtectedView";
 
 const formatDate = (isoDate) => {
   if (!isoDate) return "-";
@@ -44,13 +45,16 @@ export default function ReservaRow({ reserva, onEdit }) {
       </td>
 
       <td className="border px-3 py-2 text-center space-y-1">
-
+         <ProtectedView
+             rolesAllowed={["supervisor","administrador"]}
+          >
         <button
            className="bg-blue-100 text-blue-700 hover:bg-blue-200 text-xs px-2 py-1 rounded-md transition"
           onClick={() => onEdit(reserva)}
         >
           Concretar
         </button>
+        </ProtectedView>
 
       </td>
 

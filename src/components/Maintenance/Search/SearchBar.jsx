@@ -1,6 +1,8 @@
 import React from "react";
 
 export default function SearchBarApplication({
+   search,
+  setSearch,
   chofer,
   setChofer,
   vehiculo,
@@ -10,9 +12,7 @@ export default function SearchBarApplication({
 }) {
   return (
     <div className="flex flex-col md:flex-row justify-start mb-4 gap-2 items-center">
-
-      {/* Select Chofer */}
-       {/* Select Chofer */}
+      
       <select
         value={chofer}
         onChange={(e) => setChofer(e.target.value)}
@@ -24,14 +24,16 @@ export default function SearchBarApplication({
         dark:focus:ring-blue-500 dark:focus:border-blue-500"
       >
         <option value="">Seleccione un chofer</option>
-        {(listaChoferes || []).map((c, index) => (
-          <option key={index} value={c.value}>
+       {(listaChoferes || []).map((c, i) => (
+          <option
+            key={`${c.value}-${i}`}
+            value={c.value}
+          >
             {c.label}
           </option>
         ))}
       </select>
 
-      {/* Select Vehículo */}
       <select
         value={vehiculo}
         onChange={(e) => setVehiculo(e.target.value)}
@@ -43,9 +45,10 @@ export default function SearchBarApplication({
         dark:focus:ring-blue-500 dark:focus:border-blue-500"
       >
         <option value="">Seleccione un vehículo</option>
-        {listaVehiculos?.map((v) => (
-          <option key={v.id} value={v.id}>
-            {v.placa} - {v.tipog}
+
+        {(listaVehiculos || []).map((v, i) => (
+          <option key={`${v.value}-${i}`} value={v.value}>
+            {v.label}
           </option>
         ))}
       </select>

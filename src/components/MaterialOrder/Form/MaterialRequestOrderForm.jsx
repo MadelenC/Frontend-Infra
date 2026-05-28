@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useAuthStore } from "../../../zustand/AuthUsers";
+import { toast } from "react-toastify";
 
 const unidadMedidaOptions = [
   "Nulo",
@@ -12,7 +14,7 @@ const unidadMedidaOptions = [
   "Pliego",
 ];
 
-export default function MaterialRequestOrderForm({ isOpen, onClose, onSave }) {
+export default function MaterialRequestForm({ isOpen,onClose,onDelete, onSave,application,request, }) {
   const [kmActual, setKmActual] = useState("");
   const [items, setItems] = useState([
     { cantidad: "", unidad: "Nulo", descripcion: "" },
@@ -21,6 +23,35 @@ export default function MaterialRequestOrderForm({ isOpen, onClose, onSave }) {
   const [observaciones, setObservaciones] = useState("");
   const [vehiculoIDH, setVehiculoIDH] = useState("");
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+  if (request) {
+
+    setKmActual(request.km || "");
+
+    setJustificacion(request.justificacion || "");
+
+    setObservaciones(request.observacion || "");
+
+    setVehiculoIDH(request.idh || "");
+
+    const loadedItems = [];
+
+    for (let i = 1; i <= (request.conteo || 0); i++) {
+      loadedItems.push({
+        cantidad: request[`cantidad${i}`] || "",
+        unidad: request[`medida${i}`] || "Nulo",
+        descripcion: request[`descripcion${i}`] || "",
+      });
+    }
+
+    if (loadedItems.length > 0) {
+      setItems(loadedItems);
+    }
+  }
+}, [request]);
+
+  const user = useAuthStore((state) => state.user);
 
   if (!isOpen) return null;
 
@@ -40,20 +71,41 @@ export default function MaterialRequestOrderForm({ isOpen, onClose, onSave }) {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSaving(true);
-    const payload = {
-      kmActual,
-      items,
-      justificacion,
-      observaciones,
-      vehiculoIDH,
-    };
-    const res = await onSave(payload);
-    setSaving(false);
-    if (res?.ok) onClose();
-    else alert(res?.error || "Error al guardar la petición");
+  e.preventDefault();
+  setSaving(true);
+
+  const payload = {
+    km: kmActual,
+    justificacion,
+    observacion: observaciones,
+    respuestas: "", 
+    conteo: items.length,
+    idh: vehiculoIDH,
+    insertador: user ? `${user.nombres} ${user.apellidos}` : null,
+     solicitud: {
+  id: application?.id
+}
   };
+
+  items.forEach((item, index) => {
+    const i = index + 1;
+
+    payload[`cantidad${i}`] = item.cantidad;
+    payload[`medida${i}`] = item.unidad;
+    payload[`descripcion${i}`] = item.descripcion;
+  });
+
+  const res = await onSave(payload);
+
+  setSaving(false);
+
+  if (res?.ok) {
+  toast.success("✅ Petición registrada correctamente");
+  onClose();
+} else {
+  toast.error(res?.error || "❌ Error al guardar la petición");
+}
+};
 
   return (
     <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-5">
@@ -69,12 +121,32 @@ export default function MaterialRequestOrderForm({ isOpen, onClose, onSave }) {
         </button>
 
         <h2 className="text-2xl font-bold text-center text-gray-700 mt-6 mb-4">
-          Petición de material de Escritorio
+          Realizar petición de material
         </h2>
+
+        <p className="text-sm text-center mb-6 px-6">
+          <span className="text-green-600 ">■ Los campos en verde son obligatorios.</span>{" "}
+          <span className="text-blue-500 ">■ Los campos en azul son opcionales.</span>
+        </p>
 
         {/* Formulario con scroll */}
         <div className="flex-1 overflow-y-auto p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
+
+            {/* Km Actual */}
+            <div>
+              <label className="text-green-600 font-semibold block mb-1">
+                Km. Actual del Vehículo*
+              </label>
+              <input
+                type="number"
+                placeholder="Ejm. 25828"
+                value={kmActual}
+                onChange={(e) => setKmActual(e.target.value)}
+                required
+                className="w-full border border-gray-300 rounded-md px-3 py-2 bg-white"
+              />
+            </div>
 
             {/* Tabla Items */}
             <div className="overflow-x-auto border border-gray-300 rounded-md bg-blue-50">
@@ -157,7 +229,6 @@ export default function MaterialRequestOrderForm({ isOpen, onClose, onSave }) {
                 </tbody>
               </table>
 
-              {/* Botón para agregar fila */}
               <div className="mt-2 flex justify-end">
                 <button
                   type="button"
@@ -165,12 +236,12 @@ export default function MaterialRequestOrderForm({ isOpen, onClose, onSave }) {
                   className="bg-gray-500 hover:bg-gray-700 text-white px-4 py-1 rounded"
                   aria-label="Agregar fila"
                 >
-                  +
+                  + 
                 </button>
               </div>
             </div>
 
-            {/* Justificación */}
+        
             <div>
               <label className="text-green-600 font-semibold block mb-1">
                 Justificación*
@@ -185,14 +256,42 @@ export default function MaterialRequestOrderForm({ isOpen, onClose, onSave }) {
               />
             </div>
 
+          
+            <div>
+              <label className="text-blue-500 font-semibold block mb-1">
+                Observaciones
+              </label>
+              <textarea
+                placeholder="Escriba las observaciones del pedido"
+                value={observaciones}
+                onChange={(e) => setObservaciones(e.target.value)}
+                rows={3}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 bg-white"
+              />
+            </div>
+
+            
+            <div>
+              <label className="text-blue-500 font-semibold block mb-1">
+                Vehículo con IDH?
+              </label>
+              <input
+                type="text"
+                placeholder="Ejm. IDH"
+                value={vehiculoIDH}
+                onChange={(e) => setVehiculoIDH(e.target.value)}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 bg-white"
+              />
+            </div>
+
             {/* Botones */}
             <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
               <button
                 type="button"
-                onClick={onClose}
-                className="bg-gray-500 text-white px-5 py-2 rounded-md"
+                onClick={() => onDelete(request.id)}
+                className="bg-red-500 text-white px-5 py-2 rounded-md"
               >
-                Cancelar
+                Eliminar 
               </button>
 
               <button
@@ -200,7 +299,7 @@ export default function MaterialRequestOrderForm({ isOpen, onClose, onSave }) {
                 disabled={saving}
                 className="bg-blue-700 text-white px-5 py-2 rounded-md disabled:opacity-70"
               >
-                Registrar
+                Actualizar
               </button>
             </div>
           </form>

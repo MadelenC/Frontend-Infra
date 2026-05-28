@@ -7,6 +7,7 @@ import { FiPlus } from "react-icons/fi";
 import { useDepartureAuthorizationStore } from "../../../zustand/useDepartureAuthorizationStore";
 import { useUserStore } from "../../../zustand/userStore";
 import { useVehicleStore } from "../../../zustand/useVehicleStore";
+import ProtectedView from "../../Protected/ProtectedView";
 
 import CreateDepartureAuthorizationForm from "../Form/CreateDepartureAuthorizationForm";
 import EditDepartureAuthorizationForm from "../Form/EditDepartureAuthorizationForm";
@@ -120,11 +121,12 @@ const [allVehicles, setAllVehicles] = useState([]);
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4">
 
-      {/* HEADER */}
       <div className="flex justify-between items-center mb-4">
 
         <SearchBar search={search} setSearch={setSearch} />
-
+        <ProtectedView
+            rolesAllowed={["supervisor","administrador"]}
+          >
         {!externalDepartureId && (
           <button
             onClick={handleOpenCreate}
@@ -141,10 +143,10 @@ const [allVehicles, setAllVehicles] = useState([]);
             Agregar Salida
           </button>
         )}
-
+        </ProtectedView>
       </div>
 
-      {/* TABLE */}
+    
       <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
 
         <table className="w-full text-sm">

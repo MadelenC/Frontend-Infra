@@ -37,7 +37,7 @@ export default function VehicleRow({ vehicle, onEdit, onUpdateKm, onView }) {
       </td>
 
       <td className={cellClass}>
-        {vehicle.kilometraje}
+        {vehicle.modelos?.[0]?.kilometraje || "-"}
       </td>
 
       <td className={cellClass}>

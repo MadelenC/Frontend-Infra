@@ -7,7 +7,6 @@ import CreateJobForm from "../Form/CreateJobForm";
 import MaterialRequestForm from "../Form/MaterialRequestForm";
 import { useJobApplicationStore } from "../../../zustand/useJobApplicationStore";
 import { useVehicleStore } from "../../../zustand/useVehicleStore";
-import { useAccessoriesStore } from "../../../zustand/useAccessoriesStore";
 import { useUserStore } from "../../../zustand/userStore"; 
 import { useMechanicsStore } from "../../../zustand/useMechanicsStore";
 import { useMaterialOrderStore } from "../../../zustand/useMaterialOrderStore";
@@ -33,9 +32,8 @@ export default function ApplicationTable() {
   const { addMechanic } = useMechanicsStore();
   const { addRequest, fetchRequests } = useMaterialOrderStore();
 
-  const { vehicles, fetchVehicles } = useVehicleStore();
-  const { accessories, fetchAccessories } = useAccessoriesStore();
-  const { users, fetchUsers } = useUserStore(); 
+  const { vehicles, fetchAllVehicles } = useVehicleStore();
+  const { choferes, fetchAllChoferes } = useUserStore();
 
   const [modalType, setModalType] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
@@ -46,14 +44,11 @@ export default function ApplicationTable() {
   const [materialRequestOpen, setMaterialRequestOpen] = useState(false);
   const [selectedMaterialApplication, setSelectedMaterialApplication] = useState(null);
 
-  const limit = 8;
 
   useEffect(() => {
-    fetchApplications();
-    fetchVehicles();
-    fetchAccessories();
-    fetchUsers();
-  }, []);
+  fetchAllChoferes();
+  fetchAllVehicles();
+}, []);
 
 useEffect(() => {
   fetchApplications();
@@ -109,8 +104,7 @@ useEffect(() => {
     setSelectedMaterialApplication(null);
   };
 
-  const choferes = users?.filter(u => u.tipo && u.tipo.toLowerCase() === "chofer");
-
+  
  
   const currentData = applications;
 
@@ -121,6 +115,8 @@ useEffect(() => {
       <div className="flex justify-between items-center mb-4">
 
        <SearchBarApplication
+          search={search}
+          setSearch={setSearch}
           chofer={chofer}
           setChofer={setChofer}
           vehiculo={vehiculoId}
@@ -129,7 +125,11 @@ useEffect(() => {
             value: `${c.nombres} ${c.apellidos}`,
             label: `${c.nombres} ${c.apellidos}`
           }))}
-          listaVehiculos={vehicles}
+
+          listaVehiculos={(vehicles || []).map(v => ({
+            value: v.id,
+            label: `${v.placa ?? "Sin placa"} - ${v.tipog ?? "Sin tipo"}`
+          }))}
         />
 
     

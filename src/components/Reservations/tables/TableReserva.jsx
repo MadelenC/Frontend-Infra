@@ -7,6 +7,7 @@ import ReservaTable from "./ReservaTable";
 import Pagination from "./Paginations";
 import AddReservaModal from "../form/AddRerservaForm";
 import ReservaModal from "../form/ReservaModal";
+import ProtectedView from "../../Protected/ProtectedView";
 
 import { useReservaStore } from "../../../zustand/useReservationsStore";
 import { useUserStore } from "../../../zustand/userStore";
@@ -146,7 +147,9 @@ useEffect(() => {
     <SearchBar search={search} setSearch={setSearch} />
   </div>
 
- 
+ <ProtectedView
+    rolesAllowed={["supervisor","encargado","administrador"]}
+  >
   <button
     onClick={() => setIsAddOpen(true)}
     className="
@@ -158,6 +161,7 @@ useEffect(() => {
   >
     + Agregar Reserva
   </button>
+  </ProtectedView>
 
 </div>
 

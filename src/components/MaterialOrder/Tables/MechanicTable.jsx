@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import MechanicRow from "./MechanicRow";
 import Pagination from "./Pagination";
 import { useMaterialOrderStore } from "../../../zustand/useMaterialOrderStore";
+import MaterialRequestOrderForm from "../Form/MaterialRequestOrderForm";
 
 export default function MechanicTable() {
-  const { requests, fetchRequests, editRequest } = useMaterialOrderStore();
+  const { requests, fetchRequests, editRequest,removeRequest, } = useMaterialOrderStore();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const limit = 8;
@@ -21,16 +23,37 @@ export default function MechanicTable() {
     setSelectedRequest(null);
     setProcessOpen(false);
   };
+  const handleDeleteProcess = async (id) => {
+  const ok = window.confirm("¿Eliminar esta petición?");
 
-  const handleSaveProcess = async (data) => {
-    await editRequest(data.id, { respuestas: data.respuestas });
+  if (!ok) return;
+
+  const res = await removeRequest(id);
+
+  if (res.ok) {
+    toast.success("✅ Petición eliminada");
+
     fetchRequests();
+
     handleCloseProcess();
-  };
 
-  useEffect(() => {
-    fetchRequests();
-  }, []);
+  } else {
+    toast.error(res.error || "❌ Error al eliminar");
+  }
+};
+const handleSaveProcess = async (data) => {
+  await editRequest(selectedRequest.id, data);
+
+  fetchRequests();
+
+  handleCloseProcess();
+
+  return { ok: true };
+};
+
+useEffect(() => {
+  fetchRequests();
+}, []);
 
   useEffect(() => setPage(1), [search]);
 
@@ -114,10 +137,17 @@ export default function MechanicTable() {
 
       </div>
 
-      {/* PAGINACIÓN */}
+ 
       <div className="flex justify-center mt-4">
         <Pagination page={page} totalPages={totalPages} setPage={setPage} />
       </div>
+      <MaterialRequestOrderForm
+          isOpen={processOpen}
+          onClose={handleCloseProcess}
+          onDelete={handleDeleteProcess}
+          onSave={handleSaveProcess}
+          request={selectedRequest}
+        />
 
     </div>
   );

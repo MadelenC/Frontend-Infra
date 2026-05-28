@@ -4,6 +4,7 @@ import Badge from "../../ui/badge/Badge";
 import { FaEdit } from "react-icons/fa";
 import { useUserStore } from "../../../zustand/userStore";
 
+
 export default function UserRow({ user, onEdit, index, page = 1, limit = 8}) {
 
   const { toggleUserStatus } = useUserStore();

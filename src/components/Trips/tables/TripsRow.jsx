@@ -2,6 +2,7 @@ import React from "react";
 import { TableCell } from "../../ui/table";
 import Badge from "../../ui/badge/Badge";
 import HojaRutaButton from "../../pdf-buttons/HojaRutaButton";
+import ProtectedView from "../../Protected/ProtectedView";
 
 import {
   FaMoneyBill,
@@ -113,8 +114,11 @@ export default function TripsRow({
             )}
           </div>
 
-          {/* REALIZAR */}
+        
+          
           <div className="relative">
+            <ProtectedView 
+                  rolesAllowed={["supervisor","administrador","chofer","encargado"]}>
             <button
               onClick={() => toggleMenu(trip.id, "realizar")}
               className="w-full text-xs px-2 py-1 bg-green-100 text-green-600 rounded hover:bg-green-200 flex items-center gap-1"
@@ -122,10 +126,12 @@ export default function TripsRow({
               <FaCogs size={10} />
               Realizar
             </button>
+            </ProtectedView>
 
             {isOpen("realizar") && (
               <div className="absolute right-0 mt-1 w-36 bg-white border rounded shadow-md z-10 text-xs">
-
+                <ProtectedView 
+                  rolesAllowed={["supervisor","administrador","chofer"]}>
                 <button
                   onClick={() => {
                     onOpenModal("detalle", trip);
@@ -136,6 +142,7 @@ export default function TripsRow({
                   <FaEye size={10} />
                   Ver
                 </button>
+                </ProtectedView>
 
                 <button
                   onClick={() => {
@@ -148,6 +155,8 @@ export default function TripsRow({
                   Editar viaje
                 </button>
 
+                <ProtectedView 
+                  rolesAllowed={["supervisor","administrador"]}>
                 <button
                   onClick={() => {
                     if (!confirm("¿Seguro que deseas eliminar TODO el viaje?")) return;
@@ -159,7 +168,10 @@ export default function TripsRow({
                   <FaTrash size={10} />
                   Eliminar viaje
                 </button>
+                </ProtectedView>
 
+                <ProtectedView 
+                  rolesAllowed={["supervisor","administrador","chofer"]}>
                 <button
                   onClick={() => {
                     onOpenModal("InformCheck", trip);
@@ -170,10 +182,15 @@ export default function TripsRow({
                   <FaFileInvoice size={10} />
                   Informe/Cheque
                 </button>
+                </ProtectedView>
 
+
+                <ProtectedView 
+                  rolesAllowed={["supervisor","administrador","chofer"]}>
                 <div className="px-2 py-1 hover:bg-gray-100">
                 <HojaRutaButton viajeId={trip.id} />
-              </div>
+                </div>
+                </ProtectedView>
 
               </div>
             )}

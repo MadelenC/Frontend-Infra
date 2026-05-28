@@ -2,6 +2,7 @@ import React from "react";
 import { TableRow, TableCell } from "../../ui/table";
 import { FaTachometerAlt, FaPrint } from "react-icons/fa";
 import ReportTripButton from "../../pdf-buttons/ReportTripButton";
+import ProtectedView from "../../Protected/ProtectedView";
 
 export default function TripReportRow({
   trip,
@@ -44,7 +45,9 @@ export default function TripReportRow({
 
     
       <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-center">
-
+        <ProtectedView
+            rolesAllowed={["supervisor","administrador"]}
+          >
         <button
           onClick={() => onUpdateKm?.(trip)}
           className="p-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-800 transition"
@@ -52,12 +55,17 @@ export default function TripReportRow({
         >
           <FaTachometerAlt size={14} />
         </button>
+        </ProtectedView>
 
       </TableCell>
 
+      <ProtectedView
+            rolesAllowed={["supervisor","administrador","chofer"]}
+          >
       <TableCell className="border px-3 py-2 text-center">
         <ReportTripButton tripId={trip.id} />
       </TableCell>
+      </ProtectedView>
 
     </TableRow>
   );

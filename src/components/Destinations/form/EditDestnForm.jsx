@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useDestinoStore } from "../../../zustand/useDestinationsStore";
+import { toast } from "react-toastify";
 
 export default function EditDestForm({ destino, onClose }) {
   const editDestino = useDestinoStore((state) => state.editDestino);
+  const removeDestino = useDestinoStore((state) => state.removeDestino);
 
   const [formData, setFormData] = useState({
     departamentoInicio: "",
@@ -36,11 +38,26 @@ export default function EditDestForm({ destino, onClose }) {
     e.preventDefault();
     const result = await editDestino(destino.id, formData);
     if (result.ok) {
-      onClose();
-    } else {
-      alert("Error al actualizar destino: " + result.error);
-    }
+    toast.success("✅ Destino actualizado");
+    onClose();
+  } else {
+    toast.error(result.error || "❌ Error al actualizar");
+  }
   };
+  const handleDelete = async () => {
+
+  const ok = window.confirm(
+    "¿Eliminar este destino?"
+  );
+  if (!ok) return;
+  const result = await removeDestino(destino.id);
+  if (result.ok) {
+    toast.success("✅ Destino eliminado");
+    onClose();
+  } else {
+    toast.error(result.error || "❌ Error al eliminar");
+  }
+};
 
   return (
     <div className="fixed inset-0 z-50 flex justify-center overflow-auto p-6 bg-black/40 backdrop-blur-sm">
@@ -140,10 +157,10 @@ export default function EditDestForm({ destino, onClose }) {
           </button>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleDelete}
             className="bg-red-500 text-white px-5 py-2 rounded hover:bg-red-500"
           >
-            Cancelar
+            Eliminar
           </button>
         </div>
       </form>

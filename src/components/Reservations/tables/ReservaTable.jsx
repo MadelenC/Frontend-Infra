@@ -1,6 +1,7 @@
 import React from "react";
 import ReservaRow from "./ReservaRow";
 
+
 export default function ReservaTable({ reservas, onEdit }) {
 
   return (

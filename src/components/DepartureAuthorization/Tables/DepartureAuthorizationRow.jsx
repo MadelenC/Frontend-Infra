@@ -3,6 +3,7 @@ import { TableRow, TableCell } from "../../ui/table";
 import Badge from "../../ui/badge/Badge";
 import { FaEdit, FaPrint } from "react-icons/fa";
 import BoletaDeparturesButton from "../../pdf-buttons/BoletaDeparturesButton";
+import ProtectedView from "../../Protected/ProtectedView";
 
 export default function DepartureAuthorizationRow({
   departure,
@@ -45,7 +46,9 @@ export default function DepartureAuthorizationRow({
 
       <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2">
         <div className="flex items-center gap-2">
-
+          <ProtectedView
+            rolesAllowed={["supervisor","administrador"]}
+          >
           <button
             className="p-2 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-200 dark:hover:bg-indigo-800 transition"
             title="Editar"
@@ -53,8 +56,13 @@ export default function DepartureAuthorizationRow({
           >
             <FaEdit size={14} />
           </button>
+          </ProtectedView>
 
+          <ProtectedView
+            rolesAllowed={["supervisor","administrador"]}
+          >
           <BoletaDeparturesButton boletaId={departure?.id} />
+          </ProtectedView>
 
         </div>
       </TableCell>

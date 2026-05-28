@@ -28,15 +28,15 @@ export default function ApplicationRow({
       </TableCell>
 
  
-      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-400">
+      <TableCell>
         {application.accesorios?.length
-          ? application.accesorios.map(a => a.solicitud).join(", ")
+          ? application.accesorios.map(a => a.solicitud1).join(", ")
           : "-"}
       </TableCell>
 
   
       <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-400">
-        {application.descripcion}
+        {application.descripsoli}
       </TableCell>
 
 
