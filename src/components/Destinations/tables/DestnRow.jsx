@@ -3,6 +3,7 @@ import { FaEdit, FaMapMarkedAlt } from "react-icons/fa";
 import { TableRow, TableCell } from "../../ui/table";
 import EditDestPanel from "../form/EditDestnPanel";
 import MapSelector from "../form/MapSelector";
+import ProtectedView from "../../Protected/ProtectedView";
 
 export default function DestRow({ item, index }) {
   const [openEditPanel, setOpenEditPanel] = useState(false);
@@ -48,7 +49,8 @@ export default function DestRow({ item, index }) {
         </TableCell>
 
         <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-center">
-
+          <ProtectedView 
+           rolesAllowed={["supervisor","administrador"]}>
           <div className="flex items-center justify-center gap-2">
 
             <button
@@ -68,8 +70,8 @@ export default function DestRow({ item, index }) {
             >
               <FaMapMarkedAlt size={14} />
             </button>
-
           </div>
+          </ProtectedView>
 
         </TableCell>
 

@@ -4,6 +4,7 @@ import { FaEdit, FaPrint, FaTrash } from "react-icons/fa";
 import JobReportButton from "../../pdf-buttons/JobReportButton";
 import ProtectedView from "../../Protected/ProtectedView";
 
+
 export default function JobApplicationRow({
   application,
   index,
@@ -57,17 +58,19 @@ export default function JobApplicationRow({
 
    
       <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2">
-        <div className="flex items-center gap-2">    
-          <button
-            className="p-2 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-200 dark:hover:bg-indigo-800 transition"
-            title="Editar"
-            onClick={() => onEdit(application)}
-          >
-            <FaEdit size={14} />
-          </button>
-          <JobReportButton item={application} />
-
-        </div>
+         <ProtectedView 
+           rolesAllowed={["chofer"]}>
+            <div className="flex items-center gap-2">    
+              <button
+                className="p-2 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-200 dark:hover:bg-indigo-800 transition"
+                title="Editar"
+                onClick={() => onEdit(application)}
+              >
+                <FaEdit size={14} />
+              </button>
+              <JobReportButton item={application} />
+            </div>
+        </ProtectedView>
       </TableCell>
 
     </TableRow>

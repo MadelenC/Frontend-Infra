@@ -8,9 +8,11 @@ import { useJobApplicationStore } from "../../../zustand/useJobApplicationStore"
 import { useVehicleStore } from "../../../zustand/useVehicleStore";
 import { useAccessoriesStore } from "../../../zustand/useAccessoriesStore";
 import { useUserStore } from "../../../zustand/userStore";
+import { useDebounce } from "../../../hooks/useDebounce";
 import CreateJobApplicationForm from "../Form/CreateJobApplicationForm";
 import EditJobApplicationForm from "../Form/EditJobAplicationForm";
-import { useDebounce } from "../../../hooks/useDebounce";
+
+import ProtectedView from "../../Protected/ProtectedView";
 
 export default function JobApplicationTable() {
   const {
@@ -119,6 +121,8 @@ useEffect(() => {
 
         
         <div className="w-full md:w-auto flex md:items-stretch">
+          <ProtectedView 
+           rolesAllowed={["mecanico","supervisor", "chofer"]}>
           <button
             onClick={handleOpenCreate}
             className="h-10 flex items-center gap-2 px-5 rounded-lg
@@ -130,6 +134,7 @@ useEffect(() => {
             <FiPlus size={18} />
             Agregar Solicitud
           </button>
+          </ProtectedView>
         </div>
       </div>
 

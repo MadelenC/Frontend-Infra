@@ -3,6 +3,7 @@ import KardexRow from "./KardexRow";
 import Pagination from "./Pagination";
 import UpdateKmForm from "../Form/UpdateKmForm";
 import ProcessReturnForm from "../Form/ProcessReturnForm";
+import EditKard from "../Form/EditKard";
 import { useMechanicsStore } from "../../../zustand/useMechanicsStore";
 import { useRepaymentStore } from "../../../zustand/useRepaymetnStore"; 
 
@@ -22,6 +23,8 @@ export default function KardexTable({ onRealizar }) {
 
   const [processReturnOpen, setProcessReturnOpen] = useState(false);
   const [selectedReturn, setSelectedReturn] = useState(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const [selectedEdit, setSelectedEdit] = useState(null);
 
  
 
@@ -51,6 +54,16 @@ export default function KardexTable({ onRealizar }) {
     setProcessReturnOpen(false);
   };
 
+  const handleOpenEdit = (maintenance) => {
+  setSelectedEdit(maintenance);
+  setEditOpen(true);
+  };
+
+  const handleCloseEdit = () => {
+    setSelectedEdit(null);
+    setEditOpen(false);
+  };
+
   const handleSaveProcessReturn = async (data) => {
   try {
     const res = await addRepayment(data);
@@ -67,6 +80,38 @@ export default function KardexTable({ onRealizar }) {
   } catch (error) {
     console.error(error);
     return { ok: false, error: error.message };
+  }
+};
+
+const handleSaveEdit = async (data) => {
+  try {
+
+    const res = await editMechanic(data.id, {
+      fecha: data.fecha,
+      cantidad: data.cantidad,
+      unidad: data.unidad,
+      trabajo: data.trabajo,
+      marca: data.marca,
+      codigo: data.codigo,
+      observacion: data.observacion,
+      kilometraje: data.kilometraje,
+    });
+
+    fetchMechanics();
+    handleCloseEdit();
+
+    return {
+      ok: true,
+      data: res,
+    };
+
+  } catch (error) {
+    console.error(error);
+
+    return {
+      ok: false,
+      error: error.message,
+    };
   }
 };
 
@@ -160,6 +205,7 @@ export default function KardexTable({ onRealizar }) {
                   index={(page - 1) * limit + i + 1}
                   onActualizarKm={handleOpenUpdateKm}
                   onRealizar={handleOpenProcessReturn}
+                  onEditar={handleOpenEdit}
                 />
               ))
             ) : (
@@ -199,6 +245,15 @@ export default function KardexTable({ onRealizar }) {
           onSave={handleSaveProcessReturn}
           maintenance={selectedReturn}
           
+        />
+      )}
+
+      {editOpen && selectedEdit && (
+        <EditKard
+          isOpen={editOpen}
+          onClose={handleCloseEdit}
+          onSave={handleSaveEdit}
+          application={selectedEdit}
         />
       )}
 

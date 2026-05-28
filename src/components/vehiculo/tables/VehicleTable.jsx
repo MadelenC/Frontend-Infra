@@ -7,6 +7,7 @@ import AddVehicleForm from "../form/AddVehicleForm";
 import EditVehicleForm from "../form/oper/EditVehicleForm";
 import UpdateKmForm from "../form/oper/UpdateKmForm";
 import VehicleDetail from "../form/oper/VehicleDetail";
+import ProtectedView from "../../Protected/ProtectedView";
 
 export default function TableVehicle() {
   const {
@@ -89,20 +90,22 @@ export default function TableVehicle() {
 
   </div>
 
- 
-  <button
-    onClick={() => setOpenAddPanel(true)}
-    className="h-10 flex items-center justify-center gap-2
-      bg-gradient-to-r from-blue-600 to-blue-500
-      hover:from-blue-700 hover:to-blue-600
-      text-white px-5 rounded-lg shadow-lg font-medium
-      transition-all duration-300
-      hover:scale-105 active:scale-95"
-  >
-    + Agregar Vehículo
-  </button>
+    <ProtectedView 
+         rolesAllowed={["administrador","supervisor"]}>
+        <button
+          onClick={() => setOpenAddPanel(true)}
+          className="h-10 flex items-center justify-center gap-2
+            bg-gradient-to-r from-blue-600 to-blue-500
+            hover:from-blue-700 hover:to-blue-600
+            text-white px-5 rounded-lg shadow-lg font-medium
+            transition-all duration-300
+            hover:scale-105 active:scale-95"
+        >
+          + Agregar Vehículo
+        </button>
+      </ProtectedView>
 
-</div>
+    </div>
 
       <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
         {loading && (

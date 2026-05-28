@@ -6,8 +6,8 @@ import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 import AppLayout from "./layouts/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
-import { ProtectedRoute, PublicRoute } from "./auth/PrivateRoute";
 import NotFound from "./pages/OtherPage/NotFound";
+import ProtectedRoute from "./components/Protected/PortectedRoute";
 
 import Dashboard from "./pages/Dashboard/Dashboard";
 import UserHome from "./pages/UserList/UserHome";
@@ -44,6 +44,7 @@ import DesktopHome from "./pages/MateriaOrder/DesktopHome";
 import RepaymentHome from "./pages/RepaymentOfMaterial/RepaymentHome";
 
 import Home from "./pages/Home";
+import PublicRoute from "./components/Protected/PublicRoute";
 
 import Profile from "./pages/profile/Profile";
 
@@ -55,7 +56,14 @@ export default function App() {
 
       <Routes>
 
-<Route path="/" element={<Home />} />
+       <Route 
+          path="/" 
+          element={
+            <PublicRoute> 
+              <Home />
+            </PublicRoute>   
+          } 
+      />
        
         <Route
           path="/signin"
@@ -66,65 +74,153 @@ export default function App() {
           }
         />
 
-        <Route path="/signup" element={<SignUp />} />
+        <Route 
+        path="/signup"
+        element={<SignUp />} 
+         />
 
-        
         <Route element={<AppLayout />}>
-
-
-          
           <Route
             path="/dashboard"
             element={
-              <ProtectedRoute>
                 <Dashboard />
-              </ProtectedRoute>
             }
           />
 
           <Route
             path="/profile"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute rolesAllowed={["supervisor","administrador","mecanico","mensajero","chofer","encargado"]}>
                 <Profile />
               </ProtectedRoute>
             }
           />
       
-          <Route path="/usuarios" element={<UserHome />} />
-          <Route path="/calendar" element={<Calendar />} />
-          <Route path="/vehiculos" element={<FormElements />} />
-          <Route path="/travel-rol" element={<Travelrol />} />
-          <Route path="/destinos" element={<Destinations />} />
-          <Route path="/mapas" element={<Maps />} />
-          <Route path="/reservas" element={<Reservations />} />
+          <Route 
+          path="/usuarios" 
+          element={
+            <ProtectedRoute   rolesAllowed={["supervisor","administrador"]}>
+              <UserHome/> 
+            </ProtectedRoute>
+          } />
+
+          <Route 
+          path="/travel-rol" 
+          element={
+            <ProtectedRoute   rolesAllowed={["supervisor","administrador","chofer",]}>
+              <Travelrol />
+            </ProtectedRoute>
+          } 
+          />
+          <Route 
+          path="/vehiculos" 
+          element={
+            <ProtectedRoute   rolesAllowed={["supervisor","administrador","chofer","mecanicos"]}>
+              <FormElements />
+            </ProtectedRoute>
+          } />
+
+          <Route 
+          path="/destinos" 
+          element={
+            <ProtectedRoute   rolesAllowed={["supervisor","administrador","chofer"]}>
+              <Destinations />
+            </ProtectedRoute>
+          } />
+
+          <Route 
+          path="/mapas" 
+          element={
+            <ProtectedRoute   rolesAllowed={["supervisor","administrador","chofer"]}>
+              <Maps />
+            </ProtectedRoute>
+          } />
+
+          <Route 
+          path="/reservas" 
+          element={
+            <ProtectedRoute   rolesAllowed={["supervisor","administrador","encargado"]}>
+              <Reservations />
+            </ProtectedRoute>
+          } />
+
           <Route path="/viajes">
-            <Route index element={<TripsHome />} />
-            <Route path="calendar" element={<Calendar />} />
+            <Route index 
+            element={
+              <ProtectedRoute   rolesAllowed={["supervisor","administrador","encargado","chofer"]}>
+              <TripsHome />
+              </ProtectedRoute>
+            } />
+            <Route 
+            path="calendar" 
+            element={
+              <ProtectedRoute   rolesAllowed={["supervisor","administrador","encargado","chofer"]}>
+                <Calendar />
+              </ProtectedRoute>
+            } />
           </Route>
+
+          <Route path="/calendar" element={<Calendar />} />
+        
           <Route path="/presupuestos">
-            <Route index element={<CheckBudgetHome />} />
-            <Route path="cheque" element={<CheckBudgetHome />} />
-            <Route path="caja" element={<CashBudgetHome />} />
+            <Route index 
+            element={
+              <ProtectedRoute   rolesAllowed={["supervisor","administrador"]}>
+                <CheckBudgetHome />
+              </ProtectedRoute>
+            } />
+            <Route path="cheque"
+             element={
+              <ProtectedRoute   rolesAllowed={["supervisor","administrador"]}>
+             <CheckBudgetHome />
+             </ProtectedRoute>
+             } />
+            <Route path="caja" 
+            element={
+              <ProtectedRoute   rolesAllowed={["supervisor","administrador"]}>
+                <CashBudgetHome />
+              </ProtectedRoute>
+            } />
           </Route>
-          <Route path="/autorizacion" element={<DepartureHome />} />
-          <Route path="/informe" element={<TripReportHome />} />
-          <Route path="/Solicitud_Trabajo" element={<JobApplicationHome />} />
+
+          <Route 
+          path="/autorizacion" 
+          element={
+            <ProtectedRoute   rolesAllowed={["supervisor","administrador","chofer"]}>
+              <DepartureHome />
+            </ProtectedRoute>
+          } />
+
+          <Route 
+          path="/informe" 
+          element={
+            <ProtectedRoute   rolesAllowed={["supervisor","administrador","chofer"]}>
+               <TripReportHome />
+            </ProtectedRoute>
+          } />
+
+          <Route 
+          path="/Solicitud_Trabajo" 
+          element={
+            <ProtectedRoute   rolesAllowed={["supervisor","administrador","chofer"]}>
+              <JobApplicationHome />
+            </ProtectedRoute>
+          } />
 
       
           <Route path="/mantenimiento">
             <Route
               index
               element={
-                <ProtectedRoute>
+                   <ProtectedRoute   rolesAllowed={["supervisor","administrador","mecanico"]}>
                   <ApplicationHome />
-                </ProtectedRoute>
+                  </ProtectedRoute>
               }
             />
             <Route
               path="solicitudes"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute   rolesAllowed={["supervisor","administrador","mecanico"]}>
                   <ApplicationHome />
                 </ProtectedRoute>
               }
@@ -132,7 +228,7 @@ export default function App() {
             <Route
               path="kardex"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute   rolesAllowed={["supervisor","administrador","chofer","mecanico"]}>
                   <KardexHome />
                 </ProtectedRoute>
               }
@@ -144,7 +240,7 @@ export default function App() {
             <Route
               index
               element={
-                <ProtectedRoute>
+                <ProtectedRoute rolesAllowed={["supervisor","administrador","mecanico","mensajero"]}>
                   <MechanicHome />
                 </ProtectedRoute>
               }
@@ -152,7 +248,7 @@ export default function App() {
             <Route
               path="mecanico"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute rolesAllowed={["supervisor","administrador","mecanico","mensajero"]}>
                   <MechanicHome />
                 </ProtectedRoute>
               }
@@ -160,7 +256,7 @@ export default function App() {
             <Route
               path="escritorio"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute rolesAllowed={["supervisor","administrador","mecanico","mensajero"]}>
                   <DesktopHome />
                 </ProtectedRoute>
               }
@@ -171,7 +267,7 @@ export default function App() {
           <Route
             path="/devoluciones"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute rolesAllowed={["supervisor","administrador","mecanico"]}>
                 <RepaymentHome />
               </ProtectedRoute>
             }

@@ -9,6 +9,7 @@ import ListException from "../form/Excep/ListException";
 import { FaPlus, FaPrint } from "react-icons/fa";
 import { useExceptionsStore } from "../../../zustand/useExceptionsStore";
 import {  PDFDownloadLink,} from "@react-pdf/renderer";
+import ProtectedView from "../../Protected/ProtectedView";
 
 import RoleTravelPDF
 from "../../../Pdf/TravelRol/TravelRolPDF";
@@ -132,14 +133,16 @@ export default function TravelTable() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2 md:justify-end w-full md:w-auto">
-
-          <button
-            onClick={() => setOpenPanel(true)}
-            className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg shadow"
-          >
-            <FaPlus size={14} /> Agregar Chofer
-          </button>
-      <PDFDownloadLink
+          <ProtectedView 
+              rolesAllowed={["supervisor","administrador"]}>
+            <button
+              onClick={() => setOpenPanel(true)}
+              className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg shadow"
+            >
+              <FaPlus size={14} /> Agregar Chofer
+            </button>
+          </ProtectedView>
+        <PDFDownloadLink
           document={
             <RoleTravelPDF
               travels={allTravels}

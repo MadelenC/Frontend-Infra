@@ -1,14 +1,16 @@
 import React from "react";
 import { TableRow, TableCell } from "../../ui/table";
-import { FaTachometerAlt, FaCheck } from "react-icons/fa";
+import { FaTachometerAlt, FaCheck, FaEdit } from "react-icons/fa";
+import ProtectedView from "../../Protected/ProtectedView";
 
 export default function KardexRow({
   maintenance,
   index,
   onActualizarKm,
   onRealizar,
+  onEditar,
 }) {
-  console.log("KardexRow maintenance:", maintenance);
+ // console.log("KardexRow maintenance:", maintenance);
 
   return (
     <TableRow className="border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
@@ -56,29 +58,46 @@ export default function KardexRow({
       <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-400">
         {maintenance.repuesto}
       </TableCell>
+
       <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-center">
-        <button
-          onClick={() => onActualizarKm?.(maintenance)}
-          className="p-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-800/40 transition"
-          title="Actualizar KM"
-        >
-          <FaTachometerAlt size={14} />
-        </button>
+        <ProtectedView 
+           rolesAllowed={["supervisor","administrador"]}>
+          <button
+            onClick={() => onActualizarKm?.(maintenance)}
+            className="p-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-800/40 transition"
+            title="Actualizar KM"
+          >
+            <FaTachometerAlt size={14} />
+          </button>
+        </ProtectedView>
       </TableCell>
 
       
       <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2">
-       {maintenance.operacion}
+        <div className="flex items-center justify-between gap-2">
+          <span>{maintenance.operacion}</span>
+          <ProtectedView 
+           rolesAllowed={["supervisor","administrador","mecanico"]}>
+            <button
+            onClick={() => onEditar?.(maintenance)}
+            className="p-2 rounded-full bg-indigo-100 dark:bg-indigo-900/30
+              text-indigo-600 dark:text-indigo-400 hover:bg-indigo-200
+              dark:hover:bg-indigo-800 transition"
+              >
+              <FaEdit size={12} />
+            </button>
+          </ProtectedView>
+        </div>
       </TableCell>
 
       <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-center">
 
-        
         <div className="text-red-600 dark:text-red-400 font-bold text-sm mb-1">
           {maintenance.devolucion ?? 0}
         </div>
 
-       
+         <ProtectedView 
+                  rolesAllowed={["supervisor","administrador","mecanico"]}>
         <button
           onClick={() => onRealizar(maintenance)}
           className="w-full text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded hover:bg-blue-200 dark:hover:bg-blue-800/40 flex items-center justify-center gap-1 transition"
@@ -86,6 +105,7 @@ export default function KardexRow({
           <FaCheck />
           Realizar
         </button>
+        </ProtectedView>
 
       </TableCell>
 

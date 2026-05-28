@@ -6,6 +6,7 @@ import { useDestinoStore } from "../../../zustand/useDestinationsStore";
 import { FaPrint ,FaPlus } from "react-icons/fa";
 import { useDebounce } from "../../../hooks/useDebounce";
 import DestinationForm from "../form/AddDestinationForm";
+import ProtectedView from "../../Protected/ProtectedView";
 
 export default function DestTable() {
   const {
@@ -86,7 +87,8 @@ export default function DestTable() {
         </div>
 
         <div className="flex gap-2">
-
+          <ProtectedView 
+           rolesAllowed={["supervisor","administrador"]}>
           <button
             onClick={() => setOpenForm(true)}
             className="
@@ -101,6 +103,7 @@ export default function DestTable() {
             <FaPlus />
             Agregar
           </button>
+          </ProtectedView>
 
           <button
             className="

@@ -12,7 +12,6 @@ export default function UserDropdown() {
     setIsOpen(!isOpen);
   };
 
-  // Tomar la primera letra del nombre
   const userInitial = user?.nombres?.[0]?.toUpperCase() || "U";
 
   return (
@@ -57,7 +56,7 @@ export default function UserDropdown() {
             }}
           >
             <SlUser className="w-5 h-5" />
-           👤 Ver Perfil
+            Ver Perfil
           </p>
           
         </div>

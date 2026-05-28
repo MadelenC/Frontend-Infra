@@ -1,6 +1,7 @@
 import React from "react";
 import { FaEdit, FaTachometerAlt, FaEye } from "react-icons/fa";
 import Badge from "../../ui/badge/Badge";
+import ProtectedView from "../../Protected/ProtectedView";
 
 export default function VehicleRow({ vehicle, onEdit, onUpdateKm, onView }) {
   const badgeColor =
@@ -48,7 +49,8 @@ export default function VehicleRow({ vehicle, onEdit, onUpdateKm, onView }) {
 
       <td className={cellClass}>
         <div className="flex items-center justify-center gap-2">
-
+          <ProtectedView 
+           rolesAllowed={["administrador","supervisor"]}>
           <button
             onClick={onEdit}
             className="p-2 rounded-full bg-indigo-100 dark:bg-indigo-900/30
@@ -58,7 +60,10 @@ export default function VehicleRow({ vehicle, onEdit, onUpdateKm, onView }) {
           >
             <FaEdit size={14} />
           </button>
+          </ProtectedView>
 
+          <ProtectedView 
+           rolesAllowed={["administrador","supervisor"]}>
           <button
             onClick={onUpdateKm}
             title="Actualizar kilometraje"
@@ -66,7 +71,10 @@ export default function VehicleRow({ vehicle, onEdit, onUpdateKm, onView }) {
           >
             <FaTachometerAlt size={14} />
           </button>
+          </ProtectedView>
 
+          <ProtectedView 
+           rolesAllowed={["administrador","supervisor","chofer"]}>
           <button
             onClick={onView}
             title="ver"
@@ -74,6 +82,7 @@ export default function VehicleRow({ vehicle, onEdit, onUpdateKm, onView }) {
           >
             <FaEye size={14} />
           </button>
+          </ProtectedView>
 
         </div>
       </td>

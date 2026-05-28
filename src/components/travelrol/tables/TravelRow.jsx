@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaPlus, FaEye, FaEllipsisV, FaTrash, FaBroom } from "react-icons/fa";
 import AddExceptionForm from "../form/Excep/AddExceptionForm";
+import ProtectedView from "../../Protected/ProtectedView";
 
 export default function TravelRow({
   entitie,
@@ -67,20 +68,26 @@ export default function TravelRow({
 
           {openExcepciones && (
             <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-28 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-50">
-
+              
+              <ProtectedView 
+                rolesAllowed={["supervisor","administrador"]}>
               <button
                 onClick={handleAdd}
                 className="w-full px-3 py-1.5 text-xs text-left hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-1 text-gray-700 dark:text-gray-300"
               >
                 <FaPlus size={12} /> Añadir
               </button>
+              </ProtectedView>
 
-              <button
-                onClick={() => onViewExceptions(entitie)}
-                className="w-full px-3 py-1.5 text-xs text-left hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-1 text-gray-700 dark:text-gray-300"
-              >
-                <FaEye size={12} /> Ver
-              </button>
+              <ProtectedView 
+                rolesAllowed={["supervisor","administrador","chofer"]}>
+                  <button
+                    onClick={() => onViewExceptions(entitie)}
+                    className="w-full px-3 py-1.5 text-xs text-left hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-1 text-gray-700 dark:text-gray-300"
+                  >
+                    <FaEye size={12} /> Ver
+                  </button>
+              </ProtectedView>
 
             </div>
           )}
@@ -90,11 +97,14 @@ export default function TravelRow({
 
        
         <td className={`${cellClass} text-center relative`} ref={refOperaciones}>
-           <button
-              onClick={() => onDelete(entitie.id)}
-              className="p-2 rounded-full text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30  hover:text-red-700  hover:shadow-[0_0_10px_rgba(239,68,68,0.5)]   transition-all duration-200    flex items-center justify-center">
-              <FaTrash className="text-sm" />
-            </button>
+          <ProtectedView 
+                rolesAllowed={["supervisor","administrador"]}>
+              <button
+                  onClick={() => onDelete(entitie.id)}
+                  className="p-2 rounded-full text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30  hover:text-red-700  hover:shadow-[0_0_10px_rgba(239,68,68,0.5)]   transition-all duration-200    flex items-center justify-center">
+                  <FaTrash className="text-sm" />
+              </button>
+          </ProtectedView>
             
           
         </td>

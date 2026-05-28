@@ -1,6 +1,7 @@
 import React from "react";
 import { TableRow, TableCell } from "../../ui/table";
 import { FaMapMarkedAlt } from "react-icons/fa";
+import ProtectedView from "../../Protected/ProtectedView";
 
 export default function MapsRow({ item, index, openModal }) {
   return (
@@ -27,17 +28,18 @@ export default function MapsRow({ item, index, openModal }) {
       </TableCell>
 
       <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-center">
-
-        <button
-          onClick={() => openModal(item)}
-          title="Ver mapa"
-          className="w-8 h-8 flex items-center justify-center mx-auto
-                     rounded-full bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400
-                     hover:bg-green-100 dark:hover:bg-green-800 transition"
-        >
-          <FaMapMarkedAlt size={14} />
-        </button>
-
+        <ProtectedView 
+          rolesAllowed={["administrador","supervisor","chofer"]}>
+          <button
+            onClick={() => openModal(item)}
+            title="Ver mapa"
+            className="w-8 h-8 flex items-center justify-center mx-auto
+                      rounded-full bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400
+                      hover:bg-green-100 dark:hover:bg-green-800 transition"
+          >
+            <FaMapMarkedAlt size={14} />
+          </button>
+          </ProtectedView>
       </TableCell>
 
     </TableRow>

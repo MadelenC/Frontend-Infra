@@ -15,9 +15,7 @@ export default function SearchBar({
 
   const dropdownRef = useRef(null);
 
-  // =========================
-  // CERRAR DROPDOWN
-  // =========================
+
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (
@@ -37,16 +35,11 @@ export default function SearchBar({
       );
   }, []);
 
-  // =========================
-  // SINCRONIZAR SEARCH GLOBAL
-  // =========================
   useEffect(() => {
     setLocalSearch(search || "");
   }, [search]);
 
-  // =========================
-  // DEBOUNCE SEARCH
-  // =========================
+
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
 
@@ -63,9 +56,7 @@ export default function SearchBar({
   return (
     <div className="flex gap-3 w-full">
 
-      {/* =========================
-          FILTRO ROLES
-      ========================= */}
+
       <div
         className="relative w-full md:w-1/3 lg:w-1/5"
         ref={dropdownRef}
@@ -114,9 +105,6 @@ export default function SearchBar({
         )}
       </div>
 
-      {/* =========================
-          INPUT SEARCH
-      ========================= */}
       <input
         type="text"
         placeholder="Buscar..."

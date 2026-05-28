@@ -3,6 +3,7 @@ import { TableRow, TableCell } from "../../ui/table";
 import { FaPrint, FaFileAlt, FaEye,FaEdit  } from "react-icons/fa";
 import RequestButton from "../../pdf-buttons/RequestButton";
 import MaterialRequestButton from "../../pdf-buttons/MaterialRequestButton";
+import ProtectedView from "../../Protected/ProtectedView";
 
 export default function MechanicRow({ mechanic, index, onRealizar }) {
   console.log(mechanic);
@@ -40,15 +41,20 @@ export default function MechanicRow({ mechanic, index, onRealizar }) {
         {mechanic.observacion || "-"}
       </TableCell>
 
-    
-      <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-center flex gap-2 justify-center">
-       <RequestButton requestId={mechanic.id} />
-        <RequestButton requestId={mechanic.id} blank={true} className="-gray-500" />
-        <MaterialRequestButton requestId={mechanic.id} />
-        <button onClick={() => onRealizar(mechanic)} className=" p-2  bg-blue-100  text-blue-600  rounded-lg  hover:bg-blue-200  transition-colors " title="Editar">
-          <FaEdit size={14} />
-        </button>
-      </TableCell>
+       <ProtectedView 
+           rolesAllowed={["mecanico","administrador","supervisor","mensajero"]}>
+          <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-center flex gap-2 justify-center">
+            <RequestButton requestId={mechanic.id} />
+            <RequestButton requestId={mechanic.id} blank={true} className="-gray-500" />
+            <MaterialRequestButton requestId={mechanic.id} />
+            <ProtectedView 
+              rolesAllowed={["mecanico"]}>
+                <button onClick={() => onRealizar(mechanic)} className=" p-2  bg-blue-100  text-blue-600  rounded-lg  hover:bg-blue-200  transition-colors " title="Editar">
+                  <FaEdit size={14} />
+                </button>
+            </ProtectedView>
+          </TableCell>
+      </ProtectedView>
 
    
       <TableCell className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300 text-center">
