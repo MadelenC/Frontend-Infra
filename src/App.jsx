@@ -115,7 +115,7 @@ export default function App() {
           <Route 
           path="/vehiculos" 
           element={
-            <ProtectedRoute   rolesAllowed={["supervisor","administrador","chofer","mecanicos"]}>
+            <ProtectedRoute   rolesAllowed={["supervisor","administrador","chofer","mecanico"]}>
               <FormElements />
             </ProtectedRoute>
           } />

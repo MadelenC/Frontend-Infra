@@ -285,8 +285,11 @@ const handleDeleteTrip = async (id) => {
         </div>
 
         <div className="flex flex-wrap gap-2 justify-start md:justify-end">
-
-      <VehicleReportButton />
+        <ProtectedView 
+            rolesAllowed={["supervisor","administrador"]}>
+        <VehicleReportButton />
+        </ProtectedView>
+        
         <ProtectedView 
             rolesAllowed={["supervisor","administrador"]}>
           {!externalTripId && (

@@ -4,8 +4,8 @@ import { BiCalendar } from "react-icons/bi";
 import { useSidebar } from "../../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
 import { BiSpreadsheet,BiFile,BiWrench, BiClipboard, BiCog, BiPackage} from "react-icons/bi";
-import { LuBuilding2,LuClipboardCopy } from "react-icons/lu";
-import { MdSecurityUpdate, MdDomainAdd, MdTravelExplore,MdReplyAll  } from "react-icons/md";
+import { LuClipboardCopy } from "react-icons/lu";
+import { MdDomainAdd, MdTravelExplore,MdReplyAll  } from "react-icons/md";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { GoChevronDown } from "react-icons/go";
 import { FaUsersLine, FaUsersGear, FaMoneyBillTrendUp,FaListUl,FaFileLines,FaFilePen, FaMoneyCheckDollar, FaCashRegister, FaCarSide   } from "react-icons/fa6";
@@ -13,93 +13,231 @@ import { BsFillFuelPumpDieselFill, BsCardHeading } from "react-icons/bs";
 import { GiHorizonRoad } from "react-icons/gi";
 import { SiOrganicmaps } from "react-icons/si";
 import { IoCalendarNumberOutline } from "react-icons/io5";
+import { hasAccess } from "../../helpers/hasAccess";
+import { useAuthStore } from "../../zustand/AuthUsers"
 
 const navItems = [
   { name: "Inicio", path: "/dashboard" },
-  { icon: <FaUsersLine className="text-white font-size" />, name: "Usuarios", subItems: [{ name: " Ver Lista", path: "/usuarios", pro: false, icon:<FaListUl className="text-white " /> }] },
-  { name: "Rol de Viajes", icon: <FaUsersGear className="text-white" />, subItems: [{ name: "Motrar", path: "/travel-rol", pro: false,icon:<FaListUl className="text-white " /> }] },
-  { name: "Vehiculos ", icon: <FaCarSide  className="text-white" />, subItems: [{ name: "Mostrar", path: "/vehiculos", pro: false,icon:<FaListUl className="text-white " /> }] },
-  { name: "Destinos", icon: <GiHorizonRoad className="text-white" />, subItems: [{ name: "Ver Lista ", path: "/destinos", pro: false,icon:<FaListUl className="text-white " /> }] },
-  { name: "Mapas", icon: <SiOrganicmaps className="text-white" />, 
-    subItems: [
-      { name: " Ver lista", path: "/mapas", pro: false,
-         icon:<FaListUl className="text-white " />
-       }] },
-  { name: "Reservas", icon: <BsCardHeading className="text-white" />, 
-    subItems: [
-      { name: "Listar", path: "/reservas", pro: false,
-         icon:<FaListUl className="text-white " />
-       }] },
-  {name: "Viajes", 
-    icon: <MdTravelExplore className="text-white" />, 
-    subItems: [ 
-      { name: "Listar", path: "/viajes", pro: false, 
-        icon:<FaListUl className="text-white " />
-      },
-      { name: "Calendario", path: "/viajes/calendar", 
+  { icon: <FaUsersLine className="text-white font-size" />, 
+    name: "Usuarios", 
+    rolesAllowed: ["supervisor","administrador"],
+    subItems:
+     [
+      { 
+        name: " Ver Lista", 
+        path: "/usuarios", 
         pro: false, 
-        icon: <IoCalendarNumberOutline className="text-white " /> } 
+        icon:<FaListUl className="text-white " />,
+        rolesAllowed: ["supervisor","administrador"],
+       }
+      ] 
+    },
+
+    { name: "Rol de Viajes", 
+    icon: <FaUsersGear className="text-white" />,
+    rolesAllowed: ["supervisor","administrador","chofer"],
+    subItems: [
+      { 
+      name: "Motrar",
+      path: "/travel-rol", 
+      pro: false,icon:<FaListUl className="text-white " />,
+      rolesAllowed: ["supervisor","administrador","chofer"],
+     }
     ] 
   },
-  { name: "Presupuestos de Viaje", icon: <FaMoneyBillTrendUp className="text-white" />,
-     subItems: [{ name: "Tipo A (cheque)", path: "/presupuestos", pro: false , icon:<FaMoneyCheckDollar className="text-white" /> },
-                { name: "Tipo B (caja)", path: "/presupuestos/caja", pro: false,icon:<FaCashRegister className="text-white"/> }
-              ] },
-  { name: "Autorizacion de Salidas",
-    icon: <FaFilePen  className="text-white" />, 
-    subItems: [{ name: "Ver Lista", path: "/autorizacion",
-   pro: false,icon:<FaListUl className="text-white " />
-   }] },
+
+    { name: "Vehiculos ",
+        icon: <FaCarSide  className="text-white" />,
+        rolesAllowed: ["supervisor","administrador","chofer","mecanico"],
+        subItems: [
+        { 
+          name: "Mostrar", 
+          path: "/vehiculos", 
+          pro: false,
+          icon:<FaListUl className="text-white " />,
+          rolesAllowed: ["supervisor","administrador","chofer","mecanico"],
+        }
+      ] 
+    },
+
+    { name: "Destinos", 
+      icon: <GiHorizonRoad className="text-white" />, 
+      rolesAllowed: ["supervisor","administrador","chofer"],
+      subItems: [
+        { 
+          name: "Ver Lista ", 
+          path: "/destinos", 
+          pro: false,
+          icon:<FaListUl className="text-white " />,
+          rolesAllowed: ["supervisor","administrador","chofer"],
+        }
+      ] 
+    },
+
+    { name: "Mapas", 
+      icon: <SiOrganicmaps className="text-white" />, 
+      rolesAllowed: ["supervisor","administrador","chofer"],
+      subItems: [
+      { 
+        name: " Ver lista", 
+        path: "/mapas", 
+        pro: false,
+        icon:<FaListUl className="text-white " />,
+        rolesAllowed: ["supervisor","administrador","chofer"],
+       }
+      ] 
+    },
+
+    { name: "Reservas", 
+      icon: <BsCardHeading className="text-white" />,
+      rolesAllowed: ["supervisor","administrador","encargado"],
+      subItems: [
+        { 
+          name: "Listar", 
+          path: "/reservas", 
+          pro: false,
+          icon:<FaListUl className="text-white " />,
+          rolesAllowed: ["supervisor","administrador","encargado"],
+        }
+      ] 
+    },
+
+    {name: "Viajes", 
+      icon: <MdTravelExplore className="text-white" />,
+      rolesAllowed: ["supervisor","administrador","encargado","chofer"], 
+      subItems: [ 
+        { 
+          name: "Listar", 
+          path: "/viajes", 
+          pro: false, 
+          icon:<FaListUl className="text-white " />,
+          rolesAllowed: ["supervisor","administrador","encargado","chofer"], 
+        },
+        {
+          name: "Calendario", path: "/viajes/calendar", 
+          pro: false, 
+          icon: <IoCalendarNumberOutline className="text-white " />,
+          rolesAllowed: ["supervisor","administrador","encargado","chofer"], 
+        } 
+      ] 
+    },
+
+    { name: "Presupuestos de Viaje", 
+      icon: <FaMoneyBillTrendUp className="text-white" />,
+      rolesAllowed: ["supervisor","administrador"],
+      subItems: [
+        { 
+          name: "Tipo A (cheque)", 
+          path: "/presupuestos", 
+          pro: false , icon:<FaMoneyCheckDollar className="text-white" />,
+          rolesAllowed: ["supervisor","administrador"], 
+        },
+        { 
+          name: "Tipo B (caja)", 
+          path: "/presupuestos/caja", 
+          pro: false,icon:<FaCashRegister className="text-white"/>,
+          rolesAllowed: ["supervisor","administrador"],
+        }
+      ] 
+    },
+
+    { name: "Autorizacion de Salidas",
+      icon: <FaFilePen  className="text-white" />,
+      rolesAllowed: ["supervisor","administrador","chofer"],  
+      subItems: [
+        { 
+          name: "Ver Lista", 
+          path: "/autorizacion",
+          pro: false,
+          icon:<FaListUl className="text-white " />,
+          rolesAllowed: ["supervisor","administrador","chofer"], 
+        }
+      ] 
+    },
  
-   { name: "Informe de viajes", icon: <FaFileLines className="text-white" />, subItems: [{ name: "Mostrar", path: "/informe", pro: false,icon:<FaListUl className="text-white " /> }] },
+     { name: "Informe de viajes", 
+        icon: <FaFileLines className="text-white" />, 
+        rolesAllowed: ["supervisor","administrador","chofer"], 
+        subItems: [
+          { 
+            name: "Mostrar", 
+            path: "/informe", 
+            pro: false,icon:<FaListUl className="text-white " />, 
+            rolesAllowed: ["supervisor","administrador","chofer"], 
+          }
+        ] 
+      },
  
-  { name: "Solictud de Trabajo", icon: <BsCardHeading className="text-white" />, subItems: [{ name: "Ver Lista", path: "/Solicitud_Trabajo", pro: false, icon:<FaListUl className="text-white " />}] },
+       { name: "Solictud de Trabajo", 
+          icon: <BsCardHeading className="text-white" />,
+          rolesAllowed: ["supervisor","administrador","chofer"],  
+          subItems: [
+            { 
+              name: "Ver Lista", 
+              path: "/Solicitud_Trabajo", 
+              pro: false, icon:<FaListUl className="text-white " />,
+              rolesAllowed: ["supervisor","administrador","chofer"], 
+            }
+          ] 
+        },
   
-  {name: "Mantenimiento", 
-    icon: <BiCog className="text-white" />, 
-    subItems: [
-      { name: "Solicitudes", path: "/mantenimiento/solicitudes", pro: false, icon: <LuClipboardCopy className="text-white"/> },
-      { name: "kardex", path: "/mantenimiento/kardex", pro: false, icon: <BiFile className="text-white"/>} 
-    ] 
-  },
-  {name: "Pedido de Material", 
-    icon: <BiPackage className="text-white" />, 
-    subItems: [
-      { name: "Mecanico", path: "/pedido/mecanico", pro: false,icon:<BiWrench className="text-white"/> },
-      { name: "Escritorio/Demas", path: "/pedido/escritorio", pro: false, icon:<BiClipboard className="text-white"/> } 
-    ] 
-  },
-  { name: "Devolucion de Material", icon: <MdReplyAll  className="text-white" />, subItems: [{ name: "Mostrar", path: "/devoluciones", pro: false,icon:<FaListUl className="text-white " /> }] },                   
+      {name: "Mantenimiento", 
+        icon: <BiCog className="text-white" />,
+        rolesAllowed: ["supervisor","administrador","chofer","mecanico"],  
+        subItems: [
+          { 
+            name: "Solicitudes", 
+            path: "/mantenimiento/solicitudes", 
+            pro: false, icon: <LuClipboardCopy className="text-white"/>, 
+            rolesAllowed: ["supervisor","administrador","mecanico"], 
+          },
+          { name: "kardex", 
+            path: "/mantenimiento/kardex", 
+            pro: false, icon: <BiFile className="text-white"/>,
+            rolesAllowed: ["supervisor","administrador","chofer","mecanico"],  
+          } 
+        ] 
+      },
+
+      {name: "Pedido de Material", 
+        icon: <BiPackage className="text-white" />, 
+        rolesAllowed: ["supervisor","administrador","mecanico","mensajero"], 
+        subItems: [
+          { 
+            name: "Mecanico", 
+            path: "/pedido/mecanico",
+             pro: false,icon:<BiWrench className="text-white"/>, 
+             rolesAllowed: ["supervisor","administrador","mecanico","mensajero"], 
+            },
+          { name: "Escritorio/Demas", 
+            path: "/pedido/escritorio", 
+            pro: false, icon:<BiClipboard className="text-white"/>,
+            rolesAllowed: ["supervisor","administrador","mensajero"],  
+          } 
+        ] 
+      },
+
+      { name: "Devolucion de Material", 
+        icon: <MdReplyAll  className="text-white" />, 
+        rolesAllowed: ["supervisor","administrador","mecanico"], 
+        subItems: [
+          { 
+            name: "Mostrar", 
+            path: "/devoluciones", 
+            pro: false,icon:<FaListUl className="text-white " />,
+            rolesAllowed: ["supervisor","administrador","mecanico"], 
+           }
+          ] 
+        },                   
               
 ];
 
 
-
-
-const othersItems = [
-  {
-    icon: <LuBuilding2 className="text-white" />,
-    name: "UI Elements",
-    subItems: [
-      { name: "Alerts", path: "/alerts", pro: false },
-      { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
-    ],
-  },
-  {
-    icon: <MdSecurityUpdate className="text-white" />,
-    name: "Authentication",
-    subItems: [
-      { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
-    ],
-  },
-];
-
 const AppSidebar = () => {
+  const { user } = useAuthStore(); 
+  const userR = {
+    roles: [user?.tipo]
+  };
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
 
@@ -110,22 +248,23 @@ const AppSidebar = () => {
   const isActive = useCallback((path) => location.pathname === path, [location.pathname]);
 
   useEffect(() => {
-    let submenuMatched = false;
-    ["main", "others"].forEach((menuType) => {
-      const items = menuType === "main" ? navItems : othersItems;
-      items.forEach((nav, index) => {
-        if (nav.subItems) {
-          nav.subItems.forEach((subItem) => {
-            if (isActive(subItem.path)) {
-              setOpenSubmenu({ type: menuType, index });
-              submenuMatched = true;
-            }
-          });
+  let submenuMatched = false;
+
+  navItems.forEach((nav) => {
+    if (nav.subItems) {
+      nav.subItems.forEach((subItem) => {
+        if (isActive(subItem.path)) {
+          setOpenSubmenu(nav.name);
+          submenuMatched = true;
         }
       });
-    });
-    if (!submenuMatched) setOpenSubmenu(null);
-  }, [location, isActive]);
+    }
+  });
+
+  if (!submenuMatched) {
+    setOpenSubmenu(null);
+  }
+}, [location, isActive]);
 
   useEffect(() => {
     if (openSubmenu !== null) {
@@ -149,7 +288,12 @@ const AppSidebar = () => {
 
   const renderMenuItems = (items, menuType) => (
     <ul className="flex flex-col gap-4">
-      {items.map((nav, index) => (
+      {items
+        .filter(nav =>
+          hasAccess(userR.roles, nav.rolesAllowed)
+        )
+      
+      .map((nav, index) => (
         <li key={nav.name}>
           {nav.subItems ? (
             <button
@@ -221,7 +365,11 @@ const AppSidebar = () => {
               }}
             >
               <ul className="mt-2 space-y-4 ml-9  ">
-                {nav.subItems.map((subItem) => (
+                {nav.subItems
+                  .filter(subItem =>
+                      hasAccess(userR.roles, subItem.rolesAllowed)
+                    )
+                     .map((subItem) => (
                   <li key={subItem.name}>
                     <Link
                       to={subItem.path}
@@ -320,16 +468,6 @@ const AppSidebar = () => {
                 {isExpanded || isHovered || isMobileOpen ? "Menu" : <FiMoreHorizontal className="size-6 text-white" />}
               </h2>
               {renderMenuItems(navItems, "main")}
-            </div>
-            <div>
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-white/70 ${
-                  !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? "Others" : <FiMoreHorizontal className="text-white" />}
-              </h2>
-              {renderMenuItems(othersItems, "others")}
             </div>
           </div>
         </nav>

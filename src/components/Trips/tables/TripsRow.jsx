@@ -75,8 +75,10 @@ export default function TripsRow({
       <TableCell className="border px-3 py-2 relative">
         <div className="flex flex-col gap-1">
 
-          {/* PRESUPUESTO */}
+          
           <div className="relative">
+            <ProtectedView 
+                  rolesAllowed={["supervisor","administrador"]}>
             <button
               onClick={() => toggleMenu(trip.id, "presupuesto")}
               className="w-full text-xs px-2 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 flex items-center gap-1"
@@ -84,8 +86,11 @@ export default function TripsRow({
               <FaMoneyBill size={10} />
               Presupuesto
             </button>
+            </ProtectedView>
 
+           
             {isOpen("presupuesto") && (
+               
               <div className="absolute right-0 mt-1 w-32 bg-white border rounded shadow-md z-10 text-xs">
 
                 <button
@@ -111,7 +116,9 @@ export default function TripsRow({
                 </button>
 
               </div>
+              
             )}
+            
           </div>
 
         
@@ -131,7 +138,7 @@ export default function TripsRow({
             {isOpen("realizar") && (
               <div className="absolute right-0 mt-1 w-36 bg-white border rounded shadow-md z-10 text-xs">
                 <ProtectedView 
-                  rolesAllowed={["supervisor","administrador","chofer"]}>
+                  rolesAllowed={["supervisor","administrador","chofer","encargado"]}>
                 <button
                   onClick={() => {
                     onOpenModal("detalle", trip);
@@ -144,6 +151,8 @@ export default function TripsRow({
                 </button>
                 </ProtectedView>
 
+                <ProtectedView 
+                  rolesAllowed={["supervisor","administrador"]}>
                 <button
                   onClick={() => {
                     onOpenModal("edit", trip);
@@ -154,6 +163,7 @@ export default function TripsRow({
                   <FaFileInvoice size={10} />
                   Editar viaje
                 </button>
+                </ProtectedView>
 
                 <ProtectedView 
                   rolesAllowed={["supervisor","administrador"]}>
@@ -186,7 +196,7 @@ export default function TripsRow({
 
 
                 <ProtectedView 
-                  rolesAllowed={["supervisor","administrador","chofer"]}>
+                  rolesAllowed={["supervisor","administrador","chofer","encargado"]}>
                 <div className="px-2 py-1 hover:bg-gray-100">
                 <HojaRutaButton viajeId={trip.id} />
                 </div>

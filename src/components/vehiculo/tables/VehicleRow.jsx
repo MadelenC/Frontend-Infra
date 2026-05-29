@@ -74,7 +74,7 @@ export default function VehicleRow({ vehicle, onEdit, onUpdateKm, onView }) {
           </ProtectedView>
 
           <ProtectedView 
-           rolesAllowed={["administrador","supervisor","chofer"]}>
+           rolesAllowed={["administrador","supervisor","chofer","mecanico"]}>
           <button
             onClick={onView}
             title="ver"

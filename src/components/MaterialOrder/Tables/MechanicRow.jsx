@@ -48,7 +48,7 @@ export default function MechanicRow({ mechanic, index, onRealizar }) {
             <RequestButton requestId={mechanic.id} blank={true} className="-gray-500" />
             <MaterialRequestButton requestId={mechanic.id} />
             <ProtectedView 
-              rolesAllowed={["mecanico"]}>
+              rolesAllowed={["mecanico","mensajero"]}>
                 <button onClick={() => onRealizar(mechanic)} className=" p-2  bg-blue-100  text-blue-600  rounded-lg  hover:bg-blue-200  transition-colors " title="Editar">
                   <FaEdit size={14} />
                 </button>
