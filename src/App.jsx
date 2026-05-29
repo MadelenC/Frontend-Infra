@@ -33,6 +33,7 @@ import CheckBudgetHome from "./pages/TravelBudget/CheckBudgetHome";
 import CashBudgetHome from "./pages/TravelBudget/CashBudgetHome";
 import DepartureHome from "./pages/DepartureAuthorization/DepartureHome";
 import TripReportHome from "./pages/TripReport/TripReportHome";
+import InforReportHome from "./pages/TripReport/InforReportHome";
 import JobApplicationHome from "./pages/JobApplication/JobApplicationHome";
 
 import ApplicationHome from "./pages/Maintenance/ApplicationHome";
@@ -198,6 +199,14 @@ export default function App() {
                <TripReportHome />
             </ProtectedRoute>
           } />
+          <Route 
+            path="/minforme" 
+            element={
+              <ProtectedRoute   rolesAllowed={["supervisor","administrador","chofer"]}>
+                <InforReportHome />
+              </ProtectedRoute>
+          } />
+
 
           <Route 
           path="/Solicitud_Trabajo" 
@@ -206,6 +215,7 @@ export default function App() {
               <JobApplicationHome />
             </ProtectedRoute>
           } />
+          
 
       
           <Route path="/mantenimiento">

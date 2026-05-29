@@ -52,3 +52,26 @@ export const deleteTripReport = async (id) => {
     throw err.response?.data?.message || "Error al eliminar el informe de viaje";
   }
 };
+
+export const getMyDriverReports = async ({
+  page = 1,
+  limit = 8,
+} = {}) => {
+  try {
+    const response = await api.get(
+      "/informe_viajes/my-driver-reports",
+      {
+        params: { page, limit },
+      }
+    );
+
+
+    return response.data;
+
+  } catch (err) {
+    throw (
+      err.response?.data?.message ||
+      "Error al obtener mis informes"
+    );
+  }
+};

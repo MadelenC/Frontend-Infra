@@ -10,6 +10,7 @@ import { useAuthStore } from "../../zustand/AuthUsers";
 import { loginService } from "../../services/authService";
 
 export default function LoginForm() {
+  
 
   const navigate = useNavigate();
 
@@ -59,16 +60,10 @@ export default function LoginForm() {
 
     }
 
-    const res =
-      await loginService(formData);
-
+    const res = await loginService(formData);
     setUser(res.user);
-
     setToken(res.token);
-
-  
     navigate("/dashboard");
-
   } catch (err) {
 
     alert(

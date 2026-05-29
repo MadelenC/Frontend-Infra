@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import {
   getTripReports,
+  getMyDriverReports,
   createTripReport,
   updateTripReport,
   deleteTripReport,
@@ -48,6 +49,43 @@ export const useTripReportStore = create((set, get) => ({
       });
     }
   },
+
+ fetchMyDriverReports: async () => {
+
+  console.log("EJECUTANDO fetchMyDriverReports");
+
+  const { page, limit } = get();
+
+  set({
+    loading: true,
+    error: null,
+  });
+
+  try {
+
+    const res = await getMyDriverReports({
+      page,
+      limit,
+    });
+
+    console.log("RESPUESTA API:", res);
+
+    set({
+      tripReports: res.data,
+      totalPages: res.totalPages,
+      loading: false,
+    });
+
+  } catch (err) {
+
+    console.log("ERROR:", err);
+
+    set({
+      error: err || "Error al cargar mis informes",
+      loading: false,
+    });
+  }
+},
 
   
 

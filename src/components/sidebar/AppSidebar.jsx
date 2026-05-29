@@ -163,7 +163,13 @@ const navItems = [
             name: "Mostrar", 
             path: "/informe", 
             pro: false,icon:<FaListUl className="text-white " />, 
-            rolesAllowed: ["supervisor","administrador","chofer"], 
+            rolesAllowed: ["supervisor","administrador"], 
+          },
+          { 
+            name: "Mis Informes", 
+            path: "/minforme", 
+            pro: false,icon:<FaListUl className="text-white " />, 
+            rolesAllowed: ["chofer"], 
           }
         ] 
       },
