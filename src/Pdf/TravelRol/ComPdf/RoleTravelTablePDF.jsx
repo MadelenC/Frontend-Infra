@@ -87,7 +87,6 @@ export default function RoleTravelTablePDF({
 
       </View>
 
-      {/* FILAS */}
 
       {travels.map((item) => (
         <RoleTravelRowPDF

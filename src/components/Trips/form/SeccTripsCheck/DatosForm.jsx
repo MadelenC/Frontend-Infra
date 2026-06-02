@@ -42,18 +42,19 @@ export default function DatosForm({
           </label>
 
           <Select
-            isMulti
             options={vehiculoOptions}
-            value={vehiculoOptions.filter(opt =>
-              form.vehiculo.includes(opt.value)
-            )}
+            value={
+              vehiculoOptions.find(
+                opt => opt.value === form.vehiculo
+              ) || null
+            }
             onChange={(selected) =>
               handleChange(
                 "vehiculo",
-                selected.map(s => s.value)
+                selected?.value || ""
               )
             }
-            placeholder="Seleccionar vehículos"
+            placeholder="Seleccionar vehículo"
           />
         </div>
 
@@ -64,15 +65,16 @@ export default function DatosForm({
           </label>
 
           <Select
-            isMulti
             options={choferOptions}
-            value={choferOptions.filter(opt =>
-              form.chofer.includes(opt.value)
-            )}
+            value={
+              choferOptions.find(
+                opt => opt.value === form.chofer
+              ) || null
+            }
             onChange={(selected) =>
               handleChange(
                 "chofer",
-                selected.map(s => s.value)
+                selected?.value || ""
               )
             }
             placeholder="Seleccionar chofer"
@@ -86,15 +88,16 @@ export default function DatosForm({
           </label>
 
           <Select
-            isMulti
             options={encargadoOptions}
-            value={encargadoOptions.filter(opt =>
-              form.encargado.includes(opt.value)
-            )}
+            value={
+              encargadoOptions.find(
+                opt => opt.value === form.encargado
+              ) || null
+            }
             onChange={(selected) =>
               handleChange(
                 "encargado",
-                selected.map(s => s.value)
+                selected?.value || ""
               )
             }
             placeholder="Seleccionar encargado"

@@ -12,14 +12,28 @@ export const useMaterialOrderStore = create((set, get) => ({
   currentRequest: null,
   loading: false,
   error: null,
+  page: 1,
+  limit: 8,
+  total: 0,
+  totalPages: 1,
+  search: "",
 
  
-  fetchRequests: async () => {
-    set({ loading: true, error: null });
-    try {
-      const data = await getRequests();
+  fetchRequests: async (
+      page = 1,
+      limit = 8,
+      search = ""
+    ) => {
+      set({ loading: true, error: null });
 
-      const mapped = data.map((r) => ({
+      try {
+      const response = await getRequests(
+        page,
+        limit,
+        search
+      );
+
+      const mapped = response.data.map((r) => ({
         id: r.id,
         orden: r.orden,
         fecha: r.fecha,
@@ -74,11 +88,22 @@ export const useMaterialOrderStore = create((set, get) => ({
         updated_at: r.updated_at,
       }));
 
-      set({ requests: mapped, loading: false });
+      set({
+        requests: mapped,
+        total: response.total,
+        totalPages: response.totalPages,
+        page: response.page,
+        limit: response.limit,
+        search,
+        loading: false,
+      });
     } catch (err) {
-      set({ error: err.message || err, loading: false });
-    }
-  },
+      set({
+        error: err.message || err,
+        loading: false,
+      });
+  }
+},
 
 
   fetchRequestById: async (id) => {

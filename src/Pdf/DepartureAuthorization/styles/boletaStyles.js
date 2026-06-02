@@ -5,10 +5,11 @@ import { StyleSheet } from "@react-pdf/renderer";
 export const styles = StyleSheet.create({
 
   page: {
-    padding: 40,
+    padding: 50,
     fontSize: 9,
     fontFamily: "Helvetica",
     backgroundColor: "#FFFFFF",
+    
   },
 
   container: {

@@ -1,26 +1,34 @@
 import api from "../helpers/axiosClient.js";
 
-// Obtener todos los mecánicos
-export const getMechanics = async () => {
+
+export const getMechanics = async ({
+  page = 1,
+  limit = 8,
+  search = "",
+}) => {
+
   try {
-    const response = await api.get("/mecanicos");
+
+    const response = await api.get("/mecanicos", {
+      params: {
+        page,
+        limit,
+        search,
+      },
+    });
+
     return response.data;
+
   } catch (err) {
-    throw err.response?.data?.message || "Error al obtener los mecánicos";
+
+    throw (
+      err.response?.data?.message ||
+      "Error al obtener los mecánicos"
+    );
+
   }
 };
 
-// Obtener un mecánico por ID
-export const getMechanicById = async (id) => {
-  try {
-    const response = await api.get(`/mecanicos/${id}`);
-    return response.data;
-  } catch (err) {
-    throw err.response?.data?.message || "Error al obtener el mecánico";
-  }
-};
-
-// Crear un mecánico
 export const createMechanic = async (data) => {
   try {
     const response = await api.post("/mecanicos", data);
@@ -30,7 +38,7 @@ export const createMechanic = async (data) => {
   }
 };
 
-// Actualizar un mecánico
+
 export const updateMechanic = async (id, data) => {
   try {
     const response = await api.put(`/mecanicos/${id}`, data);
@@ -40,7 +48,7 @@ export const updateMechanic = async (id, data) => {
   }
 };
 
-// Eliminar un mecánico
+
 export const deleteMechanic = async (id) => {
   try {
     const response = await api.delete(`/mecanicos/${id}`);

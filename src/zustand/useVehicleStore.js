@@ -145,6 +145,38 @@ setEstadoFilter: (estado) => {
     }
   },
 
+    updateVehicleKm: async (id, kilometraje) => {
+    try {
+      await updateVehicle(id, {
+        kilometraje,
+      });
+
+      set({
+        vehicles: get().vehicles.map((v) =>
+          v.id === id
+            ? {
+                ...v,
+                modelos: [
+                  {
+                    ...v.modelos?.[0],
+                    kilometraje,
+                  },
+                ],
+                kilometrajeUI: kilometraje,
+              }
+            : v
+        ),
+      });
+
+      return { ok: true };
+    } catch (err) {
+      return {
+        ok: false,
+        error: err.message || err,
+      };
+    }
+  },
+
   
   removeVehicle: async (id) => {
     try {

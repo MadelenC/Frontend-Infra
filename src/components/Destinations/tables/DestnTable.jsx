@@ -105,20 +105,7 @@ export default function DestTable() {
           </button>
           </ProtectedView>
 
-          <button
-            className="
-              h-10 flex items-center justify-center gap-2
-              whitespace-nowrap min-w-max
-              bg-gradient-to-r from-orange-600 to-orange-500
-              hover:from-orange-700 hover:to-orange-600
-              text-white px-8 rounded-lg shadow-lg
-              font-medium transition-all duration-300
-              hover:scale-105 active:scale-95
-            "
-          >
-            <FaPrint />
-            Imprimir
-          </button>
+          
 
         </div>
       </div>

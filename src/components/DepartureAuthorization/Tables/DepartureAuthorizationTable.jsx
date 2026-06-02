@@ -19,6 +19,7 @@ export default function DepartureAuthorizationTable({ externalDepartureId = null
     fetchDepartures,
     addDeparture,
     editDeparture,
+    removeDeparture,
   } = useDepartureAuthorizationStore();
 
   
@@ -68,35 +69,70 @@ const [allVehicles, setAllVehicles] = useState([]);
   setEditOpen(true);
 };
 
-  const handleCloseEdit = () => {
-    setEditOpen(false);
-    setSelectedDeparture(null);
-  };
+      const handleCloseEdit = () => {
+        setEditOpen(false);
+        setSelectedDeparture(null);
+      };
 
-  const handleSaveCreate = async (data) => {
-    const res = await addDeparture(data);
-    if (res?.ok) fetchDepartures();
-    return res;
-  };
+      const handleSaveCreate = async (data) => {
+        const res = await addDeparture(data);
+        if (res?.ok) fetchDepartures();
+        return res;
+      };
 
- const handleSaveEdit = async (data) => {
+    const handleSaveEdit = async (data) => {
 
-  const res = await editDeparture(
-    selectedDeparture.id,
-    data
-  );
+      const res = await editDeparture(
+        selectedDeparture.id,
+        data
+      );
 
-  if (res?.ok) {
+      if (res?.ok) {
 
-    await fetchDepartures();
+        await fetchDepartures();
 
-    alert("✅ Actualizacion Exitosa");
-  }
+        alert("✅ Actualizacion Exitosa");
+      }
 
-  return res;
-};
+      return res;
+    };
 
-  const filtered = departures.filter(d => {
+    const handleDelete = async (id) => {
+
+      const confirmDelete = window.confirm(
+        "¿Seguro que deseas eliminar esta salida?"
+      );
+
+      if (!confirmDelete) return;
+
+      try {
+
+        const res = await removeDeparture(id);
+
+        if (res?.ok) {
+
+          await fetchDepartures();
+
+          toast.success("Salida eliminada correctamente");
+
+        } else {
+
+          toast.error(
+            res?.error || "Error al eliminar"
+          );
+
+        }
+
+      } catch (error) {
+
+        console.error(error);
+
+        toast.error("Error al eliminar");
+
+      }
+    };
+
+    const filtered = departures.filter(d => {
     const searchLower = search.toLowerCase();
 
     const matchesSearch =
@@ -109,16 +145,16 @@ const [allVehicles, setAllVehicles] = useState([]);
       : true;
 
     return matchesSearch && matchesId;
-  });
+    });
 
-  const totalPages = Math.ceil(filtered.length / limit);
+    const totalPages = Math.ceil(filtered.length / limit);
 
-  const currentData = filtered.slice(
-    (page - 1) * limit,
-    page * limit
-  );
+    const currentData = filtered.slice(
+      (page - 1) * limit,
+      page * limit
+    );
 
-  return (
+    return (
     <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4">
 
       <div className="flex justify-between items-center mb-4">
@@ -171,6 +207,7 @@ const [allVehicles, setAllVehicles] = useState([]);
                   departure={d}
                   index={i + 1}
                   onEdit={handleEdit}
+                  onDelete={handleDelete}
                 />
               ))
             ) : (
@@ -185,12 +222,12 @@ const [allVehicles, setAllVehicles] = useState([]);
         </table>
       </div>
 
-      {/* PAGINATION */}
+    
       <div className="flex justify-center mt-4">
         <Pagination page={page} totalPages={totalPages} setPage={setPage} />
       </div>
 
-      {/* CREATE MODAL */}
+
       {modalType === "add" && (
         <CreateDepartureAuthorizationForm
           isOpen={modalType === "add"}
@@ -201,7 +238,7 @@ const [allVehicles, setAllVehicles] = useState([]);
         />
       )}
 
-      {/* EDIT MODAL */}
+    
       {editOpen && (
         <EditDepartureAuthorizationForm
           isOpen={editOpen}

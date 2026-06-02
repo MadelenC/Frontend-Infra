@@ -1,17 +1,36 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function UpdateKmForm({ vehicle, onUpdateKm, onClose }) {
   const [increment, setIncrement] = useState(0);
 
   // Calcula el kilometraje total
-  const totalKm = Number(vehicle.kilometraje || 0) + Number(increment || 0);
+  const currentKm = Number(vehicle.modelos?.[0]?.kilometraje || 0);
+  const totalKm = currentKm + Number(increment || 0);
 
   const handleChange = (e) => setIncrement(e.target.value);
 
-  const handleUpdate = (e) => {
+    const handleUpdate = async (e) => {
     e.preventDefault();
-    onUpdateKm?.({ ...vehicle, kilometraje: totalKm });
-    onClose?.();
+
+    try {
+      const result = await onUpdateKm?.({
+        ...vehicle,
+        kilometraje: totalKm,
+      });
+
+      if (result?.ok === false) {
+        toast.error("Error al actualizar kilometraje");
+        return;
+      }
+
+      toast.success("Kilometraje actualizado correctamente");
+
+      onClose?.();
+    } catch (error) {
+      console.error(error);
+      toast.error("Ocurrió un error");
+    }
   };
 
   return (
@@ -25,7 +44,7 @@ export default function UpdateKmForm({ vehicle, onUpdateKm, onClose }) {
           Actualmente el Vehículo: <span className="font-semibold dark:text-gray-400">{vehicle.tipo} {vehicle.placa}</span>
         </p>
         <p className="mb-4 dark:text-gray-300">
-          Tiene un kilometraje de: <span className="font-semibold dark:text-gray-400">{vehicle.kilometraje} Km</span>
+          Tiene un kilometraje de: <span className="font-semibold dark:text-gray-400"> {vehicle.modelos?.[0]?.kilometraje || "-"} Km</span>
         </p>
 
         <form className="flex flex-col gap-4">
@@ -66,7 +85,6 @@ export default function UpdateKmForm({ vehicle, onUpdateKm, onClose }) {
           </div>
         </form>
 
-        {/* Botón cerrar */}
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-gray-700 font-bold px-3 py-1 rounded hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700"

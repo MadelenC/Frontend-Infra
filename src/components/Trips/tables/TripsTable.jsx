@@ -87,12 +87,10 @@ const [openMenu, setOpenMenu] = useState({
 
   try {
 
-    if (
+        if (
       type === "add" ||
-      type === "edit" ||
-      type === "cheque" ||
-      type === "caja" ||
-      type === "InformCheck"
+      type === "edit" 
+      
     ) {
 
       const [enc, chof, veh, dest] = await Promise.all([
@@ -108,6 +106,7 @@ const [openMenu, setOpenMenu] = useState({
       setAllDestinos(dest || []);
     }
 
+   
     if (
       (type === "detalle" ||
         type === "edit" ||
@@ -390,10 +389,7 @@ const handleDeleteTrip = async (id) => {
         <CheckTripForm
           data={selectedTrip}
           onClose={handleCloseModal}
-          choferes={choferes}
-          destinos={allDestinos}
-          encargados={encargados}
-          vehiculos={vehiculos}
+          
         />
       )}
 
@@ -416,9 +412,6 @@ const handleDeleteTrip = async (id) => {
         <InformCheck
           data={selectedTrip}
           onClose={handleCloseModal}
-          choferes={choferes}
-          encargados={encargados}
-          vehiculos={vehiculos}
         />
       )}
 

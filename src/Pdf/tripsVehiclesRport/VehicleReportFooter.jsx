@@ -11,10 +11,6 @@ export default function VehicleReportFooter() {
       <Text>Lic. Marcelo Raul Guzmán Camacho</Text>
 
       <Text>ENCARGADO DE AUTOMOTORES</Text>
-
-      <Text style={{ marginTop: 10, fontSize: 7 }}>
-        Sistema Web Departamento de Infraestructura U.A.T.F.
-      </Text>
       
 
     </View>

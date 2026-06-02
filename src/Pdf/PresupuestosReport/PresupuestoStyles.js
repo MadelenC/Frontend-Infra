@@ -6,6 +6,7 @@ export const styles = StyleSheet.create({
     padding: 20,
     fontSize: 8,
     fontFamily: "Helvetica",
+    top: 15,
   },
 
   header: {
@@ -42,8 +43,6 @@ export const styles = StyleSheet.create({
   bold: {
     fontWeight: "bold",
   },
-
- 
 
   rutasContainer: {
   width: "100%",
@@ -86,15 +85,12 @@ kmColumn: {
 /* PRESUPUESTO */
 
 
-presupuestoTable: {
-  width: "100%",
-  marginTop: -20,
-},
-
 presupuestoRow: {
   flexDirection: "row",
-  width: "62%",
+  width: "100%",
 },
+
+
 
 colCant: {
   flex: 0.7,  

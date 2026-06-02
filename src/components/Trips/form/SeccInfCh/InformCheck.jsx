@@ -90,7 +90,6 @@ const kmVehiculo =
   Number(vehiculo?.modelos?.[0]?.kilometraje || 0);
 
 console.log("KM VEHICULO:", kmVehiculo);
-// 🔥 ESTO SOLO PARA KM DESIGNADOS
 const kmRutas = (data?.rutas || []).reduce(
   (acc, r) => acc + Number(r.total || 0),
   0

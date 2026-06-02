@@ -14,14 +14,17 @@ export default function ReportTripSignatures() {
       <View style={styles.signatureRow}>
 
         <View style={styles.signatureBox}>
+          <Text>----------------------------</Text>
           <Text>Conductor</Text>
         </View>
 
         <View style={styles.signatureBox}>
+          <Text>----------------------------</Text>
           <Text>Responsable</Text>
         </View>
 
         <View style={styles.signatureBox}>
+          <Text>----------------------------</Text>
           <Text>Jefe de Infraestructura</Text>
         </View>
 

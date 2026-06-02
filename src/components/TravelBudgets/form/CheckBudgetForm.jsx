@@ -16,6 +16,8 @@ export default function EditCheckTripForm({
 }) {
 
   const { editBudget } = useTravelBudgetsStore();
+
+
   
   const [form, setForm] = useState({
    vehiculo: String(
@@ -29,6 +31,18 @@ chofer: String(
 encargado: String(
   data?.encargado?.id || data?.encargado || ""
 ),
+
+vehiculoNombre: data?.vehiculo
+  ? `${data.vehiculo.tipog} - ${data.vehiculo.placa}`
+  : "",
+
+choferNombre: data?.chofer
+  ? `${data.chofer.nombres} ${data.chofer.apellidos}`
+  : "",
+
+encargadoNombre: data?.encargado
+  ? `${data.encargado.nombres} ${data.encargado.apellidos}`
+  : "",
 
   fecha: data?.fecha_sa || "",
 
@@ -108,95 +122,108 @@ encargado: String(
 useEffect(() => {
   if (!data) return;
 
-  setForm({
-   vehiculo: String(
-  data?.vehiculo?.id || data?.vehiculo || ""
-),
+      setForm({
+        vehiculo: String(
+        data?.vehiculo?.id || data?.vehiculo || ""
+          ),
 
-chofer: String(
-  data?.chofer?.id || data?.chofer || ""
-),
+        chofer: String(
+          data?.chofer?.id || data?.chofer || ""
+        ),
 
-encargado: String(
-  data?.encargado?.id || data?.encargado || ""
-),
-    fecha: data?.fecha_sa || "",
+        encargado: String(
+          data?.encargado?.id || data?.encargado || ""
+        ),
 
-    litros: data?.cantidad1 || "",
-    precioLitro: data?.precio1 || "",
-    horaSalida: data?.hsalida || "",
-    horaLlegada: data?.hllegada || "",
 
-    materia: data?.materia || "",
-    docentes: data?.ndocentes || "",
-    sigla: data?.sigla || "",
-    nota: data?.nota || "",
+        vehiculoNombre: data?.vehiculo
+          ? `${data.vehiculo.tipog} - ${data.vehiculo.placa}`
+          : "",
 
-    peajes: [
-      {
-        nro: data?.cantidad5 || "",
-        precio: data?.precio5 || "",
-      },
-    ],
+        choferNombre: data?.chofer
+          ? `${data.chofer.nombres} ${data.chofer.apellidos}`
+          : "",
 
-    viaticosProvincia: [
-      {
-        _v: data?.cantidad3 || "",
-        _p: data?.precio3 || "",
-      },
-    ],
+        encargadoNombre: data?.encargado
+          ? `${data.encargado.nombres} ${data.encargado.apellidos}`
+          : "",
+        fecha: data?.fecha_sa || "",
 
-    viaticosFrontera: [
-      {
-        _v: data?.cantidad4 || "",
-        _p: data?.precio4 || "",
-      },
-    ],
+        litros: data?.cantidad1 || "",
+        precioLitro: data?.precio1 || "",
+        horaSalida: data?.hsalida || "",
+        horaLlegada: data?.hllegada || "",
 
-    viaticosCiudad: [
-      {
-        dias: data?.cantidad2 || "",
-        precio: data?.precio2 || "",
-      },
-    ],
+        materia: data?.materia || "",
+        docentes: data?.ndocentes || "",
+        sigla: data?.sigla || "",
+        nota: data?.nota || "",
 
-    mantenimiento: [
-      {
-        _v: data?.cantidad6 || "",
-        _p: data?.precio6 || "",
-      },
-    ],
+        peajes: [
+          {
+            nro: data?.cantidad5 || "",
+            precio: data?.precio5 || "",
+          },
+        ],
 
-    garaje: [
-      {
-        _v: data?.cantidad7 || "",
-        _p: data?.precio7 || "",
-      },
-    ],
+        viaticosProvincia: [
+          {
+            _v: data?.cantidad3 || "",
+            _p: data?.precio3 || "",
+          },
+        ],
 
-    transporte: [
-      {
-        ruta: data?.r1 || "",
-        personas: data?.p1 || "",
-        costo: data?.c1 || "",
-      },
+        viaticosFrontera: [
+          {
+            _v: data?.cantidad4 || "",
+            _p: data?.precio4 || "",
+          },
+        ],
 
-      {
-        ruta: data?.r2 || "",
-        personas: data?.p2 || "",
-        costo: data?.c2 || "",
-      },
-    ],
+        viaticosCiudad: [
+          {
+            dias: data?.cantidad2 || "",
+            precio: data?.precio2 || "",
+          },
+        ],
 
-    flete: [
-      {
-        vueltas: data?.p3 || "",
-        costo: data?.c3 || "",
-      },
-    ],
-  });
-}, [data]); 
-console.log(data);
+        mantenimiento: [
+          {
+            _v: data?.cantidad6 || "",
+            _p: data?.precio6 || "",
+          },
+        ],
+
+        garaje: [
+          {
+            _v: data?.cantidad7 || "",
+            _p: data?.precio7 || "",
+          },
+        ],
+
+        transporte: [
+          {
+            ruta: data?.r1 || "",
+            personas: data?.p1 || "",
+            costo: data?.c1 || "",
+          },
+
+          {
+            ruta: data?.r2 || "",
+            personas: data?.p2 || "",
+            costo: data?.c2 || "",
+          },
+        ],
+
+        flete: [
+          {
+            vueltas: data?.p3 || "",
+            costo: data?.c3 || "",
+          },
+        ],
+      });
+  }, [data]); 
+ //console.log(data);
 
   
   const [errors, setErrors] = useState({});
@@ -401,9 +428,9 @@ console.log(data);
           errors={errors}
           handleChange={handleChange}
           handleBlur={handleBlur}
-          vehiculos={vehiculos}
-          choferes={choferes}
-          encargados={encargados}
+          vehiculos={data?.vehiculo ? [data.vehiculo] : []}
+          choferes={data?.chofer ? [data.chofer] : []}
+          encargados={data?.encargado ? [data.encargado] : []}
           collapsed={collapsed.casilla1}
           toggle={() =>
           setCollapsed((prev) => ({

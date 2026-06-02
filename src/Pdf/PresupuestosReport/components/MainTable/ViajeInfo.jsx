@@ -19,7 +19,13 @@ export default function ViajeInfo({
       style={[
         styles.cell,
         {
-          width: "290",
+          width: 290,
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+          paddingVertical: 6,
+          marginLeft: 5,
+          gap: 4,
         },
       ]}
     >

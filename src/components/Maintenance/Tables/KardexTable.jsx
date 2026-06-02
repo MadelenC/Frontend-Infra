@@ -9,14 +9,21 @@ import { useRepaymentStore } from "../../../zustand/useRepaymetnStore";
 
 
 export default function KardexTable({ onRealizar }) {
-  const { mechanics, fetchMechanics, editMechanic } = useMechanicsStore();
+  const {
+  mechanics,
+  fetchMechanics,
+  editMechanic,
+  page,
+  totalPages,
+  setPage,
+  search,
+  setSearch,
+} = useMechanicsStore();
 
 
   const { addRepayment } = useRepaymentStore();
 
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const limit = 8;
+  
 
   const [updateKmOpen, setUpdateKmOpen] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
@@ -116,17 +123,12 @@ const handleSaveEdit = async (data) => {
 };
 
   useEffect(() => {
-    fetchMechanics();
-  }, []);
+  fetchMechanics();
+}, [page, search]);
 
   useEffect(() => setPage(1), [search]);
 
-  const filtered = mechanics?.filter((m) =>
-    m.trabajo?.toLowerCase().includes(search.toLowerCase())
-  ) || [];
-
-  const totalPages = Math.ceil(filtered.length / limit);
-  const currentData = filtered.slice((page - 1) * limit, page * limit);
+  const currentData = mechanics || [];
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4 transition-all">
@@ -136,7 +138,7 @@ const handleSaveEdit = async (data) => {
 
         <input
           type="text"
-          placeholder="Buscar por descripción..."
+          placeholder="Buscar por vehiculo..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="h-10 w-70 px-4 text-sm rounded-md border shadow-sm transition
@@ -160,7 +162,7 @@ const handleSaveEdit = async (data) => {
 
       </div>
 
-      {/* TABLE */}
+      
       <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
 
         <table className="w-full text-sm bg-white dark:bg-gray-900">
@@ -202,7 +204,7 @@ const handleSaveEdit = async (data) => {
                     id: m.id,
                     devolucion: m.devolucion || 0,
                   }}
-                  index={(page - 1) * limit + i + 1}
+                  index={i + 1}
                   onActualizarKm={handleOpenUpdateKm}
                   onRealizar={handleOpenProcessReturn}
                   onEditar={handleOpenEdit}

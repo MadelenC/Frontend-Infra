@@ -46,34 +46,21 @@ export default function TableUser() {
     );
   }
 
-  
-
   return (
     <div className="p-4 space-y-4">
-
-     
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-
-  <SearchBar
-    search={search}
-    setSearch={handleSearchChange}
-    roleFilter={roleFilter}
-    setRoleFilter={handleRoleChange}
-  />
-
-  <div className="flex items-center gap-2">
+        <SearchBar
+          search={search}
+          setSearch={handleSearchChange}
+          roleFilter={roleFilter}
+          setRoleFilter={handleRoleChange}
+        />
+    <div className="flex items-center gap-2">
 
  
-  <div className="relative group">
+    <div className="relative group">
 
-    <button
-      className="
-        h-10 flex items-center gap-2
-        bg-red-600 hover:bg-red-700
-        text-white px-4 rounded-lg
-        shadow-md
-      "
-    >
+    <button className="  h-10 flex items-center gap-2  bg-red-600 hover:bg-red-700  text-white px-4 rounded-lg  shadow-md "  >
       Imprimir
     </button>
 

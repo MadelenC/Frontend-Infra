@@ -157,10 +157,10 @@ export default function EditDestForm({ destino, onClose }) {
           </button>
           <button
             type="button"
-            onClick={handleDelete}
+            onClick={onClose}
             className="bg-red-500 text-white px-5 py-2 rounded hover:bg-red-500"
           >
-            Eliminar
+           Cancelar
           </button>
         </div>
       </form>

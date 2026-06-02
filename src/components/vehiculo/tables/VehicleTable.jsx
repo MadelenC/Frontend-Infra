@@ -21,6 +21,7 @@ export default function TableVehicle() {
   addVehicle,
   editVehicle,
   removeVehicle,
+  updateVehicleKm,
 } = useVehicleStore();
   
 
@@ -202,13 +203,10 @@ export default function TableVehicle() {
           vehicle={selectedVehicle}
           onClose={() => setOpenUpdateKmPanel(false)}
           onUpdateKm={async (updatedVehicle) => {
-            const result = await editVehicle(updatedVehicle.id, updatedVehicle);
-            if (result.ok) {
-              alert("Kilometraje actualizado correctamente");
-              setOpenUpdateKmPanel(false);
-            } else {
-              alert("Error al actualizar: " + result.error);
-            }
+            return await updateVehicleKm(
+              updatedVehicle.id,
+              updatedVehicle.kilometraje
+            );
           }}
         />
       )}

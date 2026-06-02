@@ -105,26 +105,7 @@ export default function UsersReportFooter() {
 
       </View>
 
-      {/* SISTEMA */}
-
-      <View
-        style={{
-          marginTop: 40,
-          alignItems: "center",
-        }}
-      >
-
-        <Text
-          style={{
-            fontSize: 7,
-            color: "gray",
-          }}
-        >
-          Sistema Web Departamento de Infraestructura U.A.T.F.
-        </Text>
-
-      </View>
-
+      
     </View>
 
   );

@@ -3,9 +3,15 @@ import React from "react";
 import {
   Document,
   Page,
+  View,
+  Text,
+  Image,
 } from "@react-pdf/renderer";
 
 import { styles } from "../common";
+
+import logoUATF
+from "../assets/logouatf.png";
 
 import {
   RoleTravelHeaderPDF,
@@ -17,29 +23,77 @@ import {
 export default function RoleTravelPDF({
   travels,
 }) {
+
   return (
+
     <Document>
 
       <Page
         size="LETTER"
         orientation="portrait"
-        style={styles.page}
+        style={{
+          ...styles.page,
+          position: "relative",
+        }}
       >
 
-        <RoleTravelHeaderPDF
-          date={new Date().toLocaleDateString()}
-        />
+               <Image
+                src={logoUATF}
+                style={{
+                  position: "absolute",
+                  top: "32%",
+                  left: "30%",
+                  width: 240,
+                  height: 300,
+                  opacity: 0.06,
+                }}
+              />
 
-        <RoleTravelTablePDF
-          travels={travels}
-        />
+    
+        <View>
 
-        <RoleTravelNotesPDF />
+          <RoleTravelHeaderPDF
+            date={new Date().toLocaleDateString()}
+          />
 
-        <RoleTravelSignaturePDF />
+          <RoleTravelTablePDF
+            travels={travels}
+          />
+
+          <RoleTravelNotesPDF />
+
+          <RoleTravelSignaturePDF />
+
+        </View>
+
+      
+        <View
+          fixed
+          style={{
+            position: "absolute",
+            bottom: 10,
+            left: 0,
+            right: 0,
+
+            alignItems: "center",
+          }}
+        >
+
+          <Text
+            style={{
+              fontSize: 7,
+              color: "gray",
+            }}
+          >
+            Sistema Web Departamento de Infraestructura U.A.T.F.
+          </Text>
+
+        </View>
 
       </Page>
 
     </Document>
+
   );
+
 }

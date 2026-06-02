@@ -1,7 +1,7 @@
 import React from "react";
 import { TableRow, TableCell } from "../../ui/table";
 import Badge from "../../ui/badge/Badge";
-import { FaEdit, FaPrint } from "react-icons/fa";
+import { FaEdit, FaPrint,FaTrash } from "react-icons/fa";
 import BoletaDeparturesButton from "../../pdf-buttons/BoletaDeparturesButton";
 import ProtectedView from "../../Protected/ProtectedView";
 
@@ -9,6 +9,7 @@ export default function DepartureAuthorizationRow({
   departure,
   index,
   onEdit,
+  onDelete,
 }) {
 
   const badgeColor =
@@ -56,6 +57,18 @@ export default function DepartureAuthorizationRow({
           >
             <FaEdit size={14} />
           </button>
+          </ProtectedView>
+
+          <ProtectedView
+            rolesAllowed={["supervisor","administrador"]}
+          >
+            <button
+              className="p-2 rounded-full bg-red-600 dark:bg-red-900 text-gray-300 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-700 transition"
+              title="Eliminar"
+              onClick={() => onDelete(departure.id)}
+            >
+              <FaTrash size={14} />
+            </button>
           </ProtectedView>
 
           <ProtectedView

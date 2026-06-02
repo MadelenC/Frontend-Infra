@@ -195,7 +195,7 @@ export default function EditDepartureAuthorizationForm({
             onClick={onClose}
             className="bg-gray-500 text-white px-5 py-2 rounded-md"
           >
-            Eliminar
+            Cancelar
           </button>
 
           <button

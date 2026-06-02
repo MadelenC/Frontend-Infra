@@ -17,14 +17,6 @@ export default function RoleTravelSignaturePDF() {
         ENCARGADO DE AUTOMOTORES
       </Text>
 
-      <Text
-        style={{
-          marginTop: 10,
-          fontSize: 8,
-        }}
-      >
-        Sistema Web Departamento de Infraestructura U.A.T.F.
-      </Text>
 
     </View>
   );

@@ -1,7 +1,7 @@
-
 import React from "react";
 import Section from "../../../common/Section";
 import Input from "../../../common/Input";
+
 export default function DatosForm({
   form,
   errors,
@@ -9,10 +9,8 @@ export default function DatosForm({
   handleBlur,
   collapsed,
   toggle,
-  vehiculos,
-  choferes,
-  encargados,
 }) {
+
   return (
     <Section
       title="1️⃣ Datos generales"
@@ -27,139 +25,43 @@ export default function DatosForm({
             Vehículo :
           </label>
 
-          <select
-            value={form.vehiculo}
-            onChange={(e) =>
-              handleChange(
-                "vehiculo",
-                e.target.value
-              )
-            }
-            onBlur={(e) =>
-              handleBlur(
-                "vehiculo",
-                e.target.value
-              )
-            }
-            className={`w-full border px-3 py-2 rounded text-sm dark:bg-gray-200/40 dark:border-gray-200 ${
-              errors.vehiculo
-                ? "border-red-500"
-                : ""
-            }`}
-          >
-            <option value="">
-              Seleccione un vehículo
-            </option>
-
-            {vehiculos?.map((v, i) => (
-              <option
-                key={v.id}
-                value={String(v.id)}
-                >
-                {v.tipog} - {v.placa}
-              </option>
-            ))}
-          </select>
-
-          {errors.vehiculo && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.vehiculo}
-            </p>
-          )}
+          <input
+            type="text"
+            value={form.vehiculoNombre || ""}
+            disabled
+            className="w-full border px-3 py-2 rounded text-sm 
+            bg-gray-100 dark:bg-gray-700 dark:border-gray-600"
+          />
         </div>
 
         {/* CHOFER */}
         <div>
           <label className="block mb-1 text-sm font-semibold dark:text-gray-300">
-            Chofer *
+            Chofer :
           </label>
 
-          <select
-            value={form.chofer}
-            onChange={(e) =>
-              handleChange(
-                "chofer",
-                e.target.value
-              )
-            }
-            onBlur={(e) =>
-              handleBlur(
-                "chofer",
-                e.target.value
-              )
-            }
-            className={`w-full border px-3 py-2 rounded text-sm dark:bg-gray-200/40 dark:border-gray-200 ${
-              errors.chofer
-                ? "border-red-500"
-                : ""
-            }`}
-          >
-            <option value="">
-              Seleccione un chofer
-            </option>
-
-            {choferes?.map((c, i) => (
-              <option
-                key={c.id}
-                value={String(c.id)}
-              >
-                {c.nombres} {c.apellidos}
-              </option>
-            ))}
-          </select>
-
-          {errors.chofer && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.chofer}
-            </p>
-          )}
+          <input
+            type="text"
+            value={form.choferNombre || ""}
+            disabled
+            className="w-full border px-3 py-2 rounded text-sm 
+            bg-gray-100 dark:bg-gray-700 dark:border-gray-600"
+          />
         </div>
 
         {/* ENCARGADO */}
         <div>
           <label className="block mb-1 text-sm font-semibold dark:text-gray-300">
-            Encargado:
+            Encargado :
           </label>
 
-          <select
-            value={form.encargado}
-            onChange={(e) =>
-              handleChange(
-                "encargado",
-                e.target.value
-              )
-            }
-            onBlur={(e) =>
-              handleBlur(
-                "encargado",
-                e.target.value
-              )
-            }
-            className={`w-full border px-3 py-2 rounded text-sm dark:bg-gray-200/40 dark:border-gray-200 ${
-              errors.encargado
-                ? "border-red-500"
-                : ""
-            }`}
-          >
-            <option value="">
-              Seleccione un encargado
-            </option>
-
-            {encargados?.map((e, i) => (
-              <option
-                key={e.id}
-                value={String(e.id)}
-              >
-                {e.nombres} {e.apellidos}
-              </option>
-            ))}
-          </select>
-
-          {errors.encargado && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.encargado}
-            </p>
-          )}
+          <input
+            type="text"
+            value={form.encargadoNombre || ""}
+            disabled
+            className="w-full border px-3 py-2 rounded text-sm 
+            bg-gray-100 dark:bg-gray-700 dark:border-gray-600"
+          />
         </div>
 
         {/* FECHA */}
@@ -175,6 +77,7 @@ export default function DatosForm({
           }
           error={errors.fecha}
         />
+
       </div>
     </Section>
   );

@@ -21,7 +21,6 @@ export default function UsersReportHeader({
       }}
     >
 
-      {/* LOGO */}
       <View
         style={{
           alignItems: "center",
@@ -39,7 +38,7 @@ export default function UsersReportHeader({
 
       </View>
 
-      {/* TITULOS */}
+     
       <View
         style={{
           textAlign: "center",

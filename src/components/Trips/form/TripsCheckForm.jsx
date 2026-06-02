@@ -16,15 +16,10 @@ import { useAuthStore } from "../../../zustand/AuthUsers";
 export default function CheckTripForm({
   data,
   onClose,
-  choferes,
-  encargados,
-  vehiculos,
-  destinos,
-
 }) {
 
   const [collapsed, setCollapsed] = useState({
-  casilla1: true,
+  casilla1: false,
   casilla2: true,
   casilla3: true,
   casilla4: true,
@@ -45,8 +40,8 @@ export default function CheckTripForm({
 
   useEffect(() => {
   if (selectedTrip) {
-    console.log("DESTINOS BACKEND:", selectedTrip.destinos);
-    console.log("KM ADICIONAL:", selectedTrip?.kmAdicional);
+    //console.log("DESTINOS BACKEND:", selectedTrip.destinos);
+    //console.log("KM ADICIONAL:", selectedTrip?.kmAdicional);
   }
 }, [selectedTrip]);
 
@@ -340,9 +335,9 @@ encargado: selectedTrip.encargados?.[0]?.id,
           errors={errors}
           handleChange={handleChange}
           handleBlur={() => {}}
-          vehiculos={vehiculos}
-          choferes={choferes}
-          encargados={encargados}
+          vehiculos={selectedTrip?.vehiculos || []}
+          choferes={selectedTrip?.choferes || []}
+          encargados={selectedTrip?.encargados || []}
           collapsed={collapsed.casilla1}
           toggle={() => setCollapsed((p) => ({ ...p, casilla1: !p.casilla1 }))}
         />

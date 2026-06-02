@@ -3,14 +3,14 @@ import { StyleSheet } from "@react-pdf/renderer";
 export default StyleSheet.create({
 
   page: {
-    paddingTop: 15,
+    paddingTop: 30,
     paddingBottom: 15,
     paddingHorizontal: 20,
     fontFamily: "Helvetica",
     fontSize: 10,
   },
 
-  // TITULO PRINCIPAL
+  
   headerContainer: {
     alignItems: "center",
     marginBottom: 10,

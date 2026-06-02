@@ -86,6 +86,47 @@ export default function RutasSection({
 
     <View style={styles.rutasContainer}>
 
+      {/* HEADER */}
+    <View style={styles.row}>
+
+      <View
+        style={[
+          styles.rutaColumn,
+          {
+            backgroundColor: "#E5E7EB",
+          },
+        ]}
+      >
+        <Text
+          style={[
+            styles.kmText,
+            styles.bold,
+          ]}
+        >
+          RUTA
+        </Text>
+      </View>
+
+      <View
+        style={[
+          styles.kmColumn,
+          {
+            backgroundColor: "#E5E7EB",
+          },
+        ]}
+      >
+        <Text
+          style={[
+            styles.kmText,
+            styles.bold,
+          ]}
+        >
+          KM
+        </Text>
+      </View>
+
+     </View>
+
       {
         filas.map((f, i) => (
 
@@ -114,6 +155,8 @@ export default function RutasSection({
 
         ))
       }
+
+      
 
     </View>
 

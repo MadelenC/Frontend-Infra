@@ -22,8 +22,7 @@ export default function TableCheckBudget() {
     totalPages,
   } = useTravelBudgetsStore();
 
-  const { fetchAllChoferes, fetchAllEncargados,} = useUserStore();
-  const { fetchAllVehicles } = useVehicleStore();
+ 
 
   
   const [searchLocal, setSearchLocal] = useState("");
@@ -32,26 +31,10 @@ export default function TableCheckBudget() {
   const [openForm, setOpenForm] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState(null);
 
-  const [choferes, setChoferes] = useState([]);
-  const [encargados, setEncargados] = useState([]);
-  const [vehiculos, setVehiculos] = useState([]);
+  
 
   
-useEffect(() => {
-  if (!openForm) return;
 
-  const loadData = async () => {
-    const drivers = await fetchAllChoferes();
-    const managers = await fetchAllEncargados();
-    const allVehicles = await fetchAllVehicles();
-
-    setChoferes(drivers);
-    setEncargados(managers);
-    setVehiculos(allVehicles);
-  };
-
-  loadData();
-}, [openForm]);
 
  useEffect(() => {
   fetchBudgets(page, debouncedSearch);
@@ -124,9 +107,7 @@ useEffect(() => {
         <CheckBudgetForm
           data={selectedBudget}
           onClose={() => setOpenForm(false)}
-          choferes={choferes}
-          encargados={encargados}
-          vehiculos={vehiculos}
+          
         />
       )}
     </div>

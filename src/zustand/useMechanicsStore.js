@@ -1,9 +1,10 @@
 import { create } from "zustand";
-import { 
-  getMechanics, 
-  createMechanic, 
-  updateMechanic, 
-  deleteMechanic 
+
+import {
+  getMechanics,
+  createMechanic,
+  updateMechanic,
+  deleteMechanic,
 } from "../services/mechanicsService.js";
 
 export const useMechanicsStore = create((set, get) => ({
@@ -11,12 +12,35 @@ export const useMechanicsStore = create((set, get) => ({
   loading: false,
   error: null,
 
+  page: 1,
+  limit: 8,
+  totalPages: 1,
+  total: 0,
+  search: "",
+
+  setPage: (page) => set({ page }),
+
+  setSearch: (search) => {
+    set({ search, page: 1 });
+  },
 
   fetchMechanics: async () => {
     set({ loading: true, error: null });
+
     try {
-      const data = await getMechanics();
-      const mapped = data.map(m => ({
+      const {
+        page,
+        limit,
+        search,
+      } = get();
+
+      const data = await getMechanics({
+        page,
+        limit,
+        search,
+      });
+
+      const mapped = data.data.map((m) => ({
         id: m.id,
         fecha: m.fecha,
         cantidad: m.cantidad,
@@ -28,80 +52,86 @@ export const useMechanicsStore = create((set, get) => ({
         kilometraje: m.kilometraje,
         insertador: m.insertador,
         solicitud_id: m.solicitud_id,
-        solicitud: m.solicitud ? { ...m.solicitud } : null,
+
+        solicitud: m.solicitud
+          ? { ...m.solicitud }
+          : null,
+
         created_at: m.created_at,
         updated_at: m.updated_at,
       }));
-      set({ mechanics: mapped, loading: false });
+
+      set({
+        mechanics: mapped,
+        totalPages: data.totalPages,
+        total: data.total,
+        loading: false,
+      });
+
     } catch (err) {
-      set({ error: err.message || err, loading: false });
+
+      set({
+        error: err.message || err,
+        loading: false,
+      });
+
     }
   },
 
- 
   addMechanic: async (data) => {
     try {
-      const newMechanic = await createMechanic(data);
-      const mapped = {
-        id: newMechanic.id,
-        fecha: newMechanic.fecha,
-        cantidad: newMechanic.cantidad,
-        unidad: newMechanic.unidad,
-        trabajo: newMechanic.trabajo,
-        marca: newMechanic.marca,
-        codigo: newMechanic.codigo,
-        observacion: newMechanic.observacion,
-        kilometraje: newMechanic.kilometraje,
-        insertador: newMechanic.insertador,
-        solicitud_id: newMechanic.solicitud_id,
-        solicitud: newMechanic.solicitud ? { ...newMechanic.solicitud } : null,
-        created_at: newMechanic.created_at,
-        updated_at: newMechanic.updated_at,
-      };
-      set({ mechanics: [...get().mechanics, mapped] });
+
+      await createMechanic(data);
+
+      await get().fetchMechanics();
+
       return { ok: true };
+
     } catch (err) {
-      return { ok: false, error: err.message || err };
+
+      return {
+        ok: false,
+        error: err.message || err,
+      };
+
     }
   },
 
-  
   editMechanic: async (id, data) => {
     try {
-      const updated = await updateMechanic(id, data);
-      const mapped = {
-        id: updated.id,
-        fecha: updated.fecha,
-        cantidad: updated.cantidad,
-        unidad: updated.unidad,
-        trabajo: updated.trabajo,
-        marca: updated.marca,
-        codigo: updated.codigo,
-        observacion: updated.observacion,
-        kilometraje: updated.kilometraje,
-        insertador: updated.insertador,
-        solicitud_id: updated.solicitud_id,
-        solicitud: updated.solicitud ? { ...updated.solicitud } : null,
-        created_at: updated.created_at,
-        updated_at: updated.updated_at,
-      };
-      set({
-        mechanics: get().mechanics.map(m => (m.id === id ? mapped : m)),
-      });
+
+      await updateMechanic(id, data);
+
+      await get().fetchMechanics();
+
       return { ok: true };
+
     } catch (err) {
-      return { ok: false, error: err.message || err };
+
+      return {
+        ok: false,
+        error: err.message || err,
+      };
+
     }
   },
 
- 
   removeMechanic: async (id) => {
     try {
+
       await deleteMechanic(id);
-      set({ mechanics: get().mechanics.filter(m => m.id !== id) });
+
+      await get().fetchMechanics();
+
       return { ok: true };
+
     } catch (err) {
-      return { ok: false, error: err.message || err };
+
+      return {
+        ok: false,
+        error: err.message || err,
+      };
+
     }
   },
 }));

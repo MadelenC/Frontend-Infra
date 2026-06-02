@@ -6,7 +6,13 @@ import { useMaterialOrderStore } from "../../../zustand/useMaterialOrderStore";
 import MaterialRequestOrderForm from "../Form/MaterialRequestOrderForm";
 
 export default function MechanicTable() {
-  const { requests, fetchRequests, editRequest,removeRequest, } = useMaterialOrderStore();
+  const {
+  requests,
+  fetchRequests,
+  editRequest,
+  removeRequest,
+  totalPages,
+} = useMaterialOrderStore();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const limit = 8;
@@ -33,7 +39,7 @@ export default function MechanicTable() {
   if (res.ok) {
     toast.success("✅ Petición eliminada");
 
-    fetchRequests();
+    fetchRequests(page, limit, search);
 
     handleCloseProcess();
 
@@ -46,24 +52,18 @@ const handleSaveProcess = async (data) => {
 
   fetchRequests();
 
-  handleCloseProcess();
+  fetchRequests(page, limit, search);
 
   return { ok: true };
 };
 
 useEffect(() => {
-  fetchRequests();
-}, []);
+  fetchRequests(page, limit, search);
+}, [page, search, fetchRequests]);
 
-  useEffect(() => setPage(1), [search]);
 
-  const filtered =
-    requests?.filter((r) =>
-      r.justificacion?.toLowerCase().includes(search.toLowerCase())
-    ) || [];
 
-  const totalPages = Math.ceil(filtered.length / limit);
-  const currentData = filtered.slice((page - 1) * limit, page * limit);
+
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md p-4">
@@ -74,13 +74,16 @@ useEffect(() => {
           type="text"
           placeholder="Buscar por justificación..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(1);
+          }}
           className="h-10 w-80 px-4 text-sm rounded-md border shadow-sm transition
-        bg-white border-gray-300 text-gray-800 placeholder-gray-400
-        focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400
+          bg-white border-gray-300 text-gray-800 placeholder-gray-400
+          focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400
 
-        dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-400
-        dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-400
+          dark:focus:ring-blue-500 dark:focus:border-blue-500"
         />
       </div>
 
@@ -112,8 +115,8 @@ useEffect(() => {
           </thead>
 
           <tbody>
-            {currentData.length ? (
-              currentData.map((r, i) => (
+            {requests.length ? (
+              requests.map((r, i) => (
                 <MechanicRow
                   key={r.id}
                   mechanic={r}
