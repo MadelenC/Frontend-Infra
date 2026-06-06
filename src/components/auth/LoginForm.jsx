@@ -65,13 +65,11 @@ export default function LoginForm() {
     setToken(res.token);
     navigate("/dashboard");
   } catch (err) {
-
-    alert(
-      err.response?.message ||
-      "Error al iniciar sesión"
-    );
-
-  }
+  alert(
+    err.response?.data?.message ||
+    "Error al iniciar sesión"
+  );
+}
 
 };
 

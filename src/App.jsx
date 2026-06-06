@@ -59,12 +59,13 @@ export default function App() {
 
        <Route 
           path="/" 
-          element={
-            <PublicRoute> 
-              <Home />
-            </PublicRoute>   
-          } 
-      />
+          element={<Home />} 
+          />
+
+          <Route 
+            path="/home" 
+            element={<Home />} 
+          />
        
         <Route
           path="/signin"
