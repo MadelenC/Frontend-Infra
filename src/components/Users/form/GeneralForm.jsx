@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { useAuthStore } from "../../../zustand/AuthUsers";
-import { useUserStore } from "../../../zustand/userStore";
 
 export default function GeneralForm({ onSubmit }) {
   const { user } = useAuthStore();
-  const { users } = useUserStore();
 
   const [formData, setFormData] = useState({
     nombre: "",
@@ -18,10 +16,10 @@ export default function GeneralForm({ onSubmit }) {
   });
 
   const [errors, setErrors] = useState({});
-  const [cedulaExists, setCedulaExists] = useState(false);
   const [touched, setTouched] = useState({});
 
-  const inputBase = "p-2 border rounded text-sm w-full transition  dark:bg-gray-200/40 dark:border-gray-200";
+  const inputBase =
+    "p-2 border rounded text-sm w-full transition dark:bg-gray-200/40 dark:border-gray-200";
   const inputError = "border-red-500 bg-red-50";
 
   const requiredFields = [
@@ -35,7 +33,7 @@ export default function GeneralForm({ onSubmit }) {
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // MAYÚSCULA
+  // MAYÚSCULA AUTOMÁTICA
   const toTitleCase = (str) =>
     str
       .toLowerCase()
@@ -44,7 +42,7 @@ export default function GeneralForm({ onSubmit }) {
       .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(" ");
 
-  //VALIDAR CAMPO INDIVIDUAL
+  // VALIDACIÓN
   const validateField = (name, value) => {
     if (requiredFields.includes(name) && !value.trim()) {
       return "Este campo es obligatorio";
@@ -56,70 +54,48 @@ export default function GeneralForm({ onSubmit }) {
       }
     }
 
-    if (name === "cedula" && cedulaExists) {
-      return "La cédula ya está registrada";
-    }
-
     return null;
   };
 
-  // ALIDACIÓN CÉDULA DUPLICADA
-  const checkCedula = (cedula) => {
-    if (!cedula) return;
-
-    const exists = users?.some(
-      (u) => String(u.cedula).trim() === String(cedula).trim()
-    );
-
-    setCedulaExists(exists);
-
-    setErrors((prev) => ({
-      ...prev,
-      cedula: exists ? "La cédula ya está registrada" : null,
-    }));
-  };
-
-  
+  // CHANGE
   const handleChange = (e) => {
     let { name, value } = e.target;
 
-    if (name === "celular") value = value.replace(/[^0-9]/g, "");
+    // SOLO NÚMEROS CELULAR
+    if (name === "celular") {
+      value = value.replace(/[^0-9]/g, "");
+    }
 
+    // SOLO LETRAS
     if (name === "nombre" || name === "apellido") {
       value = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, "");
       value = toTitleCase(value);
     }
 
+    // CÉDULA
     if (name === "cedula") {
       value = value.replace(/[^a-zA-Z0-9\-]/g, "");
-      checkCedula(value);
     }
 
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
 
-    if (requiredFields.includes(name)) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: value.trim() ? null : "Este campo es obligatorio",
-      }));
-    }
-
-    if (name === "email") {
-      setErrors((prev) => ({
-        ...prev,
-        email:
-          value.trim() && !emailRegex.test(value)
-            ? "Email inválido"
-            : null,
-      }));
-    }
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
   };
 
-  
+  // BLUR
   const handleBlur = (e) => {
     const { name, value } = e.target;
 
-    setTouched((prev) => ({ ...prev, [name]: true }));
+    setTouched((prev) => ({
+      ...prev,
+      [name]: true,
+    }));
 
     const error = validateField(name, value);
 
@@ -129,40 +105,59 @@ export default function GeneralForm({ onSubmit }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  // SUBMIT
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = {};
 
-    requiredFields.forEach((f) => {
-      if (!formData[f]?.trim()) {
-        newErrors[f] = "Este campo es obligatorio";
-      }
+    requiredFields.forEach((field) => {
+      const error = validateField(field, formData[field]);
+      if (error) newErrors[field] = error;
     });
 
-    if (cedulaExists) {
-      newErrors.cedula = "La cédula ya está registrada";
-    }
-
-    if (formData.email?.trim() && !emailRegex.test(formData.email)) {
+    if (
+      formData.email &&
+      !emailRegex.test(formData.email)
+    ) {
       newErrors.email = "Email inválido";
     }
 
+    const touchedFields = {};
+    [...requiredFields, "email"].forEach((f) => {
+      touchedFields[f] = true;
+    });
+
+    setTouched(touchedFields);
     setErrors(newErrors);
+
     if (Object.keys(newErrors).length > 0) return;
 
-    onSubmit({
-      ...formData,
-      nombres: formData.nombre.trim(),
-      apellidos: formData.apellido.trim(),
-      cedula: formData.cedula.trim(),
-      celular: formData.celular.trim(),
-      cargo: formData.cargo.trim() || undefined,
-      email: formData.email.trim() || undefined,
-      insertador:
-        `${user?.nombres || ""} ${user?.apellidos || ""}`.trim() ||
-        "DESCONOCIDO",
-    });
+    try {
+      await onSubmit({
+        nombres: formData.nombre.trim(),
+        apellidos: formData.apellido.trim(),
+        cedula: formData.cedula.trim(),
+        celular: formData.celular.trim(),
+        tipo: formData.tipo,
+        password: formData.password,
+        cargo: formData.cargo.trim() || undefined,
+        email: formData.email.trim() || undefined,
+        insertador: `${user?.nombres || ""} ${user?.apellidos || ""}`.trim() || "DESCONOCIDO",
+      });
+    } catch (error) {
+      console.log("ERROR FRONT:", error);
+
+      setErrors((prev) => ({
+        ...prev,
+        cedula: error.message || "La cédula ya está registrada",
+      }));
+
+      setTouched((prev) => ({
+        ...prev,
+        cedula: true,
+      }));
+    }
   };
 
   return (
@@ -175,7 +170,7 @@ export default function GeneralForm({ onSubmit }) {
         {["nombre", "apellido", "password", "cedula", "celular"].map(
           (field) => (
             <div key={field} className="flex flex-col">
-              <label className="text-gray-600 text-xs capitalize dark:text-gray-200 ">
+              <label className="text-gray-600 text-xs capitalize dark:text-gray-200">
                 {field}
               </label>
 
@@ -184,15 +179,15 @@ export default function GeneralForm({ onSubmit }) {
                 name={field}
                 value={formData[field]}
                 onChange={handleChange}
-                placeholder={`Ingrese su ${field}`}
                 onBlur={handleBlur}
+                placeholder={`Ingrese su ${field}`}
                 className={`${inputBase} ${
                   errors[field] && touched[field] ? inputError : ""
                 }`}
               />
 
               {errors[field] && touched[field] && (
-                <span className="text-red-500 text-xs ">
+                <span className="text-red-500 text-xs">
                   {errors[field]}
                 </span>
               )}
@@ -200,8 +195,12 @@ export default function GeneralForm({ onSubmit }) {
           )
         )}
 
+        {/* TIPO */}
         <div className="flex flex-col">
-          <label className="text-gray-600 text-xs dark:text-gray-200">Tipo</label>
+          <label className="text-gray-600 text-xs dark:text-gray-200">
+            Tipo
+          </label>
+
           <select
             name="tipo"
             value={formData.tipo}
@@ -211,24 +210,26 @@ export default function GeneralForm({ onSubmit }) {
               errors.tipo && touched.tipo ? inputError : ""
             }`}
           >
-            <option value=""className="dark:text-gray-950">Seleccione</option>
-            <option value="administrador" className="dark:text-gray-950">Administrador</option>
-            <option value="supervisor"className="dark:text-gray-950">Supervisor</option>
-            <option value="chofer"className="dark:text-gray-950">Chofer</option>
-            <option value="mecánico"className="dark:text-gray-950">Mecánico</option>
-            <option value="mensajero"className="dark:text-gray-950">Mensajero</option>
+            <option value="">Seleccione</option>
+            <option value="administrador">Administrador</option>
+            <option value="supervisor">Supervisor</option>
+            <option value="chofer">Chofer</option>
+            <option value="mecánico">Mecánico</option>
+            <option value="mensajero">Mensajero</option>
           </select>
 
           {errors.tipo && touched.tipo && (
-            <span className="text-red-500 text-xs ">
-              {errors.tipo}
-            </span>
+            <span className="text-red-500 text-xs">{errors.tipo}</span>
           )}
         </div>
       </div>
 
+      {/* EMAIL */}
       <div className="flex flex-col mt-2">
-        <label className="text-gray-600 text-xs dark:text-gray-200">Email</label>
+        <label className="text-gray-600 text-xs dark:text-gray-200">
+          Email
+        </label>
+
         <input
           type="email"
           name="email"
@@ -240,29 +241,20 @@ export default function GeneralForm({ onSubmit }) {
             errors.email && touched.email ? inputError : ""
           }`}
         />
+
         {errors.email && touched.email && (
-          <span className="text-red-500 text-xs">
-            {errors.email}
-          </span>
+          <span className="text-red-500 text-xs">{errors.email}</span>
         )}
       </div>
 
+      {/* BOTÓN */}
       <div className="flex justify-center mt-4">
-      <button
-            type="submit"
-            disabled={cedulaExists}
-            className={`px-6 py-2 rounded-lg font-semibold text-white transition transform duration-200
-              shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2
-              ${
-                cedulaExists
-                  ? "bg-blue-300 cursor-not-allowed opacity-60"
-                  : "bg-blue-600 hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98]"
-              }
-            `}
-          >
-            Registrar
-          </button>
-
+        <button
+          type="submit"
+          className="px-6 py-2 rounded-lg font-semibold text-white bg-blue-600 hover:bg-blue-700"
+        >
+          Registrar
+        </button>
       </div>
     </form>
   );

@@ -26,7 +26,6 @@ export default function EncargadoForm({ onSubmit, onClose }) {
   });
 
   const [errors, setErrors] = useState({});
-  const [cedulaError, setCedulaError] = useState(false);
   const [touched, setTouched] = useState({});
 
   useEffect(() => {
@@ -49,7 +48,7 @@ export default function EncargadoForm({ onSubmit, onClose }) {
     if (name === "cedula") {
       if (!value.trim()) error = "Cédula obligatoria";
       else if (value.length < 5) error = "Cédula inválida";
-      else if (cedulaError) error = "La cédula ya está registrada";
+      
     }
 
     if (name === "celular") {
@@ -93,12 +92,6 @@ export default function EncargadoForm({ onSubmit, onClose }) {
 
     if (name === "cedula") {
       value = value.replace(/[^a-zA-Z0-9\-]/g, "");
-
-      const exists = users?.some(
-        (u) => String(u?.cedula || "").trim() === value.trim()
-      );
-
-      setCedulaError(exists);
     }
 
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -108,19 +101,32 @@ export default function EncargadoForm({ onSubmit, onClose }) {
     }
   };
 
-  const handleBlur = (e) => {
-    const { name, value } = e.target;
+  const handleBlur = async (e) => {
+  const { name, value } = e.target;
 
-    setTouched((prev) => ({ ...prev, [name]: true }));
+  setTouched((prev) => ({ ...prev, [name]: true }));
 
-    const error = validateField(name, value);
+  const error = validateField(name, value);
+
+  setErrors((prev) => ({
+    ...prev,
+    [name]: error,
+  }));
+
+
+  if (name === "cedula" && value.trim()) {
+    const exists = users?.some(
+      (u) => String(u?.cedula || "").trim() === value.trim()
+    );
 
     setErrors((prev) => ({
       ...prev,
-      [name]: error,
+      cedula: exists ? "La cédula ya está registrada" : "",
     }));
-  };
+  }
+};
 
+  
   // VALIDACION GENERAL
   const validate = () => {
     const err = {};
@@ -207,7 +213,7 @@ export default function EncargadoForm({ onSubmit, onClose }) {
                 onBlur={handleBlur}
                 className={`${inputStyle} ${
                   (errors[field] && touched[field]) ||
-                  (field === "cedula" && cedulaError)
+                  (field === "cedula" && errors.cedula)
                     ? "border-red-500 "
                     : ""
                 }`}
@@ -220,7 +226,7 @@ export default function EncargadoForm({ onSubmit, onClose }) {
                 </span>
               )}
 
-              {field === "cedula" && cedulaError && (
+              {field === "cedula" && errors.cedula && (
                 <span className="text-red-500 text-xs">
                   La cédula ya está registrada
                 </span>
@@ -283,11 +289,11 @@ export default function EncargadoForm({ onSubmit, onClose }) {
       <div className="flex justify-center mt-4 gap-3">
   <button
     type="submit"
-    disabled={cedulaError}
+    disabled={errors.cedula}
     className={`px-6 py-2 rounded-lg font-semibold text-white transition transform duration-200
       shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2
       ${
-        cedulaError
+        errors.cedula
           ? "bg-blue-300 cursor-not-allowed opacity-60"
           : "bg-blue-600 hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98]"
       }

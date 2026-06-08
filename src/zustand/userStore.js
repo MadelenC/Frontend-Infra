@@ -163,16 +163,27 @@ reportUsers: [],
 
 
   
-  createUser: async (userData) => {
-    try {
-      const newUser = await apiCreateUser(userData);
-      set({ users: [newUser, ...get().users] });
-      return { ok: true };
-    } catch (err) {
-      return { ok: false, error: err.message };
-    }
-  },
+ createUser: async (userData) => {
+  try {
+    const newUser = await apiCreateUser(userData);
 
+    set({
+      users: [newUser, ...get().users],
+    });
+
+    return {
+      ok: true,
+      data: newUser,
+    };
+  } catch (err) {
+    console.error("ERROR STORE:", err);
+
+    return {
+      ok: false,
+      error: err?.message || "Error al crear usuario - cedula duplicada",
+    };
+  }
+},
   updateUser: async (id, updatedData) => {
     try {
       const updatedUser = await apiUpdateUser(id, updatedData);

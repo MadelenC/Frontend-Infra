@@ -7,15 +7,16 @@ import EncargadoForm from "./EncargadoForm";
 export default function UserFormPanel({ open, onClose, formType, setFormType }) {
   const createUser = useUserStore((state) => state.createUser);
 
-  const handleSubmit = async (userData) => {
-    const result = await createUser(userData);
-    if (result.ok) {
-      toast.success("Usuario registrado correctamente");
-      onClose();
-    } else {
-      toast.error("Error al registrar usuario: " + result.error);
-    }
-  };  
+ const handleSubmit = async (userData) => {
+  const result = await createUser(userData);
+
+  if (result.ok) {
+    toast.success("Usuario registrado correctamente");
+    onClose();
+  } else {
+    toast.error(result.error || "Error al registrar usuario o cedula duplicada");
+  }
+}; 
 
   if (!open) return null;
 

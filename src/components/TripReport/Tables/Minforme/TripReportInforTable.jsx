@@ -42,9 +42,6 @@ useEffect(() => {
 
   const tipoUsuario = user?.tipo?.trim().toLowerCase();
 
-  console.log("USER:", user);
-  console.log("TIPO:", tipoUsuario);
-
   if (tipoUsuario === "chofer") {
 
     console.log("ENTRA A CHOFER");
@@ -142,7 +139,7 @@ useEffect(() => {
             }
           }}
         />
-      )}
+      )} 
 
     </div>
   );
