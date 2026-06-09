@@ -70,8 +70,6 @@ export default function CreateJobApplicationForm({
       descripsoli: desc,
     };
 
-    console.log("📤 Payload:", payload);
-
     try {
       setSaving(true);
 

@@ -71,8 +71,6 @@ export default function EditJobApplicationForm({
       descripsoli: desc,
     };
 
-    console.log("📤 EDIT payload:", payload);
-
     try {
       setSaving(true);
 

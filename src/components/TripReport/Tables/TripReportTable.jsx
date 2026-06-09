@@ -34,7 +34,7 @@ export default function TripReportTable() {
     fetchAllVehicles,
     editVehicle
   } = useVehicleStore();
-  console.log("VEHICLES:", vehicles);
+
 
   const { search, setSearch } = useTripReportStore();
 

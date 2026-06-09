@@ -6,7 +6,7 @@ import MaterialRequestButton from "../../pdf-buttons/MaterialRequestButton";
 import ProtectedView from "../../Protected/ProtectedView";
 
 export default function MechanicRow({ mechanic, index, onRealizar }) {
-  console.log(mechanic);
+ 
 
   return (
     <TableRow className="border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">

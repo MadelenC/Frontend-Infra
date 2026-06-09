@@ -6,8 +6,6 @@ export default function UpdateKmForm({
   onClose,
 }) {
   const [increment, setIncrement] = useState(0);
-console.log("VEHICLE MODAL:", vehicle);
-console.log("MODELOS:", vehicle?.modelos);
  ///const currentKm = Number(vehicle.kilometraje || 0);
 const currentKm = Number(
   vehicle?.modelos?.[0]?.kilometraje ??

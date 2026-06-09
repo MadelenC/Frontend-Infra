@@ -40,8 +40,7 @@ export default function CheckTripForm({
 
   useEffect(() => {
   if (selectedTrip) {
-    //console.log("DESTINOS BACKEND:", selectedTrip.destinos);
-    //console.log("KM ADICIONAL:", selectedTrip?.kmAdicional);
+   
   }
 }, [selectedTrip]);
 

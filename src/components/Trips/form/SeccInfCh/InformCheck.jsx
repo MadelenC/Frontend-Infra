@@ -81,7 +81,7 @@ export default function InformCheck({
     return;
   }
 
-  console.log("📦 DATA COMPLETA:", data);
+
  
 
 const vehiculo = data?.vehiculos?.[0];
@@ -89,7 +89,6 @@ const vehiculo = data?.vehiculos?.[0];
 const kmVehiculo =
   Number(vehiculo?.modelos?.[0]?.kilometraje || 0);
 
-console.log("KM VEHICULO:", kmVehiculo);
 const kmRutas = (data?.rutas || []).reduce(
   (acc, r) => acc + Number(r.total || 0),
   0
@@ -97,12 +96,6 @@ const kmRutas = (data?.rutas || []).reduce(
 
 const kmPartidaFinal = kmVehiculo;
 
-  console.log("ESULTADO FINAL:", {
-    kmVehiculo,
-    kmPartidaFinal,
-  });
-
- 
   setFormData((prev) => ({
     ...prev,
 

@@ -15,7 +15,6 @@ export default function PresupuestosReportButton({ budgetId }) {
 
       const presupuesto = response?.data;
 
-      console.log("PRESUPUESTO =>", presupuesto);
       const { default: PresupuestoPDF } = await import(
         "../../Pdf/PresupuestosReport/PresupuestoFormatoPDF"
       );

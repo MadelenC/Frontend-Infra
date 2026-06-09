@@ -17,8 +17,6 @@ export default function BoletaDeparturesButton({ boletaId }) {
       });
       
 
-      console.log("DATA PDF:", data);
-
       if (!data) return;
 
       const { default: ReporteDeparture } = await import(
