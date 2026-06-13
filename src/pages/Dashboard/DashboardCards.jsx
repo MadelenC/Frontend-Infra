@@ -9,8 +9,12 @@ import {
   FaMoneyBill
 } from "react-icons/fa";
 
-export default function DashboardCards() {
+export default function DashboardCards({ stats, vehicles }) {
   const navigate = useNavigate();
+  const alertasMantenimiento =
+  vehicles.filter(
+    (v) => v.necesitaMantenimiento
+  ).length;
 
   const cards = [
     {
@@ -82,6 +86,17 @@ export default function DashboardCards() {
       color: "text-yellow-600",
       bg: "bg-yellow-50 dark:bg-yellow-900/20",
       border: "border-yellow-400"
+    },
+    {
+      title: "Mantenimientos",
+      value: alertasMantenimiento,
+      desc: "Vehículos requieren cambio de aceite",
+      icon: <FaClock size={18} />,
+      route: "/vehiculos",
+      color: "text-red-600",
+      bg: "bg-red-50 dark:bg-red-900/20",
+      border: "border-red-500",
+      trend: `${alertasMantenimiento} alertas`,
     },
   ];
 

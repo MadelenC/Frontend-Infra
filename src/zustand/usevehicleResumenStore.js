@@ -1,8 +1,9 @@
 import { create } from "zustand";
-import { getVehiclesResumen } from "../services/vehicle_combustibleService";
+import { getVehiclesResumen, getCombustibleMensual, } from "../services/vehicle_combustibleService";
 
 export const useVehicleResumenStore = create((set) => ({
   vehicles: [],
+  chartData: [],
   loading: false,
   error: null,
 
@@ -28,4 +29,22 @@ export const useVehicleResumenStore = create((set) => ({
       });
     }
   },
+  fetchCombustibleMensual: async (year = new Date().getFullYear()) => {
+    try {
+      set({ loading: true });
+
+      const data = await getCombustibleMensual(year);
+
+      set({
+        chartData: data || [],
+        loading: false,
+      });
+    } catch (error) {
+      set({
+        error: error.toString(),
+        loading: false,
+      });
+    }
+  },
+
 }));

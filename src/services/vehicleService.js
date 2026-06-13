@@ -7,7 +7,7 @@ export const getVehicles = async ({ page, limit, estado }) => {
       params: {
         page,
         limit,
-        estado, // 👈 aquí va el filtro
+        estado, 
       },
     });
 
@@ -34,6 +34,25 @@ export const updateVehicle = async (id, data) => {
     return response.data;
   } catch (err) {
     throw err.response?.data?.message || "Error al actualizar vehículo";
+  }
+};
+
+export const registrarCambioAceite = async (id) => {
+  try {
+
+    const response = await api.put(
+      `/vehicle/${id}/cambio-aceite`
+    );
+
+    return response.data;
+
+  } catch (err) {
+
+    throw (
+      err.response?.data?.message ||
+      "Error al registrar cambio de aceite"
+    );
+
   }
 };
 

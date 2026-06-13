@@ -4,6 +4,7 @@ import {
   createVehicle,
   updateVehicle,
   deleteVehicle,
+  registrarCambioAceite,
 } from "../services/vehicleService";
 
 
@@ -145,37 +146,55 @@ setEstadoFilter: (estado) => {
     }
   },
 
-    updateVehicleKm: async (id, kilometraje) => {
-    try {
-      await updateVehicle(id, {
-        kilometraje,
-      });
+  updateVehicleKm: async (
+  id,
+  kilometraje,
+  km_ultimo_mantenimiento = null
+) => {
+  try {
 
-      set({
-        vehicles: get().vehicles.map((v) =>
-          v.id === id
-            ? {
-                ...v,
-                modelos: [
-                  {
-                    ...v.modelos?.[0],
-                    kilometraje,
-                  },
-                ],
-                kilometrajeUI: kilometraje,
-              }
-            : v
-        ),
-      });
+    const data = {
+      kilometraje,
+    };
 
-      return { ok: true };
-    } catch (err) {
-      return {
-        ok: false,
-        error: err.message || err,
-      };
+    // SOLO si viene mantenimiento
+    if (km_ultimo_mantenimiento !== null) {
+      data.km_ultimo_mantenimiento =
+        km_ultimo_mantenimiento;
     }
-  },
+
+    await updateVehicle(id, data);
+
+    await get().fetchVehicles();
+
+    return { ok: true };
+
+  } catch (err) {
+    return {
+      ok: false,
+      error: err.message || err,
+    };
+  }
+},
+
+registrarCambioAceite: async (id) => {
+  try {
+
+    await registrarCambioAceite(id);
+
+    await get().fetchVehicles();
+
+    return { ok: true };
+
+  } catch (err) {
+
+    return {
+      ok: false,
+      error: err.message || err,
+    };
+
+  }
+},
 
   
   removeVehicle: async (id) => {

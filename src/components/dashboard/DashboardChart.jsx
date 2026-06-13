@@ -10,7 +10,7 @@ import {
 
 export default function DashboardChart({ vehicles }) {
   const data = vehicles.slice(0, 8).map((v) => ({
-    name: v.placa || v.codigo,
+    name: `${v.placa || v.codigo} - Tipo ${v.tipog || "G"}`,
     viajes: Number(v.cantidadViajes || 0),
     combustible: Number(v.litrosCombustible || 0),
     gasto: Number(v.gastoCombustible || 0),

@@ -20,3 +20,13 @@ export const getVehiclesResumen = async ({ estado }) => {
     );
   }
 };
+export const getCombustibleMensual = async (year) => {
+  const response = await api.get(
+    "/vehiculos-combustible/combustible-mensual",
+    {
+      params: { year },
+    }
+  );
+
+  return response.data;
+};

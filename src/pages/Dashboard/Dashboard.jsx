@@ -7,6 +7,7 @@ import DashboardCards from "../../components/dashboard/DashboardCards";
 import DashboardChart from "../../components/dashboard/DashboardChart";
 import VehicleResumenTable from "../../components/dashboard/VehicleResumenTable";
 import TopConsumo from "../../components/dashboard/TopConsumo";
+import CombustibleMensualChart from "../../components/dashboard/CombustibleMensualChart";
 
 import { useVehicleResumenStore } from "../../zustand/usevehicleResumenStore";
 
@@ -88,15 +89,25 @@ export default function Dashboard() {
         </p>
       </div>
 
-      <DashboardCards stats={stats} />
+      <DashboardCards
+        stats={stats}
+        vehicles={filteredVehicles}
+      />
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
-        <div className="xl:col-span-2">
-          <DashboardChart vehicles={filteredVehicles} />
-        </div>
 
-        <TopConsumo vehicles={topConsumo} />
-      </div>
+  <div className="xl:col-span-2 space-y-4">
+
+    <DashboardChart vehicles={filteredVehicles} />
+
+    {/* 🔥 NUEVO GRAFICO (igual estilo dashboard pro) */}
+    <CombustibleMensualChart />
+
+  </div>
+
+  <TopConsumo vehicles={topConsumo} />
+
+</div>
 
       <VehicleResumenTable
         vehicles={filteredVehicles}

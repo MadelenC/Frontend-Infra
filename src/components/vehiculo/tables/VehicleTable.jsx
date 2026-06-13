@@ -22,6 +22,7 @@ export default function TableVehicle() {
   editVehicle,
   removeVehicle,
   updateVehicleKm,
+  registrarCambioAceite,
 } = useVehicleStore();
   
 
@@ -199,8 +200,9 @@ export default function TableVehicle() {
       )}
 
       {openUpdateKmPanel && selectedVehicle && (
-        <UpdateKmForm
+       <UpdateKmForm
           vehicle={selectedVehicle}
+          registrarCambioAceite={registrarCambioAceite}
           onClose={() => setOpenUpdateKmPanel(false)}
           onUpdateKm={async (updatedVehicle) => {
             return await updateVehicleKm(

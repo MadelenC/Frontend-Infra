@@ -40,6 +40,7 @@ export default function VehicleRow({ vehicle, onEdit, onUpdateKm, onView }) {
       <td className={cellClass}>
         {vehicle.modelos?.[0]?.kilometraje || "-"}
       </td>
+      
 
       <td className={cellClass}>
         <Badge size="sm" color={badgeColor} className="px-2 py-1 text-xs">
