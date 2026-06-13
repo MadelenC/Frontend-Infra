@@ -201,14 +201,7 @@ const combustible1 =
     costoTotal;
 
   const totalB = transporteTotal + fleteTotal;
-
   const diferencia = totalA - totalB;
-
- 
-
-console.log("CHOFERES:", selectedTrip?.choferes);
-console.log("VEHICULOS:", selectedTrip?.vehiculos);
-console.log("ENCARGADOS:", selectedTrip?.encargados);
 
  const buildPayload = () => ({
 vehiculo: selectedTrip.vehiculos?.[0]?.id,
@@ -303,7 +296,8 @@ encargado: selectedTrip.encargados?.[0]?.id,
 
   const handleUpdate = async () => {
     const res = await addBudget(buildPayload());
-
+    const payload = buildPayload();
+      
     if (res.ok) {
       toast.success("Presupuesto guardado correctamente");
       onClose();

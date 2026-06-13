@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
+import ProtectedView from "../Protected/ProtectedView";
 
 export default function VehicleResumenTable({
   vehicles,
@@ -44,6 +45,8 @@ export default function VehicleResumenTable({
       startIndex,
       endIndex
     );
+
+     
 
   return (
     <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
@@ -118,7 +121,10 @@ export default function VehicleResumenTable({
               <th className="px-4 py-3">  L/KM </th>
               <th className="px-4 py-3">  Bs/KM </th>
               <th className="px-4 py-3">  KM Mant. </th>
+              <ProtectedView 
+                  rolesAllowed={["mecanico"]}>
               <th className="px-4 py-3">  Alerta </th>
+              </ProtectedView>
               <th className="px-4 py-3">  Estado </th>
             </tr>
 
@@ -176,6 +182,9 @@ export default function VehicleResumenTable({
                   {vehicle.kmRecorridos} km
                 </td>
 
+                <ProtectedView 
+                  rolesAllowed={["mecanico"]}>
+
                 <td className="px-4 py-3">
 
                   {vehicle.necesitaMantenimiento ? (
@@ -193,6 +202,7 @@ export default function VehicleResumenTable({
                   )}
 
                 </td>
+                </ProtectedView>
 
                 <td className="px-4 py-3">
 

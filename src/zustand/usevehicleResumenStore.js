@@ -1,9 +1,10 @@
 import { create } from "zustand";
-import { getVehiclesResumen, getCombustibleMensual, } from "../services/vehicle_combustibleService";
+import { getVehiclesResumen, getCombustibleMensual,getCombustibleAnual, } from "../services/vehicle_combustibleService";
 
 export const useVehicleResumenStore = create((set) => ({
   vehicles: [],
   chartData: [],
+  anualData: [],
   loading: false,
   error: null,
 
@@ -29,22 +30,39 @@ export const useVehicleResumenStore = create((set) => ({
       });
     }
   },
-  fetchCombustibleMensual: async (year = new Date().getFullYear()) => {
-    try {
-      set({ loading: true });
+  fetchCombustibleMensual: async (year) => {
+  try {
+    set({ loading: true });
 
-      const data = await getCombustibleMensual(year);
+    const data = await getCombustibleMensual(year);
 
-      set({
-        chartData: data || [],
-        loading: false,
-      });
-    } catch (error) {
-      set({
-        error: error.toString(),
-        loading: false,
-      });
-    }
-  },
+    set({
+      chartData: data,
+      loading: false,
+    });
+  } catch (error) {
+    set({
+      error: error.toString(),
+      loading: false,
+    });
+  }
+},
 
+fetchCombustibleAnual: async () => {
+  try {
+    set({ loading: true });
+
+    const data = await getCombustibleAnual();
+
+    set({
+      anualData: data,
+      loading: false,
+    });
+  } catch (error) {
+    set({
+      error: error.toString(),
+      loading: false,
+    });
+  }
+},
 }));

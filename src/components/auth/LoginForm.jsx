@@ -94,7 +94,7 @@ export default function LoginForm() {
 
       <div className="
         absolute inset-0
-        bg-black/90
+        bg-slate-900/30
       " />
 
      
@@ -117,14 +117,17 @@ export default function LoginForm() {
       ">
 
         <div className="
-        backdrop-blur-2xl
-        bg-[#0F172A]/75
-        border border-white/10
-        shadow-2xl
-        rounded-[32px]
-        p-3
-      ">
-       
+          backdrop-blur-3xl
+          bg-gradient-to-br
+          from-blue-900/30
+          via-sky-500/15
+          to-cyan-400/10
+          border border-cyan-300/20
+          shadow-2xl
+          rounded-[32px]
+          p-6
+        ">
+              
 
           <div className="flex justify-center">
 
@@ -210,7 +213,6 @@ export default function LoginForm() {
                 relative
                 mt-2
               ">
-
                 <input
                   name="password"
                   type={
@@ -226,21 +228,16 @@ export default function LoginForm() {
                     w-full
                     px-4 py-3
                     rounded-2xl
-
                     bg-white/10
                     border border-white/15
-
                     text-white
                     placeholder:text-white/40
-
                     focus:outline-none
                     focus:ring-2
                     focus:ring-indigo-500
-
                     transition
                   "
                 />
-
                 <button
                   type="button"
                   onClick={() =>
@@ -250,39 +247,30 @@ export default function LoginForm() {
                     absolute
                     right-4 top-1/2
                     -translate-y-1/2
-
                     text-white/50
                     hover:text-white
                   "
                 >
-
                   <TbLockPassword
                     className="size-5"
                   />
-
                 </button>
-
               </div>
-
             </div>
-
-            
-
             <Button
               type="submit"
-              className="
-                w-full
-                py-3
-                rounded-2xl
-
-                bg-indigo-600
-                hover:bg-indigo-700
+              className=" w-full  py-3
+               rounded-2xl bg-gradient-to-r
+              from-blue-600
+              to-cyan-500
+              hover:from-blue-700
+              hover:to-cyan-600
 
                 text-white
                 font-semibold
 
                 shadow-lg
-                shadow-indigo-500/30
+                
 
                 transition-all
                 duration-300
@@ -301,17 +289,17 @@ export default function LoginForm() {
               text-white/60
             ">
 
-              ¿No tienes cuenta?{" "}
+              ¿Para Volver a los modulos?{" "}
 
               <Link
-                to="/signup"
+                to="/home"
                 className="
                   text-indigo-300
                   hover:text-white
                   transition
                 "
               >
-                Regístrate
+                Haga clik aqui
               </Link>
 
             </p>

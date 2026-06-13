@@ -14,7 +14,7 @@ export default function DatosForm({
 
   const vehiculoOptions = vehiculos.map(v => ({
     value: v.id,
-    label: `${v.tipog} - ${v.placa}`
+    label: `${v.tipo} - ${v.placa}`
   }));
 
   const choferOptions = choferes.map(c => ({

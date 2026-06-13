@@ -30,3 +30,11 @@ export const getCombustibleMensual = async (year) => {
 
   return response.data;
 };
+
+export const getCombustibleAnual = async () => {
+  const response = await api.get(
+    "/vehiculos-combustible/combustible-anual"
+  );
+
+  return response.data;
+};
