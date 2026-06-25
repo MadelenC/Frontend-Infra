@@ -301,17 +301,10 @@ export default function LoginForm() {
               >
                 Haga clik aqui
               </Link>
-
             </p>
-
           </form>
-
         </div>
-
       </div>
-
     </div>
-
   );
-
 }

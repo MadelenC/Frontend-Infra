@@ -70,18 +70,18 @@ export default function DestinationForm({
   return (
     <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-5">
 
-      <div className="bg-white w-full max-w-3xl rounded-xl shadow-2xl relative max-h-[90vh] flex flex-col">
+      <div className="bg-white w-full max-w-3xl rounded-xl shadow-2xl relative max-h-[90vh] flex flex-col dark:bg-gray-800">
 
     
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-gray-700 font-bold px-3 py-1 rounded hover:bg-gray-200"
+          className="absolute top-3 right-3 text-gray-700 font-bold px-3 py-1 rounded hover:bg-gray-200 dark:text-gray-200"
         >
           X
         </button>
 
       
-        <h2 className="text-2xl font-bold text-center text-gray-700 mt-6 mb-2">
+        <h2 className="text-2xl font-bold text-center text-gray-700 mt-6 mb-2 dark:text-gray-200">
           Nuevo Destino
         </h2>
 
@@ -90,12 +90,12 @@ export default function DestinationForm({
         </p>
 
     
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-6 dark:text-gray-200">
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5 dark:text-gray-200">
 
             <div>
-              <label className="block font-semibold text-gray-700 mb-1">
+              <label className="block font text-gray-700 mb-1 dark:text-gray-200">
                 Origen*
               </label>
 
@@ -111,7 +111,7 @@ export default function DestinationForm({
 
    
             <div>
-              <label className="block font-semibold text-gray-700 mb-1">
+              <label className="block font text-gray-700 mb-1 dark:text-gray-200">
                 Departamento de salida*
               </label>
 
@@ -133,7 +133,7 @@ export default function DestinationForm({
 
        
             <div>
-              <label className="block font-semibold text-gray-700 mb-1">
+              <label className="block font text-gray-700 mb-1 dark:text-gray-200">
                 Descripción De La Ruta*
               </label>
 
@@ -149,7 +149,7 @@ export default function DestinationForm({
 
       
             <div>
-              <label className="block font-semibold text-gray-700 mb-1">
+              <label className="block font-semibold text-gray-700 mb-1 dark:text-gray-200">
                 Distancia (km)*
               </label>
 
@@ -159,13 +159,13 @@ export default function DestinationForm({
                 value={distancia}
                 onChange={(e) => setDistancia(e.target.value)}
                 required
-                className="w-full border border-gray-300 rounded-md px-3 py-2"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 "
               />
             </div>
 
 
             <div>
-              <label className="block font-semibold text-gray-700 mb-1">
+              <label className="block font text-gray-700 mb-1 dark:text-gray-200">
                 Tiempo Aproximado*
               </label>
 
@@ -181,7 +181,7 @@ export default function DestinationForm({
 
 
             <div>
-              <label className="block font-semibold text-gray-700 mb-1">
+              <label className="block font text-gray-700 mb-1 dark:text-gray-200">
                 Destino*
               </label>
 
@@ -197,7 +197,7 @@ export default function DestinationForm({
 
 
             <div>
-              <label className="block font-semibold text-gray-700 mb-1">
+              <label className="block font text-gray-700 mb-1 dark:text-gray-200">
                 Departamento de llegada*
               </label>
 
