@@ -20,20 +20,43 @@ export const getVehiclesResumen = async ({ estado }) => {
     );
   }
 };
-export const getCombustibleMensual = async (year) => {
+export const getCombustibleMensual = async ({
+  year,
+  placa,
+  fechaInicio,
+  fechaFin,
+} = {}) => {
   const response = await api.get(
     "/vehiculos-combustible/combustible-mensual",
     {
-      params: { year },
+      params: {
+        year,
+        placa: placa || undefined,
+        fechaInicio: fechaInicio || undefined,
+        fechaFin: fechaFin || undefined,
+      },
     }
   );
 
   return response.data;
 };
 
-export const getCombustibleAnual = async () => {
+export const getCombustibleAnual = async ({
+  year,
+  placa,
+  fechaInicio,
+  fechaFin,
+} = {}) => {
   const response = await api.get(
-    "/vehiculos-combustible/combustible-anual"
+    "/vehiculos-combustible/combustible-anual",
+    {
+      params: {
+        year,
+        placa: placa || undefined,
+        fechaInicio: fechaInicio || undefined,
+        fechaFin: fechaFin || undefined,
+      },
+    }
   );
 
   return response.data;

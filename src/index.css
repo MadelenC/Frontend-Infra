@@ -57,5 +57,75 @@
   .bg-printHover { background-color: theme('colors.printHover'); }
 }
 
+@media screen {
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff !important;
+    color: #374151 !important;
+  }
+
+  table thead {
+    background: linear-gradient(90deg, #eff6ff, #dbeafe) !important;
+  }
+
+  table thead th {
+    border: 1px solid #e5e7eb !important;
+    padding: 0.75rem 1rem !important;
+    text-align: left;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #374151 !important;
+    white-space: nowrap;
+  }
+
+  table tbody tr {
+    background-color: transparent !important;
+    transition: background-color 150ms ease;
+  }
+
+  table tbody tr:hover {
+    background-color: #f9fafb !important;
+  }
+
+  table tbody td {
+    border: 1px solid #e5e7eb !important;
+    padding: 0.625rem 1rem !important;
+    color: #374151 !important;
+    vertical-align: middle;
+  }
+
+  table tbody tr:nth-child(even) td {
+    background-color: #f8fafc;
+  }
+
+  .dark table {
+    background-color: #111827 !important;
+    color: #d1d5db !important;
+  }
+
+  .dark table thead {
+    background: linear-gradient(90deg, #1f2937, #111827) !important;
+  }
+
+  .dark table thead th {
+    border-color: #374151 !important;
+    color: #d1d5db !important;
+  }
+
+  .dark table tbody tr:hover {
+    background-color: #1f2937 !important;
+  }
+
+  .dark table tbody td {
+    border-color: #374151 !important;
+    color: #d1d5db !important;
+  }
+
+  .dark table tbody tr:nth-child(even) td {
+    background-color: rgba(31, 41, 55, 0.35);
+  }
+}
+
 
 

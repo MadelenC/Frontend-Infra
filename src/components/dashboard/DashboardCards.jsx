@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import {
   FaBus,
-  FaCheckCircle,
   FaGasPump,
   FaTools,
   FaRoad,
@@ -12,12 +11,13 @@ import {
 
 export default function DashboardCards({ stats }) {
   const navigate = useNavigate();
+  const tieneAlertasAceite = stats.totalAlertasAceite > 0;
 
   const cards = [
     {
-      title: "Vehículos",
+      title: "Vehiculos",
       value: stats.totalVehiculos,
-      desc: "Vehículos registrados",
+      desc: "Vehiculos registrados",
       icon: <FaCar size={18} />,
       route: "/vehiculos",
       color: "text-blue-600",
@@ -55,7 +55,7 @@ export default function DashboardCards({ stats }) {
       border: "border-yellow-400",
     },
     {
-      title: "Kilómetros Viajes",
+      title: "Kilometros Viajes",
       value: stats.totalKm,
       desc: "KM recorridos",
       icon: <FaRoad size={18} />,
@@ -65,14 +65,16 @@ export default function DashboardCards({ stats }) {
       border: "border-cyan-500",
     },
     {
-      title: "Mantenimientos",
-      value: stats.totalMantenimientos,
-      desc: "Registros mecánicos",
+      title: "Cambio de Aceite",
+      value: stats.totalAlertasAceite,
+      desc: tieneAlertasAceite ? "Vehiculos con alerta" : "Sin alertas pendientes",
       icon: <FaTools size={18} />,
-      route: "/mecanicos",
-      color: "text-pink-500",
-      bg: "bg-pink-50 dark:bg-pink-900/20",
-      border: "border-pink-400",
+      route: "/dashboard",
+      color: tieneAlertasAceite ? "text-red-600" : "text-green-600",
+      bg: tieneAlertasAceite
+        ? "bg-red-50 dark:bg-red-900/20"
+        : "bg-green-50 dark:bg-green-900/20",
+      border: tieneAlertasAceite ? "border-red-500" : "border-green-500",
     },
     {
       title: "Consumo General",
@@ -87,7 +89,7 @@ export default function DashboardCards({ stats }) {
     {
       title: "Costo por KM",
       value: `Bs. ${stats.costoKm}`,
-      desc: "Promedio por kilómetro",
+      desc: "Promedio por kilometro",
       icon: <FaMoneyBill size={18} />,
       route: "/dashboard",
       color: "text-indigo-600",

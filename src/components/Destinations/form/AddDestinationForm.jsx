@@ -170,8 +170,8 @@ export default function DestinationForm({
               </label>
 
               <input
-                type="text"
-                placeholder="Ejm. 5:30 Horas"
+                type="time"
+                placeholder="05:30"
                 value={tiempo}
                 onChange={(e) => setTiempo(e.target.value)}
                 required

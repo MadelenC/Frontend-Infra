@@ -30,11 +30,11 @@ export const useVehicleResumenStore = create((set) => ({
       });
     }
   },
-  fetchCombustibleMensual: async (year) => {
+  fetchCombustibleMensual: async (filters = {}) => {
   try {
     set({ loading: true });
 
-    const data = await getCombustibleMensual(year);
+    const data = await getCombustibleMensual(filters);
 
     set({
       chartData: data,
@@ -48,11 +48,11 @@ export const useVehicleResumenStore = create((set) => ({
   }
 },
 
-fetchCombustibleAnual: async () => {
+fetchCombustibleAnual: async (filters = {}) => {
   try {
     set({ loading: true });
 
-    const data = await getCombustibleAnual();
+    const data = await getCombustibleAnual(filters);
 
     set({
       anualData: data,

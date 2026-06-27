@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useVehicleStore } from "../../../zustand/useVehicleStore";
 import Pagination from "./Pagination";
 import SearchBar from "../search/SearchBar";
@@ -10,6 +11,7 @@ import VehicleDetail from "../form/oper/VehicleDetail";
 import ProtectedView from "../../Protected/ProtectedView";
 
 export default function TableVehicle() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const {
   vehicles,
   page,
@@ -23,6 +25,7 @@ export default function TableVehicle() {
   removeVehicle,
   updateVehicleKm,
   registrarCambioAceite,
+  fetchAllVehicles,
 } = useVehicleStore();
   
 
@@ -41,6 +44,27 @@ export default function TableVehicle() {
   useEffect(() => {
     fetchVehicles();
   }, [page]);
+
+  useEffect(() => {
+    const vehicleId = searchParams.get("cambioAceite");
+
+    if (!vehicleId) return;
+
+    const openCambioAceite = async () => {
+      const allVehicles = await fetchAllVehicles();
+      const vehicle = allVehicles.find(
+        (v) => String(v.id) === String(vehicleId)
+      );
+
+      if (!vehicle) return;
+
+      setSelectedVehicle(vehicle);
+      setOpenUpdateKmPanel(true);
+      setSearchParams({}, { replace: true });
+    };
+
+    openCambioAceite();
+  }, [searchParams, fetchAllVehicles, setSearchParams]);
 
   const filteredVehicles = vehicles.filter(
     (v) =>
