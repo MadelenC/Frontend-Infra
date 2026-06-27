@@ -41,6 +41,7 @@ const mapVehicleToApi = (v) => ({
   tipog: v.tipoGeneral,
   kilometraje: v.kilometraje,
   estado: v.estado,
+  combustible: v.combustible,
   color: v.color,
   motor: v.motor,
   chasis: v.chasis,

@@ -5,6 +5,7 @@ import UserTable from "./UserTable";
 import Pagination from "./Pagination";
 import UserFormPanel from "../form/UserFormPanel";
 import UsersReportButton from "../../pdf-buttons/UsersReportButton";
+import { primaryActionButton, printActionButton } from "../../../utils/buttonStyles";
 
 export default function TableUser() {
   const {
@@ -60,7 +61,7 @@ export default function TableUser() {
  
     <div className="relative group">
 
-    <button className="  h-10 flex items-center gap-2  bg-red-600 hover:bg-red-700  text-white px-4 rounded-lg  shadow-md "  >
+    <button className={printActionButton}>
       Imprimir
     </button>
 
@@ -103,15 +104,7 @@ export default function TableUser() {
       setOpenPanel(true);
       setFormType(null);
     }}
-    className="
-      h-10 flex items-center justify-center gap-2
-      whitespace-nowrap min-w-max
-      bg-gradient-to-r from-blue-600 to-blue-500
-      hover:from-blue-700 hover:to-blue-600
-      text-white px-8 rounded-lg shadow-lg
-      font-medium transition-all duration-300
-      hover:scale-105 active:scale-95
-    "
+    className={primaryActionButton}
   >
     +Agregar Usuario
   </button>
