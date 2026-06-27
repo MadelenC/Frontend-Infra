@@ -24,7 +24,7 @@ export default function AddVehicleForm({ onSubmit, onClose }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    const numericFields = ["chasis", "cilindrada", "pasajeros", "kilometraje"];
+    const numericFields = [ "cilindrada", "pasajeros", "kilometraje"];
     const textOnlyFields = ["color", "asignadoA"];
 
     if (numericFields.includes(name)) {
@@ -44,6 +44,15 @@ export default function AddVehicleForm({ onSubmit, onClose }) {
       return;
     }
 
+    if (name === "chasis") {
+      const valueUpper = value.toUpperCase();
+
+      if (!/^[A-Z0-9]*$/.test(valueUpper)) return;
+
+      setFormData((prev) => ({ ...prev, [name]: valueUpper }));
+      return;
+    }
+
     // ASIGNADO A (forzar mayúscula inicial)
     if (name === "asignadoA") {
       const formatted =
@@ -58,14 +67,14 @@ export default function AddVehicleForm({ onSubmit, onClose }) {
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: false }));
   };
 
-  // Validación al perder foco (NO SE TOCA)
+
   const handleBlur = (e) => {
     const { name, value } = e.target;
     if (!value.trim()) setErrors((prev) => ({ ...prev, [name]: "Campo obligatorio" }));
     else setErrors((prev) => ({ ...prev, [name]: false }));
   };
 
-  // Validación y envío
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const newErrors = {};
@@ -78,6 +87,7 @@ export default function AddVehicleForm({ onSubmit, onClose }) {
     if (formData.placa && !/^\d{4}-[A-Z]{3}$/.test(formData.placa)) {
       newErrors.placa = "Formato inválido (Ej: 1234-ABC)";
     }
+    
 
     // AsignadoA empieza con mayúscula
     if (formData.asignadoA && !/^[A-ZÁÉÍÓÚÑ]/.test(formData.asignadoA)) {
@@ -85,12 +95,16 @@ export default function AddVehicleForm({ onSubmit, onClose }) {
     }
 
     // Validación numérica extra
-    const numericFields = ["chasis", "cilindrada", "pasajeros", "kilometraje"];
+    const numericFields = [ "cilindrada", "pasajeros", "kilometraje"];
     numericFields.forEach((field) => {
       if (formData[field] && !/^\d+$/.test(formData[field])) {
         newErrors[field] = "Solo se permiten números";
       }
     });
+    // Validación de chasis (solo letras y números)
+    if (formData.chasis && !/^[A-Z0-9]+$/i.test(formData.chasis)) {
+      newErrors.chasis = "Solo se permiten letras y números";
+    }
 
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;

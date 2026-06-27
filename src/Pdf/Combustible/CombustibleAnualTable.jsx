@@ -16,8 +16,8 @@ export default function CombustibleAnualTable({
           borderBottom: 1,
         }}
       >
-        <Text style={styles.anio}>ANIO</Text>
-        <Text style={styles.vehiculo}>VEHICULO</Text>
+        <Text style={styles.anio}>AÑO</Text>
+        <Text style={styles.vehiculo}>ENCARGADO</Text>
         <Text style={styles.placa}>PLACA</Text>
         <Text style={styles.tipo}>TIPO</Text>
         <Text style={styles.combustible}>COMBUSTIBLE</Text>

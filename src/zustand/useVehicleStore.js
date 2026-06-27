@@ -53,6 +53,7 @@ const mapVehicleToApi = (v) => ({
 
 export const useVehicleStore = create((set, get) => ({
   vehicles: [],
+  allVehicles: [],
   loading: false,
   error: null,
   page: 1,
@@ -70,7 +71,7 @@ fetchAllVehicles: async () => {
     const allVehicles = res.data.map(mapVehicleFromApi);
 
     set({
-      vehicles: allVehicles
+      allVehicles  
     });
 
     return allVehicles;
@@ -79,7 +80,7 @@ fetchAllVehicles: async () => {
     console.error(err);
 
     set({
-      vehicles: []
+      allVehicles: []  
     });
 
     return [];

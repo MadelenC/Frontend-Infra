@@ -12,22 +12,23 @@ import ProtectedView from "../../Protected/ProtectedView";
 
 export default function TableVehicle() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [highlightId, setHighlightId] = useState(null);
   const {
-  vehicles,
-  page,
-  totalPages,
-  setPage,
-  fetchVehicles,
-  loading,
-  error,
-  addVehicle,
-  editVehicle,
-  removeVehicle,
-  updateVehicleKm,
-  registrarCambioAceite,
-  fetchAllVehicles,
-} = useVehicleStore();
-  
+    vehicles,
+    allVehicles,
+    page,
+    totalPages,
+    setPage,
+    fetchVehicles,
+    loading,
+    error,
+    addVehicle,
+    editVehicle,
+    removeVehicle,
+    updateVehicleKm,
+    registrarCambioAceite,
+    fetchAllVehicles,
+  } = useVehicleStore();
 
   const [search, setSearch] = useState("");
   const { setEstadoFilter, estadoFilter } = useVehicleStore();
@@ -40,31 +41,49 @@ export default function TableVehicle() {
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [selectedDetailVehicle, setSelectedDetailVehicle] = useState(null);
 
-
   useEffect(() => {
     fetchVehicles();
   }, [page]);
 
   useEffect(() => {
-    const vehicleId = searchParams.get("cambioAceite");
+  const vehicleId = searchParams.get("cambioAceite");
 
-    if (!vehicleId) return;
+  if (!vehicleId) return;
 
-    const openCambioAceite = async () => {
-      const allVehicles = await fetchAllVehicles();
-      const vehicle = allVehicles.find(
-        (v) => String(v.id) === String(vehicleId)
-      );
+  const openCambioAceite = async () => {
+    const allVehicles = await fetchAllVehicles();
+    const vehicle = allVehicles.find(
+      (v) => String(v.id) === String(vehicleId)
+    );
 
-      if (!vehicle) return;
+    if (!vehicle) return;
 
-      setSelectedVehicle(vehicle);
+ 
+    setEstadoFilter("");
+    setSearch("");
+    setPage(1);
+
+    setHighlightId(String(vehicle.id));
+    setSelectedVehicle(vehicle);
+    
+
+    setSearchParams({}, { replace: true });
+
+  
+    setTimeout(() => {
       setOpenUpdateKmPanel(true);
-      setSearchParams({}, { replace: true });
-    };
+    }, 500);
+  };
 
-    openCambioAceite();
-  }, [searchParams, fetchAllVehicles, setSearchParams]);
+  openCambioAceite();
+
+
+  const timeout = setTimeout(() => {
+    setHighlightId(null);
+  }, 8000);
+
+  return () => clearTimeout(timeout);
+}, [searchParams]); 
 
   const filteredVehicles = vehicles.filter(
     (v) =>
@@ -72,10 +91,6 @@ export default function TableVehicle() {
         (v.placa || "").toLowerCase().includes(search.toLowerCase())) &&
       (estadoFilter === "" || v.estado === estadoFilter)
   );
-
- 
-  
-  
 
   const handleAddVehicle = async (vehicleData) => {
     const result = await addVehicle(vehicleData);
@@ -88,72 +103,78 @@ export default function TableVehicle() {
   };
 
 
-  if (error) return <div className="p-6 text-center text-red-500">Error: {error}</div>;
+  const handleCloseUpdateKm = () => {
+    setOpenUpdateKmPanel(false);
+    setHighlightId(null);
+  };
+
+  if (error)
+    return (
+      <div className="p-6 text-center text-red-500">Error: {error}</div>
+    );
 
   return (
     <div className="max-w-full rounded-xl bg-white dark:bg-gray-900 shadow-md p-4 pt-14">
+      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-4">
+        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto items-end">
+          <div className="w-full sm:w-64">
+            <SearchBar search={search} setSearch={setSearch} />
+          </div>
 
+          <select
+            value={estadoFilter}
+            onChange={(e) => setEstadoFilter(e.target.value)}
+            className="h-10 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md px-3"
+          >
+            <option value="">Estado</option>
+            <option value="optimo">optimo</option>
+            <option value="mantenimiento">mantenimiento</option>
+            <option value="desuso">desuso</option>
+          </select>
+        </div>
 
-<div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-4">
-
-
-  <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto items-end">
-
-    <div className="w-full sm:w-64">
-      <SearchBar search={search} setSearch={setSearch} />
-    </div>
-
-    <select
-      value={estadoFilter}
-      onChange={(e) => setEstadoFilter(e.target.value)}
-      className="h-10 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md px-3"
-    >
-      <option value="">Estado</option>
-      <option value="optimo">optimo</option>
-      <option value="mantenimiento">mantenimiento</option>
-      <option value="desuso">desuso</option>
-    </select>
-
-  </div>
-
-    <ProtectedView 
-         rolesAllowed={["administrador","supervisor"]}>
-        <button
-          onClick={() => setOpenAddPanel(true)}
-          className="h-10 flex items-center justify-center gap-2
+        <ProtectedView rolesAllowed={["administrador", "supervisor"]}>
+          <button
+            onClick={() => setOpenAddPanel(true)}
+            className="h-10 flex items-center justify-center gap-2
             bg-gradient-to-r from-blue-600 to-blue-500
             hover:from-blue-700 hover:to-blue-600
             text-white px-5 rounded-lg shadow-lg font-medium
             transition-all duration-300
             hover:scale-105 active:scale-95"
-        >
-          + Agregar Vehículo
-        </button>
-      </ProtectedView>
-
-    </div>
+          >
+            + Agregar Vehículo
+          </button>
+        </ProtectedView>
+      </div>
 
       <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
         {loading && (
-            <div className="text-center py-2 text-sm text-gray-500 dark:text-gray-400">
-              Cargando vehículos...
-            </div>
-          )}
+          <div className="text-center py-2 text-sm text-gray-500 dark:text-gray-400">
+            Cargando vehículos...
+          </div>
+        )}
 
         <table className="w-full text-sm bg-white dark:bg-gray-900">
-
           <thead className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-900">
             <tr>
-              {["#", "Asignación", "Placa", "Asientos", "Tipo", "Kilometraje", "Estado", "Operaciones"].map(
-                (h) => (
-                  <th
-                    key={h}
-                    className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300"
-                  >
-                    {h}
-                  </th>
-                )
-              )}
+              {[
+                "#",
+                "Asignación",
+                "Placa",
+                "Asientos",
+                "Tipo",
+                "Kilometraje",
+                "Estado",
+                "Operaciones",
+              ].map((h) => (
+                <th
+                  key={h}
+                  className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300"
+                >
+                  {h}
+                </th>
+              ))}
             </tr>
           </thead>
 
@@ -163,6 +184,10 @@ export default function TableVehicle() {
                 <VehicleRow
                   key={v.id}
                   vehicle={v}
+                  highlight={
+                    highlightId !== null &&
+                    String(v.id) === String(highlightId)
+                  }
                   onEdit={() => {
                     setSelectedVehicle(v);
                     setOpenEditPanel(true);
@@ -179,13 +204,15 @@ export default function TableVehicle() {
               ))
             ) : (
               <tr>
-                <td colSpan={8} className="text-center py-4 text-gray-500 dark:text-gray-400">
+                <td
+                  colSpan={8}
+                  className="text-center py-4 text-gray-500 dark:text-gray-400"
+                >
                   No hay registros
                 </td>
               </tr>
             )}
           </tbody>
-
         </table>
       </div>
 
@@ -208,7 +235,9 @@ export default function TableVehicle() {
             setOpenEditPanel(false);
           }}
           onDelete={async (id) => {
-            const confirmDelete = window.confirm("¿Seguro que deseas eliminar este vehículo?");
+            const confirmDelete = window.confirm(
+              "¿Seguro que deseas eliminar este vehículo?"
+            );
             if (!confirmDelete) return;
 
             const result = await removeVehicle(id);
@@ -224,10 +253,10 @@ export default function TableVehicle() {
       )}
 
       {openUpdateKmPanel && selectedVehicle && (
-       <UpdateKmForm
+        <UpdateKmForm
           vehicle={selectedVehicle}
           registrarCambioAceite={registrarCambioAceite}
-          onClose={() => setOpenUpdateKmPanel(false)}
+          onClose={handleCloseUpdateKm}
           onUpdateKm={async (updatedVehicle) => {
             return await updateVehicleKm(
               updatedVehicle.id,
@@ -243,11 +272,9 @@ export default function TableVehicle() {
           onClose={() => setOpenDetailPanel(false)}
         />
       )}
-
     </div>
   );
 }
-
 
 
 

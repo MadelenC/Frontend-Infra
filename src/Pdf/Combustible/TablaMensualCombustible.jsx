@@ -33,7 +33,7 @@ export default function CombustibleMensualTable({
         }}
       >
         <Text style={styles.mes}>MES</Text>
-        <Text style={styles.vehiculo}>VEHICULO</Text>
+        <Text style={styles.vehiculo}>ENCARGADO</Text>
         <Text style={styles.placa}>PLACA</Text>
         <Text style={styles.tipo}>TIPO</Text>
         <Text style={styles.combustible}>COMBUSTIBLE</Text>

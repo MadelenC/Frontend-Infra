@@ -1,15 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import PageMeta from "../../components/common/PageMeta";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-
 import DashboardCards from "../../components/dashboard/DashboardCards";
-import DashboardChart from "../../components/dashboard/DashboardChart";
 import VehicleResumenTable from "../../components/dashboard/VehicleResumenTable";
-import TopConsumo from "../../components/dashboard/TopConsumo";
-import CombustibleMensualChart from "../../components/dashboard/CombustibleMensualChart";
 
+import CombustibleMensualChart from "../../components/dashboard/CombustibleMensualChart";
 import { useVehicleResumenStore } from "../../zustand/usevehicleResumenStore";
 
 export default function Dashboard() {
@@ -78,18 +74,11 @@ export default function Dashboard() {
     return filteredVehicles.filter((v) => v.necesitaMantenimiento);
   }, [filteredVehicles]);
 
-  const topConsumo = useMemo(() => {
-    return [...filteredVehicles]
-      .sort(
-        (a, b) =>
-          Number(b.gastoCombustible || 0) - Number(a.gastoCombustible || 0)
-      )
-      .slice(0, 5);
-  }, [filteredVehicles]);
+
 
   const handleSelectAlertaAceite = (vehicle) => {
-    navigate(`/vehiculos?cambioAceite=${vehicle.id}`);
-  };
+  navigate(`/vehiculos?cambioAceite=${vehicle.id}`);
+};
 
   return (
     <div className="space-y-6">
@@ -157,14 +146,10 @@ export default function Dashboard() {
 
   <div className="xl:col-span-2 space-y-4">
 
-    <DashboardChart vehicles={filteredVehicles} />
-
-    {/* 🔥 NUEVO GRAFICO (igual estilo dashboard pro) */}
     <CombustibleMensualChart />
 
   </div>
 
-  <TopConsumo vehicles={topConsumo} />
 
 </div>
 

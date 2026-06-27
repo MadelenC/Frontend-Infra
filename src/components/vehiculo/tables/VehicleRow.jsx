@@ -3,7 +3,8 @@ import { FaEdit, FaTachometerAlt, FaEye, FaOilCan } from "react-icons/fa";
 import Badge from "../../ui/badge/Badge";
 import ProtectedView from "../../Protected/ProtectedView";
 
-export default function VehicleRow({ vehicle, onEdit, onUpdateKm, onView }) {
+export default function VehicleRow({ vehicle, onEdit, onUpdateKm, onView , highlight,}) {
+    console.log(`🎯 VehicleRow ${vehicle.id}: highlight=${highlight}`);
   const badgeColor =
     vehicle.estado === "Óptimo"
       ? "success"
@@ -17,7 +18,11 @@ export default function VehicleRow({ vehicle, onEdit, onUpdateKm, onView }) {
     "border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300 dark:text-gray-400";
 
   return (
-    <tr className="border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+   <tr
+  className={`border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${
+    highlight ? "bg-red-200 dark:bg-red-800 shadow-lg ring-2 ring-red-500" : ""
+  }`}
+>
 
       <td className={cellClass}>{vehicle.id}</td>
 

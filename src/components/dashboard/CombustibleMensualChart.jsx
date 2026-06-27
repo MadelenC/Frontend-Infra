@@ -123,10 +123,8 @@ export default function CombustibleMensualChart() {
           Consumo de combustible
         </h2>
 
-        <span className="text-xs text-gray-400">
-          {filters.year || currentYear}
-        </span>
-        <div className="flex flex-col gap-2">
+       
+        <div className="flex flex-row gap-2 items-center">
           <ReporteCombustibleMensualButton />
           <ReporteCombustibleAnualButton />
         </div>
@@ -286,14 +284,14 @@ export default function CombustibleMensualChart() {
           <Bar
             dataKey="gasolina"
             fill="#3B82F6"
-            name="Gasolina"
+            name="Gasolina(Litros)"
             radius={[6, 6, 0, 0]}
           />
 
           <Bar
             dataKey="diesel"
             fill="#374151"
-            name="Diesel"
+            name="Diesel (Litros)"
             radius={[6, 6, 0, 0]}
           />
         </BarChart>
