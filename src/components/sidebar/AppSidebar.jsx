@@ -33,18 +33,18 @@ const navItems = [
       ] 
     },
 
-    { name: "Rol de Viajes", 
-    icon: <FaUsersGear className="text-white" />,
-    rolesAllowed: ["supervisor","administrador","chofer"],
-    subItems: [
-      { 
-      name: "Motrar",
-      path: "/travel-rol", 
-      pro: false,icon:<FaListUl className="text-white " />,
-      rolesAllowed: ["supervisor","administrador","chofer"],
-     }
-    ] 
-  },
+    //{ name: "Rol de Viajes", 
+    //icon: <FaUsersGear className="text-white" />,
+    //rolesAllowed: ["supervisor","administrador","chofer"],
+    //subItems: [
+      //{ 
+      //name: "Motrar",
+      //path: "/travel-rol", 
+      //pro: false,icon:<FaListUl className="text-white " />,
+      //rolesAllowed: ["supervisor","administrador","chofer"],
+     //}
+    //] 
+  //},
 
     { name: "Vehiculos ",
         icon: <FaCarSide  className="text-white" />,
@@ -141,19 +141,19 @@ const navItems = [
       ] 
     },
 
-    { name: "Autorizacion de Salidas",
-      icon: <FaFilePen  className="text-white" />,
-      rolesAllowed: ["supervisor","administrador","chofer"],  
-      subItems: [
-        { 
-          name: "Ver Lista", 
-          path: "/autorizacion",
-          pro: false,
-          icon:<FaListUl className="text-white " />,
-          rolesAllowed: ["supervisor","administrador","chofer"], 
-        }
-      ] 
-    },
+    //{ name: "Autorizacion de Salidas",
+      //icon: <FaFilePen  className="text-white" />,
+      //rolesAllowed: ["supervisor","administrador","chofer"],  
+      //subItems: [
+        //{ 
+          //name: "Ver Lista", 
+          //path: "/autorizacion",
+          //pro: false,
+          //icon:<FaListUl className="text-white " />,
+          //rolesAllowed: ["supervisor","administrador","chofer"], 
+        //}
+      //] 
+    //},
  
      { name: "Informe de viajes", 
         icon: <FaFileLines className="text-white" />, 

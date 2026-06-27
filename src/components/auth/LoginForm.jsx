@@ -1,33 +1,24 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-
 import { TbLockPassword } from "react-icons/tb";
-
 import Button from "../ui/button/Button";
-
 import { useAuthStore } from "../../zustand/AuthUsers";
-
 import { loginService } from "../../services/authService";
+import { jwtDecode } from "jwt-decode";
 
 export default function LoginForm() {
-  
-
   const navigate = useNavigate();
-
   const location = useLocation();
 
   const params = new URLSearchParams(location.search);
 
   const module = params.get("module");
 
-  const setUser =
-    useAuthStore((state) => state.setUser);
+  const setUser = useAuthStore((state) => state.setUser);
 
-  const setToken =
-    useAuthStore((state) => state.setToken);
+  const setToken = useAuthStore((state) => state.setToken);
 
-  const [showPassword, setShowPassword] =
-    useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     cedula: "",
@@ -35,53 +26,54 @@ export default function LoginForm() {
   });
 
   const handleChange = (e) => {
-
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
-
   };
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  e.preventDefault();
+    try {
+      if (module !== "mantenimiento") {
+        alert("Módulo no disponible");
 
-  try {
+        navigate("/");
 
-  
-    if (module !== "mantenimiento") {
+        return;
+      }
 
-      alert("Módulo no disponible");
+      const res = await loginService(formData);
 
-      navigate("/");
+        setUser(res.user);
+        setToken(res.token);
 
-      return;
+        const { exp } = jwtDecode(res.token);
+        // Calcular cuánto falta para que expire
+        const tiempoRestante = exp * 1000 - Date.now();
+        // Programar el cierre de sesión
+        setTimeout(() => {
+          useAuthStore.getState().logout();
+          navigate("/signin?module=mantenimiento", { replace: true });
+        }, tiempoRestante);
 
+        navigate("/dashboard");
+    } catch (err) {
+      alert(err.response?.data?.message || "Error al iniciar sesión");
     }
-
-    const res = await loginService(formData);
-    setUser(res.user);
-    setToken(res.token);
-    navigate("/dashboard");
-  } catch (err) {
-  alert(
-    err.response?.data?.message ||
-    "Error al iniciar sesión"
-  );
-}
-
-};
+  };
 
   return (
-
-    <div className="
+    <div
+      className="
       min-h-screen
       relative
       flex items-center
       justify-center
       overflow-hidden
-    ">
+    "
+    >
       <img
         src="https://infraestructura.uatf.edu.bo/img/tres.jpg"
         alt="UATF"
@@ -92,13 +84,15 @@ export default function LoginForm() {
         "
       />
 
-      <div className="
+      <div
+        className="
         absolute inset-0
         bg-slate-900/30
-      " />
+      "
+      />
 
-     
-      <div className="
+      <div
+        className="
         absolute
         top-0 left-0
         w-full h-full
@@ -106,17 +100,18 @@ export default function LoginForm() {
         from-indigo-900/20
         via-black/20
         to-black/40
-      " />
+      "
+      />
 
-   
-
-      <div className="
+      <div
+        className="
         relative z-10
-        w-full max-w-md 
+        w-full max-w-md
         mx-5
-      ">
-
-        <div className="
+      "
+      >
+        <div
+          className="
           backdrop-blur-3xl
           bg-gradient-to-br
           from-blue-900/30
@@ -126,20 +121,19 @@ export default function LoginForm() {
           shadow-2xl
           rounded-[32px]
           p-6
-        ">
-              
-
+        "
+        >
           <div className="flex justify-center">
-
-            <div className="
+            <div
+              className="
               w-28 h-28
               rounded-full
               overflow-hidden
               border-4 border-white/30
               shadow-2xl
               bg-white
-            ">
-
+            "
+            >
               <img
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzIA0oXO4nlNelb3xVEbIz4kbVTczb4UIGfA&s"
                 alt="Logo"
@@ -148,9 +142,7 @@ export default function LoginForm() {
                   object-cover
                 "
               />
-
             </div>
-
           </div>
 
           <div className=" text-center  mt-6 mb-8  ">
@@ -160,10 +152,9 @@ export default function LoginForm() {
             <p className=" mt-2 text-sm text-white/70  ">
               Sistema Administrativo U.A.T.F.
             </p>
-
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5"  >
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="  text-sm  text-white/80 ">
                 Cédula de Identidad
@@ -195,31 +186,27 @@ export default function LoginForm() {
                   transition
                 "
               />
-
             </div>
 
-           
-
             <div>
-
-              <label className="
+              <label
+                className="
                 text-sm
                 text-white/80
-              ">
+              "
+              >
                 Contraseña
               </label>
 
-              <div className="
+              <div
+                className="
                 relative
                 mt-2
-              ">
+              "
+              >
                 <input
                   name="password"
-                  type={
-                    showPassword
-                    ? "text"
-                    : "password"
-                  }
+                  type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="••••••••"
@@ -240,9 +227,7 @@ export default function LoginForm() {
                 />
                 <button
                   type="button"
-                  onClick={() =>
-                    setShowPassword(!showPassword)
-                  }
+                  onClick={() => setShowPassword(!showPassword)}
                   className="
                     absolute
                     right-4 top-1/2
@@ -251,9 +236,7 @@ export default function LoginForm() {
                     hover:text-white
                   "
                 >
-                  <TbLockPassword
-                    className="size-5"
-                  />
+                  <TbLockPassword className="size-5" />
                 </button>
               </div>
             </div>
@@ -270,27 +253,22 @@ export default function LoginForm() {
                 font-semibold
 
                 shadow-lg
-                
 
                 transition-all
                 duration-300
               "
             >
-
               Iniciar sesión
-
             </Button>
 
-            
-
-            <p className="
+            <p
+              className="
               text-center
               text-sm
               text-white/60
-            ">
-
+            "
+            >
               ¿Para Volver a los modulos?{" "}
-
               <Link
                 to="/home"
                 className="
@@ -301,17 +279,10 @@ export default function LoginForm() {
               >
                 Haga clik aqui
               </Link>
-
             </p>
-
           </form>
-
         </div>
-
       </div>
-
     </div>
-
   );
-
 }

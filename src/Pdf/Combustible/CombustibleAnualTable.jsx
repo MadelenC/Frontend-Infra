@@ -9,7 +9,6 @@ export default function CombustibleAnualTable({
 }) {
   return (
     <View style={{ border: 1 }}>
-      {/* CABECERA */}
       <View
         style={{
           flexDirection: "row",
@@ -17,20 +16,15 @@ export default function CombustibleAnualTable({
           borderBottom: 1,
         }}
       >
-        <Text style={styles.anio}>
-          AÑO
-        </Text>
-
-        <Text style={styles.combustible}>
-          COMBUSTIBLE
-        </Text>
-
-        <Text style={styles.litros}>
-          LITROS
-        </Text>
+        <Text style={styles.anio}>ANIO</Text>
+        <Text style={styles.vehiculo}>VEHICULO</Text>
+        <Text style={styles.placa}>PLACA</Text>
+        <Text style={styles.tipo}>TIPO</Text>
+        <Text style={styles.combustible}>COMBUSTIBLE</Text>
+        <Text style={styles.litros}>LITROS</Text>
+        <Text style={styles.gasto}>GASTO BS.</Text>
       </View>
 
-      {/* FILAS */}
       {data?.map((item, index) => (
         <View
           key={index}
@@ -43,12 +37,28 @@ export default function CombustibleAnualTable({
             {item.anio}
           </Text>
 
+          <Text style={styles.vehiculo}>
+            {item.vehiculo || item.codigo || "-"}
+          </Text>
+
+          <Text style={styles.placa}>
+            {item.placa || "-"}
+          </Text>
+
+          <Text style={styles.tipo}>
+            {item.tipo || item.tipog || "-"}
+          </Text>
+
           <Text style={styles.combustible}>
-            {item.combustible}
+            {item.combustible || "-"}
           </Text>
 
           <Text style={styles.litros}>
-            {Number(item.litros).toFixed(2)}
+            {Number(item.litros || 0).toFixed(2)}
+          </Text>
+
+          <Text style={styles.gasto}>
+            {Number(item.gasto || 0).toFixed(2)}
           </Text>
         </View>
       ))}
@@ -58,19 +68,43 @@ export default function CombustibleAnualTable({
 
 const styles = {
   anio: {
-    width: "25%",
+    width: "10%",
+    borderRight: 1,
+    padding: 4,
+  },
+
+  vehiculo: {
+    width: "20%",
+    borderRight: 1,
+    padding: 4,
+  },
+
+  placa: {
+    width: "14%",
+    borderRight: 1,
+    padding: 4,
+  },
+
+  tipo: {
+    width: "16%",
     borderRight: 1,
     padding: 4,
   },
 
   combustible: {
-    width: "35%",
+    width: "16%",
     borderRight: 1,
     padding: 4,
   },
 
   litros: {
-    width: "40%",
+    width: "12%",
+    borderRight: 1,
+    padding: 4,
+  },
+
+  gasto: {
+    width: "12%",
     padding: 4,
   },
 };

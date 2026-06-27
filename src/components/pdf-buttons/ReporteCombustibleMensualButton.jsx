@@ -5,21 +5,14 @@ import { FaFilePdf } from "react-icons/fa6";
 import { useVehicleResumenStore }
 from "../../zustand/usevehicleResumenStore";
 
-import { formatChartData }
-from "../../helpers/formatChartData";
-
 export default function ReporteCombustibleButton() {
 
   const {
     chartData,
-    anualData,
   } = useVehicleResumenStore();
 
   const handleDownload = async () => {
     try {
-
-      const mensual =
-        formatChartData(chartData || []);
 
       const { default: ReporteCombustibleMensualPDF } =
         await import(
@@ -28,7 +21,7 @@ export default function ReporteCombustibleButton() {
 
       const blob = await pdf(
         <ReporteCombustibleMensualPDF
-          mensual={mensual}
+          mensual={chartData || []}
         />
       ).toBlob();
 
