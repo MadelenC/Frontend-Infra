@@ -15,6 +15,7 @@ export default function AddVehicleForm({ onSubmit, onClose }) {
     marca: "",
     modelo: "",
     tipoEspecifico: "",
+    combustible: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -26,12 +27,10 @@ export default function AddVehicleForm({ onSubmit, onClose }) {
     const numericFields = ["chasis", "cilindrada", "pasajeros", "kilometraje"];
     const textOnlyFields = ["color", "asignadoA"];
 
-    // SOLO NÚMEROS
     if (numericFields.includes(name)) {
       if (!/^\d*$/.test(value)) return;
     }
 
-    // SOLO LETRAS
     if (textOnlyFields.includes(name)) {
       if (!/^[a-zA-ZÁÉÍÓÚñÑ\s]*$/.test(value)) return;
     }
@@ -152,6 +151,16 @@ export default function AddVehicleForm({ onSubmit, onClose }) {
             options={["", "optimo", "mantenimiento", "desuso"]}
             error={errors.estado}
             className="text-gray-200"
+          />
+
+          <Select
+            label="Combustible"
+            name="combustible"
+            value={formData.combustible}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            options={["", "Gasolina", "Diésel"]}
+            error={errors.combustible}
           />
 
           <div className="md:col-span-3 flex justify-end mt-2">

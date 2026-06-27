@@ -1,17 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-
 import { TbLockPassword } from "react-icons/tb";
-
 import Button from "../ui/button/Button";
-
 import { useAuthStore } from "../../zustand/AuthUsers";
-
 import { loginService } from "../../services/authService";
+import { jwtDecode } from "jwt-decode";
 
 export default function LoginForm() {
   const navigate = useNavigate();
-
   const location = useLocation();
 
   const params = new URLSearchParams(location.search);
@@ -49,9 +45,20 @@ export default function LoginForm() {
       }
 
       const res = await loginService(formData);
-      setUser(res.user);
-      setToken(res.token);
-      navigate("/dashboard");
+
+        setUser(res.user);
+        setToken(res.token);
+
+        const { exp } = jwtDecode(res.token);
+        // Calcular cuánto falta para que expire
+        const tiempoRestante = exp * 1000 - Date.now();
+        // Programar el cierre de sesión
+        setTimeout(() => {
+          useAuthStore.getState().logout();
+          navigate("/signin?module=mantenimiento", { replace: true });
+        }, tiempoRestante);
+
+        navigate("/dashboard");
     } catch (err) {
       alert(err.response?.data?.message || "Error al iniciar sesión");
     }

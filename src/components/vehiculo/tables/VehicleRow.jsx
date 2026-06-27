@@ -1,5 +1,5 @@
 import React from "react";
-import { FaEdit, FaTachometerAlt, FaEye } from "react-icons/fa";
+import { FaEdit, FaTachometerAlt, FaEye, FaOilCan } from "react-icons/fa";
 import Badge from "../../ui/badge/Badge";
 import ProtectedView from "../../Protected/ProtectedView";
 
@@ -67,10 +67,10 @@ export default function VehicleRow({ vehicle, onEdit, onUpdateKm, onView }) {
            rolesAllowed={["administrador","supervisor"]}>
           <button
             onClick={onUpdateKm}
-            title="Actualizar kilometraje"
-            className="p-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-800 transition"
+            title="Cambio de aceite"
+           className="p-2 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:bg-orange-200 dark:hover:bg-orange-800 transition"
           >
-            <FaTachometerAlt size={14} />
+            <FaOilCan size={14} />
           </button>
           </ProtectedView>
 

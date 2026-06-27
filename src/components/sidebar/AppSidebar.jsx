@@ -215,11 +215,7 @@ const navItems = [
              pro: false,icon:<BiWrench className="text-white"/>, 
              rolesAllowed: ["supervisor","administrador","mecanico","mensajero"], 
             },
-          //{ name: "Escritorio/Demas", 
-            //path: "/pedido/escritorio", 
-            //pro: false, icon:<BiClipboard className="text-white"/>,
-            //rolesAllowed: ["supervisor","administrador","mensajero"],  
-          //} 
+        
         ] 
       },
 
